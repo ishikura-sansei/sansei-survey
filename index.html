@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SANSEI 現地調査シート</title>
+<style>
+  /* ===== 白基調（トラブルシート準拠）。金額は一切表示しない ===== */
+  :root{
+    --bg:#ffffff; --panel:#ffffff; --line:#e4e7eb; --ink:#222; --sub:#6b7280;
+    --accent:#2f6f9f; --accent-soft:#eef4f9; --ok:#2e7d32; --warn:#c08a00;
+    --chip:#f3f5f7; --radius:12px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Hiragino Kaku Gothic ProN","Meiryo",system-ui,sans-serif;
+    font-size:16px;line-height:1.5;padding-bottom:90px}
+  header{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);
+    padding:12px 16px;z-index:10}
+  header h1{font-size:17px;margin:0;font-weight:700}
+  header .sub{font-size:12px;color:var(--sub);margin-top:2px}
+  .wrap{max-width:640px;margin:0 auto;padding:12px 14px}
+  .sec{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:14px;margin:12px 0}
+  .sec h2{font-size:15px;margin:0 0 10px;padding-left:8px;border-left:4px solid var(--accent);
+    color:var(--accent)}
+  .f{margin:10px 0}
+  .f label{display:block;font-size:13px;color:var(--sub);margin-bottom:4px}
+  .f .req{color:#c0392b;margin-left:4px}
+  input[type=text],input[type=date],input[type=number],textarea,select{
+    width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;
+    font-size:16px;background:#fff;color:var(--ink)}
+  textarea{min-height:64px;resize:vertical}
+  .hint{font-size:12px;color:var(--sub);margin-top:3px}
+  .opts{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+  .opts label{display:inline-flex;align-items:center;gap:6px;background:var(--chip);
+    border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:14px;color:var(--ink)}
+  .opts input{accent-color:var(--accent)}
+  .note{background:var(--accent-soft);border:1px solid #d6e6f2;border-radius:10px;
+    padding:8px 10px;font-size:12px;color:#34536b;margin:8px 0}
+  .bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);
+    padding:12px 16px;display:flex;gap:10px;justify-content:center}
+  .btn{flex:1;max-width:300px;border:0;border-radius:12px;padding:14px;font-size:16px;
+    font-weight:700;background:var(--accent);color:#fff}
+  .btn.ghost{background:#fff;color:var(--accent);border:1px solid var(--accent);max-width:140px;flex:0 0 auto}
+  .msg{padding:10px 14px;border-radius:10px;margin:10px 0;font-size:14px;display:none}
+  .msg.ok{background:#eaf6ea;color:var(--ok);border:1px solid #cfe8cf;display:block}
+  .msg.err{background:#fdecea;color:#c0392b;border:1px solid #f5c6c0;display:block}
+</style>
+</head>
+<body>
+<header>
+  <h1>SANSEI 現地調査シート</h1>
+  <div class="sub">工事に必要な情報を記録します（金額は扱いません）</div>
+</header>
+
+<div class="wrap">
+  <div class="note">※ このシートは「工事情報」の記録です。付帯（請求）の金額は事務側で単価表から算定します。現調者は見たまま・必要なものを入力してください。</div>
+
+  <!-- 1. 現地調査依頼 -->
+  <div class="sec">
+    <h2>1. 現地調査</h2>
+    <div class="f"><label>現地調査日<span class="req">*</span></label><input type="date" id="surveyDate"></div>
+    <div class="f"><label>報告者<span class="req">*</span></label>
+      <div class="opts" data-radio="reporter">
+        <label><input type="radio" name="reporter" value="山中広大">山中広大</label>
+        <label><input type="radio" name="reporter" value="吉岡大輔">吉岡大輔</label>
+        <label><input type="radio" name="reporter" value="その他">その他</label>
+      </div>
+    </div>
+    <div class="f"><label>現地調査内容<span class="req">*</span></label>
+      <select id="surveyType">
+        <option value="">選択してください</option>
+        <option>屋根</option><option>電気</option><option>屋根＋電気</option>
+        <option>屋根＋電気＋エコキュート</option><option>屋根＋電気＋エコキュート＋IH</option><option>その他</option>
+      </select>
+      <div class="hint">再現調が必要なら伝達事項に「屋根立合の有無」を記入</div>
+    </div>
+    <div class="f"><label>伝達事項（営業へ事前連絡）</label><textarea id="memo"></textarea></div>
+  </div>
+
+  <!-- 8(先頭化). 会社名：記録のみ。現調内容は会社共通。会社差は付帯側 -->
+  <div class="sec">
+    <h2>会社名（元請け）</h2>
+    <div class="f"><label>会社名<span class="req">*</span></label>
+      <select id="company">
+        <option value="">選択してください</option>
+        <option>リケンエナジー</option><option>アルファエレクトロ</option>
+        <option>キョウエイ</option><option>ライズ</option><option>ATEL</option><option>その他</option>
+      </select>
+      <div class="hint">記録用。現調内容は会社で変わりません（会社差は付帯＝単価表側で処理）。</div>
+    </div>
+  </div>
+
+  <!-- 2. お客様情報 -->
+  <div class="sec">
+    <h2>2. お客様情報</h2>
+    <div class="f"><label>お客様名（フルネーム）<span class="req">*</span></label><input type="text" id="custName"></div>
+    <div class="f"><label>フリガナ<span class="req">*</span></label><input type="text" id="custKana"></div>
+    <div class="f"><label>現場住所<span class="req">*</span></label><input type="text" id="addr"></div>
+    <div class="f"><label>契約種別・容量</label>
+      <div class="opts" data-radio="keiyaku">
+        <label><input type="radio" name="keiyaku" value="単相2線">単相2線</label>
+        <label><input type="radio" name="keiyaku" value="単相3線">単相3線</label>
+      </div>
+      <input type="text" id="capacity" placeholder="容量（例：30A）" style="margin-top:6px">
+    </div>
+    <div class="f"><label>メーター番号</label><input type="text" id="meter"></div>
+    <div class="f"><label>分電盤メーカー・型式</label><input type="text" id="panel"></div>
+  </div>
+
+  <!-- 3. 既設設備 -->
+  <div class="sec">
+    <h2>3. 既設設備</h2>
+    <div class="f"><label>既設エネファーム</label>
+      <div class="opts"><label><input type="checkbox" id="enefarm">有</label></div>
+      <input type="text" id="enefarmModel" placeholder="品番（有の場合）" style="margin-top:6px"></div>
+    <div class="f"><label>既設エコキュート</label>
+      <div class="opts"><label><input type="checkbox" id="ecocute">有</label></div>
+      <input type="text" id="ecocuteModel" placeholder="品番（有の場合）" style="margin-top:6px"></div>
+  </div>
+
+  <!-- 4. 電気工事・配線計画 -->
+  <div class="sec">
+    <h2>4. 電気工事・配線計画</h2>
+    <div class="f"><label>回路数（全回路）</label><input type="text" id="circuits"></div>
+    <div class="f"><label>空き回路数</label><input type="text" id="emptyCircuits"></div>
+    <div class="f"><label>幹線種別</label><input type="text" id="kansen" placeholder="例：CV / CVT / SV / スラット">
+      <div class="hint">電線手配のための記録です（請求とは無関係）。</div></div>
+    <div class="f"><label>アース目視確認</label>
+      <div class="opts"><label><input type="checkbox" id="earth">有</label></div></div>
+    <div class="f"><label>ケーブル延長（標準長超のみ）</label>
+      <input type="text" id="cblPv" placeholder="PV〜PVユニット（例：40m/50m）">
+      <input type="text" id="cblMain" placeholder="主幹センサー パワコン〜分電盤（例：30m/40m）" style="margin-top:6px">
+      <input type="text" id="cblBatt" placeholder="蓄電池通信 パワコン〜蓄電池（例：20m/30m）" style="margin-top:6px">
+      <input type="text" id="cblCt" placeholder="CTセンサー/屋内通信（例：20m/40m）" style="margin-top:6px">
+    </div>
+  </div>
+
+  <!-- 5. メーカー -->
+  <div class="sec">
+    <h2>5. メーカー</h2>
+    <div class="f"><label>メーカー・機種</label>
+      <input type="text" id="maker" placeholder="例：ニチコンT5 / 京セラ エネレッツァ / 長州16.4">
+      <div class="hint">エネレッツァ・ニチコンT5/T6 等は事務側で追加人工を判断します。</div></div>
+  </div>
+
+  <!-- 6+9. 部材・追加工事（会社共通で記録。金額なし） -->
+  <div class="sec">
+    <h2>6. 部材・追加工事（記録）</h2>
+    <div class="note">ここは「工事に必要な物・人工」の記録です。金額は付けません（事務が単価表で算定）。</div>
+    <div class="f"><label>必要部材（サイズ・個数）</label>
+      <textarea id="parts" placeholder="例：タイガーベース300を2個、エコベース700を2個、スリムダクト10m、MDダクト5m"></textarea></div>
+    <div class="f"><label>LANケーブル（長さ・個数）</label><input type="text" id="lan" placeholder="例：15m 1本"></div>
+    <div class="f"><label>屋根追加付帯（人工）</label>
+      <textarea id="roof" placeholder="例：屋根急こう配2人、手上げ1人、搬入困難1人"></textarea></div>
+    <div class="f"><label>電気工事 追加工事</label><textarea id="elec" placeholder="無い場合は「無し」"></textarea></div>
+    <div class="f"><label>既設設備の撤去</label>
+      <div class="opts">
+        <label><input type="checkbox" name="remove" value="PCS">PCS</label>
+        <label><input type="checkbox" name="remove" value="蓄電池">蓄電池</label>
+        <label><input type="checkbox" name="remove" value="配線">配線</label>
+        <label><input type="checkbox" name="remove" value="接箱">接箱</label>
+      </div></div>
+    <div class="f"><label>追加費用</label>
+      <div class="opts" data-radio="addcost">
+        <label><input type="radio" name="addcost" value="有">有</label>
+        <label><input type="radio" name="addcost" value="無">無</label>
+      </div></div>
+  </div>
+
+  <!-- 7. 確認事項・お約束 -->
+  <div class="sec">
+    <h2>7. 確認事項・お約束</h2>
+    <div class="f"><label>駐車場の移動</label>
+      <div class="opts" data-radio="park"><label><input type="radio" name="park" value="要">要</label><label><input type="radio" name="park" value="不要">不要</label></div></div>
+    <div class="f"><label>借地の許可（足場含む）／方位・邸名</label><input type="text" id="shakuchi" placeholder="例：北面借地 / ●●様邸借地"></div>
+    <div class="f"><label>工事当日の流れ説明</label>
+      <div class="opts" data-radio="flow"><label><input type="radio" name="flow" value="済">済</label><label><input type="radio" name="flow" value="未">未</label></div></div>
+    <div class="f"><label>工事工程日数</label><input type="text" id="days" placeholder="例：2日（1日目 屋根／2日目 電気）"></div>
+    <div class="f"><label>Wi-Fi ID / PASS</label><input type="text" id="wifi" placeholder="不明な場合はその旨"></div>
+    <div class="f"><label>お客様希望工事日程</label><input type="text" id="hopeDate" placeholder="例：12/4・12/6・12/8"></div>
+  </div>
+
+  <!-- 10. 写真（Phase2でDriveアップ実装） -->
+  <div class="sec">
+    <h2>10. 現場写真</h2>
+    <div class="note">写真アップロード（→Drive保存）はPhase2で実装します。現状は撮影リストのチェックのみ。</div>
+    <div class="f"><div class="opts">
+      <label><input type="checkbox" name="photo" value="住宅全景">住宅全景</label>
+      <label><input type="checkbox" name="photo" value="屋根">屋根</label>
+      <label><input type="checkbox" name="photo" value="野地板">野地板</label>
+      <label><input type="checkbox" name="photo" value="分電盤周り">分電盤周り</label>
+      <label><input type="checkbox" name="photo" value="宅内工事予定">宅内工事予定</label>
+      <label><input type="checkbox" name="photo" value="屋外工事予定">屋外工事予定</label>
+      <label><input type="checkbox" name="photo" value="電気購入明細">電気購入明細</label>
+      <label><input type="checkbox" name="photo" value="計器">計器</label>
+      <label><input type="checkbox" name="photo" value="Wi-Fi情報">Wi-Fi情報</label>
+    </div></div>
+  </div>
+
+  <div id="msg" class="msg"></div>
+</div>
+
+<div class="bar">
+  <button class="btn ghost" onclick="clearForm()">クリア</button>
+  <button class="btn" id="submitBtn" onclick="submitForm()">送信</button>
+</div>
+
+<script>
+  // ===== Phase1：送信先GAS（デプロイ後にURLを差し替える） =====
+  const GAS_URL = "PLACEHOLDER_GAS_WEBAPP_URL"; // ← GASデプロイ後に貼り替え
+
+  function val(id){ const e=document.getElementById(id); return e?e.value.trim():""; }
+  function chk(id){ const e=document.getElementById(id); return e&&e.checked?"有":""; }
+  function radio(name){ const e=document.querySelector('input[name="'+name+'"]:checked'); return e?e.value:""; }
+  function multi(name){ return Array.from(document.querySelectorAll('input[name="'+name+'"]:checked')).map(x=>x.value).join("・"); }
+  function caseKey(){ const d=new Date(); const p=n=>String(n).padStart(2,'0');
+    return "G"+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+"-"+p(d.getHours())+p(d.getMinutes())+p(d.getSeconds()); }
+
+  function collect(){
+    return {
+      caseKey: caseKey(),
+      registeredAt: new Date().toISOString(),
+      surveyDate: val('surveyDate'), reporter: radio('reporter'), surveyType: val('surveyType'),
+      company: val('company'),
+      custName: val('custName'), custKana: val('custKana'), addr: val('addr'),
+      keiyaku: radio('keiyaku'), capacity: val('capacity'), meter: val('meter'), panel: val('panel'),
+      enefarm: chk('enefarm'), enefarmModel: val('enefarmModel'), ecocute: chk('ecocute'), ecocuteModel: val('ecocuteModel'),
+      circuits: val('circuits'), emptyCircuits: val('emptyCircuits'), kansen: val('kansen'), earth: chk('earth'),
+      cblPv: val('cblPv'), cblMain: val('cblMain'), cblBatt: val('cblBatt'), cblCt: val('cblCt'),
+      maker: val('maker'),
+      parts: val('parts'), lan: val('lan'), roof: val('roof'), elec: val('elec'),
+      remove: multi('remove'), addcost: radio('addcost'),
+      park: radio('park'), shakuchi: val('shakuchi'), flow: radio('flow'),
+      days: val('days'), wifi: val('wifi'), hopeDate: val('hopeDate'),
+      photo: multi('photo'), memo: val('memo')
+    };
+  }
+
+  function showMsg(text, ok){ const m=document.getElementById('msg'); m.textContent=text; m.className="msg "+(ok?"ok":"err"); }
+
+  function validate(d){
+    if(!d.surveyDate) return "現地調査日を入力してください";
+    if(!d.reporter) return "報告者を選択してください";
+    if(!d.surveyType) return "現地調査内容を選択してください";
+    if(!d.company) return "会社名を選択してください";
+    if(!d.custName) return "お客様名を入力してください";
+    if(!d.addr) return "現場住所を入力してください";
+    return "";
+  }
+
+  function submitForm(){
+    const d = collect();
+    const err = validate(d);
+    if(err){ showMsg(err, false); window.scrollTo({top:0,behavior:'smooth'}); return; }
+    const btn=document.getElementById('submitBtn'); btn.disabled=true; btn.textContent="送信中…";
+    if(GAS_URL.indexOf("PLACEHOLDER")===0){
+      showMsg("（テスト）GAS未接続です。デプロイ後にGAS_URLを設定すると送信できます。入力内容は正常に取得できています。", true);
+      btn.disabled=false; btn.textContent="送信"; console.log(d); return;
+    }
+    fetch(GAS_URL, { method:"POST", mode:"no-cors",
+      headers:{"Content-Type":"text/plain;charset=utf-8"}, body: JSON.stringify(d) })
+      .then(()=>{ showMsg("送信しました（案件キー："+d.caseKey+"）", true); btn.textContent="送信完了"; })
+      .catch(()=>{ showMsg("送信に失敗しました。電波を確認してもう一度お試しください。", false);
+        btn.disabled=false; btn.textContent="送信"; });
+  }
+
+  function clearForm(){
+    if(!confirm("入力内容をクリアします。よろしいですか？")) return;
+    document.querySelectorAll('input,textarea,select').forEach(e=>{
+      if(e.type==='checkbox'||e.type==='radio') e.checked=false; else e.value="";
+    });
+    showMsg("", true); document.getElementById('msg').className="msg";
+  }
+
+  // 既定で今日の日付
+  document.getElementById('surveyDate').valueAsDate = new Date();
+</script>
+</body>
+</html>
