@@ -24,6 +24,7 @@
     padding:14px;margin:12px 0}
   .sec h2{font-size:15px;margin:0 0 10px;padding-left:8px;border-left:4px solid var(--accent);
     color:var(--accent)}
+  .grp{font-size:13px;font-weight:700;color:#34536b;margin:12px 0 4px}
   .f{margin:10px 0}
   .f label{display:block;font-size:13px;color:var(--sub);margin-bottom:4px}
   .f .req{color:#c0392b;margin-left:4px}
@@ -36,8 +37,13 @@
   .opts label{display:inline-flex;align-items:center;gap:6px;background:var(--chip);
     border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:14px;color:var(--ink)}
   .opts input{accent-color:var(--accent)}
+  .row2{display:flex;gap:8px}
+  .row2>*{flex:1}
   .note{background:var(--accent-soft);border:1px solid #d6e6f2;border-radius:10px;
     padding:8px 10px;font-size:12px;color:#34536b;margin:8px 0}
+  .alert{background:#fff7e6;border:1px solid #f0d28a;border-radius:10px;
+    padding:8px 10px;font-size:12px;color:#8a6400;margin:8px 0}
+  .hidden{display:none}
   .bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);
     padding:12px 16px;display:flex;gap:10px;justify-content:center}
   .btn{flex:1;max-width:300px;border:0;border-radius:12px;padding:14px;font-size:16px;
@@ -57,145 +63,255 @@
 <div class="wrap">
   <div class="note">※ このシートは「工事情報」の記録です。付帯（請求）の金額は事務側で単価表から算定します。現調者は見たまま・必要なものを入力してください。</div>
 
-  <!-- 1. 現地調査依頼 -->
+  <!-- ① 現地調査 -->
   <div class="sec">
-    <h2>1. 現地調査</h2>
+    <h2>① 現地調査</h2>
     <div class="f"><label>現地調査日<span class="req">*</span></label><input type="date" id="surveyDate"></div>
     <div class="f"><label>報告者<span class="req">*</span></label>
       <div class="opts" data-radio="reporter">
-        <label><input type="radio" name="reporter" value="山中広大">山中広大</label>
-        <label><input type="radio" name="reporter" value="吉岡大輔">吉岡大輔</label>
-        <label><input type="radio" name="reporter" value="その他">その他</label>
+        <label><input type="radio" name="reporter" value="山中" onclick="toggleReporterOther()">山中</label>
+        <label><input type="radio" name="reporter" value="吉岡" onclick="toggleReporterOther()">吉岡</label>
+        <label><input type="radio" name="reporter" value="その他" onclick="toggleReporterOther()">その他</label>
       </div>
+      <input type="text" id="reporterOther" class="hidden" placeholder="氏名を記入" style="margin-top:6px">
     </div>
-    <div class="f"><label>現地調査内容<span class="req">*</span></label>
-      <select id="surveyType">
-        <option value="">選択してください</option>
-        <option>屋根</option><option>電気</option><option>屋根＋電気</option>
-        <option>屋根＋電気＋エコキュート</option><option>屋根＋電気＋エコキュート＋IH</option><option>その他</option>
-      </select>
-      <div class="hint">再現調が必要なら伝達事項に「屋根立合の有無」を記入</div>
+    <div class="f"><label>現地調査内容<span class="req">*</span>（複数選択可）</label>
+      <div class="opts">
+        <label><input type="checkbox" name="surveyType" value="PV">PV</label>
+        <label><input type="checkbox" name="surveyType" value="BT">BT</label>
+        <label><input type="checkbox" name="surveyType" value="EQ">EQ</label>
+        <label><input type="checkbox" name="surveyType" value="V2H">V2H</label>
+        <label><input type="checkbox" name="surveyType" value="IH">IH</label>
+        <label><input type="checkbox" name="surveyType" value="その他" onclick="toggleSurveyTypeOther()">その他</label>
+      </div>
+      <input type="text" id="surveyTypeOther" class="hidden" placeholder="その他の内容" style="margin-top:6px">
+      <div class="hint">PV=太陽光 / BT=蓄電池 / EQ=エコキュート / V2H / IH</div>
     </div>
-    <div class="f"><label>伝達事項（営業へ事前連絡）</label><textarea id="memo"></textarea></div>
-  </div>
-
-  <!-- 8(先頭化). 会社名：記録のみ。現調内容は会社共通。会社差は付帯側 -->
-  <div class="sec">
-    <h2>会社名（元請け）</h2>
-    <div class="f"><label>会社名<span class="req">*</span></label>
-      <select id="company">
+    <div class="f"><label>屋根が未確認の場合（雨天等で電気のみ現調）</label>
+      <div class="opts">
+        <label><input type="checkbox" name="roofUnconf" value="日程調整した">日程調整した</label>
+        <label><input type="checkbox" name="roofUnconf" value="お客様に説明した">お客様に説明した</label>
+      </div>
+      <input type="text" id="roofUnconfMemo" placeholder="やり取りの記録（例：雨天で屋根は次回、〇/〇再訪を説明済み）" style="margin-top:6px">
+    </div>
+    <div class="f"><label>会社名（元請け）<span class="req">*</span></label>
+      <select id="company" onchange="toggleCompanyOther()">
         <option value="">選択してください</option>
         <option>リケンエナジー</option><option>アルファエレクトロ</option>
         <option>キョウエイ</option><option>ライズ</option><option>ATEL</option><option>その他</option>
       </select>
+      <input type="text" id="companyOther" class="hidden" placeholder="会社名を記入" style="margin-top:6px">
       <div class="hint">記録用。現調内容は会社で変わりません（会社差は付帯＝単価表側で処理）。</div>
     </div>
   </div>
 
-  <!-- 2. お客様情報 -->
+  <!-- ② お客様情報 -->
   <div class="sec">
-    <h2>2. お客様情報</h2>
+    <h2>② お客様情報</h2>
+    <div class="alert">⚠ お客様名は<b>漢字を正確に・フルネーム</b>で入力してください（後で検索できなくなるため誤字厳禁）。</div>
     <div class="f"><label>お客様名（フルネーム）<span class="req">*</span></label><input type="text" id="custName"></div>
     <div class="f"><label>フリガナ<span class="req">*</span></label><input type="text" id="custKana"></div>
     <div class="f"><label>現場住所<span class="req">*</span></label><input type="text" id="addr"></div>
-    <div class="f"><label>契約種別・容量</label>
-      <div class="opts" data-radio="keiyaku">
-        <label><input type="radio" name="keiyaku" value="単相2線">単相2線</label>
-        <label><input type="radio" name="keiyaku" value="単相3線">単相3線</label>
+  </div>
+
+  <!-- ③ 既設状況 -->
+  <div class="sec">
+    <h2>③ 既設状況</h2>
+    <div class="f"><label>契約種別・容量<span class="req">*</span>（種別＋容量を両方チェック）</label>
+      <div class="opts">
+        <label><input type="checkbox" name="keiyaku" value="単相2線">単相2線</label>
+        <label><input type="checkbox" name="keiyaku" value="単相3線">単相3線</label>
+        <label><input type="checkbox" name="keiyaku" value="20A">20A</label>
+        <label><input type="checkbox" name="keiyaku" value="30A">30A</label>
+        <label><input type="checkbox" name="keiyaku" value="40A">40A</label>
+        <label><input type="checkbox" name="keiyaku" value="50A">50A</label>
+        <label><input type="checkbox" name="keiyaku" value="60A">60A</label>
+        <label><input type="checkbox" name="keiyaku" value="70A">70A</label>
+        <label><input type="checkbox" name="keiyaku" value="その他" onclick="toggleKeiyakuOther()">その他</label>
       </div>
-      <input type="text" id="capacity" placeholder="容量（例：30A）" style="margin-top:6px">
+      <input type="text" id="keiyakuOther" class="hidden" placeholder="その他（例：12kVA契約 等）" style="margin-top:6px">
     </div>
     <div class="f"><label>メーター番号</label><input type="text" id="meter"></div>
     <div class="f"><label>分電盤メーカー・型式</label><input type="text" id="panel"></div>
-  </div>
-
-  <!-- 3. 既設設備 -->
-  <div class="sec">
-    <h2>3. 既設設備</h2>
-    <div class="f"><label>既設エネファーム</label>
-      <div class="opts"><label><input type="checkbox" id="enefarm">有</label></div>
-      <input type="text" id="enefarmModel" placeholder="品番（有の場合）" style="margin-top:6px"></div>
-    <div class="f"><label>既設エコキュート</label>
-      <div class="opts"><label><input type="checkbox" id="ecocute">有</label></div>
-      <input type="text" id="ecocuteModel" placeholder="品番（有の場合）" style="margin-top:6px"></div>
-  </div>
-
-  <!-- 4. 電気工事・配線計画 -->
-  <div class="sec">
-    <h2>4. 電気工事・配線計画</h2>
-    <div class="f"><label>回路数（全回路）</label><input type="text" id="circuits"></div>
-    <div class="f"><label>空き回路数</label><input type="text" id="emptyCircuits"></div>
-    <div class="f"><label>幹線種別</label><input type="text" id="kansen" placeholder="例：CV / CVT / SV / スラット">
-      <div class="hint">電線手配のための記録です（請求とは無関係）。</div></div>
-    <div class="f"><label>アース目視確認</label>
-      <div class="opts"><label><input type="checkbox" id="earth">有</label></div></div>
-    <div class="f"><label>ケーブル延長（標準長超のみ）</label>
-      <input type="text" id="cblPv" placeholder="PV〜PVユニット（例：40m/50m）">
-      <input type="text" id="cblMain" placeholder="主幹センサー パワコン〜分電盤（例：30m/40m）" style="margin-top:6px">
-      <input type="text" id="cblBatt" placeholder="蓄電池通信 パワコン〜蓄電池（例：20m/30m）" style="margin-top:6px">
-      <input type="text" id="cblCt" placeholder="CTセンサー/屋内通信（例：20m/40m）" style="margin-top:6px">
+    <div class="f"><label>既設機器（見える物だけチェック＝有／未チェック＝無）</label>
+      <div class="opts">
+        <label><input type="checkbox" name="existing" value="エネファーム">エネファーム</label>
+        <label><input type="checkbox" name="existing" value="エコキュート" onclick="updateExistingReminder()">エコキュート</label>
+        <label><input type="checkbox" name="existing" value="給湯器">給湯器</label>
+        <label><input type="checkbox" name="existing" value="既設太陽光">既設太陽光</label>
+        <label><input type="checkbox" name="existing" value="既設蓄電池">既設蓄電池</label>
+        <label><input type="checkbox" name="existing" value="IH">IH</label>
+        <label><input type="checkbox" name="existing" value="テレビアンテナ">テレビアンテナ</label>
+        <label><input type="checkbox" name="existing" value="その他" onclick="toggleExistingOther()">その他</label>
+      </div>
+      <input type="text" id="existingOther" class="hidden" placeholder="その他の既設機器" style="margin-top:6px">
+      <div id="existingReminder" class="alert hidden"></div>
+    </div>
+    <div class="f"><label>Wi-Fi状況<span class="req">*</span></label>
+      <div class="opts" data-radio="wifi">
+        <label><input type="radio" name="wifiStatus" value="あり" onclick="toggleWifi()">あり</label>
+        <label><input type="radio" name="wifiStatus" value="なし" onclick="toggleWifi()">なし</label>
+        <label><input type="radio" name="wifiStatus" value="不明" onclick="toggleWifi()">不明</label>
+      </div>
+      <div class="hint">モニタリングに必須。なし・不明は営業へ要連絡（自動で伝達事項に追記されます）。</div>
+      <input type="text" id="wifiId" class="hidden" placeholder="Wi-Fi ID / PASS（ありの場合）" style="margin-top:6px">
     </div>
   </div>
 
-  <!-- 5. メーカー -->
+  <!-- ④ 電気工事・配線計画 -->
   <div class="sec">
-    <h2>5. メーカー</h2>
-    <div class="f"><label>メーカー・機種</label>
-      <input type="text" id="maker" placeholder="例：ニチコンT5 / 京セラ エネレッツァ / 長州16.4">
-      <div class="hint">エネレッツァ・ニチコンT5/T6 等は事務側で追加人工を判断します。</div></div>
+    <h2>④ 電気工事・配線計画</h2>
+    <div class="row2">
+      <div class="f"><label>回路数（全回路）</label><input type="number" id="circuits" inputmode="numeric" placeholder="例：20"><div class="hint">単位：回路</div></div>
+      <div class="f"><label>空き回路数</label><input type="number" id="emptyCircuits" inputmode="numeric" placeholder="例：2"><div class="hint">単位：回路</div></div>
+    </div>
+    <div class="f"><label>幹線種別（電線手配の記録・請求とは無関係）</label>
+      <div class="row2">
+        <select id="kansenType">
+          <option value="">種別</option><option>CV</option><option>CVT</option><option>SV</option><option>その他</option>
+        </select>
+        <select id="kansenSize">
+          <option value="">サイズ</option><option>8</option><option>14</option><option>その他</option>
+        </select>
+      </div>
+    </div>
+    <div class="f"><label>アース目視確認</label>
+      <div class="opts" data-radio="earth"><label><input type="radio" name="earth" value="有">有</label><label><input type="radio" name="earth" value="無">無</label></div></div>
+    <div class="f"><label>ケーブル延長（各種・長さ選択）</label>
+      <div class="row2" style="margin-bottom:6px">
+        <select id="cblPv"><option value="">PV〜PVユニット</option><option>5ｍ</option><option>20ｍ</option><option>30ｍ</option><option>40ｍ</option><option>その他</option></select>
+        <select id="cblMain"><option value="">主幹センサー(パワコン〜分電盤)</option><option>5ｍ</option><option>20ｍ</option><option>30ｍ</option><option>40ｍ</option><option>その他</option></select>
+      </div>
+      <div class="row2">
+        <select id="cblBatt"><option value="">蓄電池通信ケーブル</option><option>5ｍ</option><option>20ｍ</option><option>30ｍ</option><option>40ｍ</option><option>その他</option></select>
+        <select id="cblCt"><option value="">CTセンサーケーブル</option><option>5ｍ</option><option>20ｍ</option><option>30ｍ</option><option>40ｍ</option><option>その他</option></select>
+      </div>
+    </div>
   </div>
 
-  <!-- 6+9. 部材・追加工事（会社共通で記録。金額なし） -->
+  <!-- ⑤ メーカー（蓄電池・V2H） -->
   <div class="sec">
-    <h2>6. 部材・追加工事（記録）</h2>
-    <div class="note">ここは「工事に必要な物・人工」の記録です。金額は付けません（事務が単価表で算定）。</div>
-    <div class="f"><label>必要部材（サイズ・個数）</label>
-      <textarea id="parts" placeholder="例：タイガーベース300を2個、エコベース700を2個、スリムダクト10m、MDダクト5m"></textarea></div>
-    <div class="f"><label>LANケーブル（長さ・個数）</label><input type="text" id="lan" placeholder="例：15m 1本"></div>
-    <div class="f"><label>屋根追加付帯（人工）</label>
-      <textarea id="roof" placeholder="例：屋根急こう配2人、手上げ1人、搬入困難1人"></textarea></div>
-    <div class="f"><label>電気工事 追加工事</label><textarea id="elec" placeholder="無い場合は「無し」"></textarea></div>
-    <div class="f"><label>既設設備の撤去</label>
+    <h2>⑤ メーカー（蓄電池・V2H）</h2>
+    <div class="hint">現調時にメーカー未定・複数想定の場合は「不明・複数想定」を選んでください（必須ではありません）。</div>
+    <div class="f"><label>種別（複数選択可）</label>
       <div class="opts">
-        <label><input type="checkbox" name="remove" value="PCS">PCS</label>
-        <label><input type="checkbox" name="remove" value="蓄電池">蓄電池</label>
-        <label><input type="checkbox" name="remove" value="配線">配線</label>
-        <label><input type="checkbox" name="remove" value="接箱">接箱</label>
-      </div></div>
-    <div class="f"><label>追加費用</label>
-      <div class="opts" data-radio="addcost">
-        <label><input type="radio" name="addcost" value="有">有</label>
-        <label><input type="radio" name="addcost" value="無">無</label>
-      </div></div>
+        <label><input type="checkbox" id="typeBatt" onclick="toggleMakerBlocks()">蓄電池</label>
+        <label><input type="checkbox" id="typeV2h" onclick="toggleMakerBlocks()">V2H</label>
+      </div>
+    </div>
+    <div id="battBlock" class="hidden">
+      <div class="grp">蓄電池</div>
+      <div class="f"><label>メーカー</label><select id="battMaker" onchange="fillBattSeries()"></select></div>
+      <div class="f"><label>シリーズ</label><select id="battSeries" onchange="fillBattCap()"></select></div>
+      <div class="f"><label>容量(kWh)</label><select id="battCap"></select></div>
+    </div>
+    <div id="v2hBlock" class="hidden">
+      <div class="grp">V2H</div>
+      <div class="f"><label>メーカー</label><select id="v2hMaker" onchange="fillV2hModel()"></select></div>
+      <div class="f"><label>機種</label><select id="v2hModel"></select></div>
+    </div>
   </div>
 
-  <!-- 7. 確認事項・お約束 -->
+  <!-- ⑥ 部材・追加工事（記録／金額なし） -->
   <div class="sec">
-    <h2>7. 確認事項・お約束</h2>
+    <h2>⑥ 部材・追加工事（記録）</h2>
+    <div class="note">「工事に必要な物・人工」の記録です。金額は付けません（事務が単価表で算定）。※付帯チェック項目は単価表から精査して確定予定（暫定）。</div>
+    <div class="grp">部材ブロック</div>
+    <div class="f">
+      <div class="row2" style="margin-bottom:6px">
+        <select id="blockType"><option value="">種類</option><option>タイガーベース</option><option>エコベース</option><option>その他</option></select>
+        <select id="blockSize"><option value="">サイズ</option><option>300</option><option>350</option><option>400</option><option>450</option><option>500</option><option>700</option><option>その他</option></select>
+        <input type="number" id="blockQty" inputmode="numeric" placeholder="個数">
+      </div>
+      <input type="text" id="blockMore" placeholder="複数種類ある場合はここに追記（例：エコベース700×2）">
+    </div>
+    <div class="grp">LANケーブル</div>
+    <div class="f"><div class="row2">
+      <select id="lanLen"><option value="">長さ</option><option>5ｍ</option><option>10ｍ</option><option>15ｍ</option><option>20ｍ</option><option>その他</option></select>
+      <select id="lanQty"><option value="">個数</option><option>1</option><option>2</option><option>3</option><option>4</option><option>その他</option></select>
+    </div></div>
+    <div class="grp">追加付帯（屋根まわり）</div>
+    <div class="f"><div class="opts">
+      <label><input type="checkbox" name="addRoof" value="屋根急こう配">屋根急こう配</label>
+      <label><input type="checkbox" name="addRoof" value="屋根異こう配">屋根異こう配</label>
+      <label><input type="checkbox" name="addRoof" value="瓦施工">瓦施工</label>
+      <label><input type="checkbox" name="addRoof" value="特殊瓦">特殊瓦</label>
+      <label><input type="checkbox" name="addRoof" value="6寸以上">6寸以上</label>
+      <label><input type="checkbox" name="addRoof" value="3階建て">3階建て</label>
+      <label><input type="checkbox" name="addRoof" value="既存PV入替・増設">既存PV入替・増設</label>
+      <label><input type="checkbox" name="addRoof" value="太陽光増設">太陽光増設</label>
+    </div></div>
+    <div class="grp">追加付帯（電気まわり）</div>
+    <div class="f"><div class="opts">
+      <label><input type="checkbox" name="addElec" value="MCB(主幹切替)">MCB(主幹切替)</label>
+      <label><input type="checkbox" name="addElec" value="分電盤交換">分電盤交換</label>
+      <label><input type="checkbox" name="addElec" value="ブレーカー増設">ブレーカー増設</label>
+      <label><input type="checkbox" name="addElec" value="通線困難">通線困難</label>
+      <label><input type="checkbox" name="addElec" value="搬入搬出困難">搬入搬出困難</label>
+      <label><input type="checkbox" name="addElec" value="PF管延長">PF管延長</label>
+      <label><input type="checkbox" name="addElec" value="MDダクト">MDダクト</label>
+      <label><input type="checkbox" name="addElec" value="スリムダクト延長">スリムダクト延長</label>
+      <label><input type="checkbox" name="addElec" value="屋内モール">屋内モール</label>
+      <label><input type="checkbox" name="addElec" value="機器追加">機器追加</label>
+    </div></div>
+    <div class="grp">追加付帯（共通・その他）</div>
+    <div class="f"><div class="opts">
+      <label><input type="checkbox" name="addCommon" value="幹線延長">幹線延長(CV/CVT/SV)</label>
+      <label><input type="checkbox" name="addCommon" value="既設撤去・処分">既設撤去・処分</label>
+      <label><input type="checkbox" name="addCommon" value="遠方">遠方</label>
+    </div></div>
+    <div class="row2">
+      <div class="f"><label>追加人工（目安・数値）</label><input type="number" id="addJinkou" inputmode="numeric" placeholder="例：2"><div class="hint">最終判断は事務</div></div>
+    </div>
+    <div class="f"><label>追加工事の補足（自由記入）</label><textarea id="addMemo" placeholder="無い場合は空欄でOK"></textarea></div>
+  </div>
+
+  <!-- ⑦ 確認事項・お約束 -->
+  <div class="sec">
+    <h2>⑦ 確認事項・お約束</h2>
     <div class="f"><label>駐車場の移動</label>
-      <div class="opts" data-radio="park"><label><input type="radio" name="park" value="要">要</label><label><input type="radio" name="park" value="不要">不要</label></div></div>
-    <div class="f"><label>借地の許可（足場含む）／方位・邸名</label><input type="text" id="shakuchi" placeholder="例：北面借地 / ●●様邸借地"></div>
+      <div class="opts" data-radio="park"><label><input type="radio" name="park" value="要">要</label><label><input type="radio" name="park" value="不要">不要</label></div>
+      <input type="text" id="parkMemo" placeholder="補足（任意）" style="margin-top:6px"></div>
+    <div class="f"><label>借地の許可（足場含む）</label>
+      <div class="opts" data-radio="shakuchi"><label><input type="radio" name="shakuchi" value="要">要</label><label><input type="radio" name="shakuchi" value="不要">不要</label></div>
+      <input type="text" id="shakuchiMemo" placeholder="要の場合：場所・お隣氏名／方位・邸名" style="margin-top:6px"></div>
     <div class="f"><label>工事当日の流れ説明</label>
       <div class="opts" data-radio="flow"><label><input type="radio" name="flow" value="済">済</label><label><input type="radio" name="flow" value="未">未</label></div></div>
-    <div class="f"><label>工事工程日数</label><input type="text" id="days" placeholder="例：2日（1日目 屋根／2日目 電気）"></div>
-    <div class="f"><label>Wi-Fi ID / PASS</label><input type="text" id="wifi" placeholder="不明な場合はその旨"></div>
-    <div class="f"><label>お客様希望工事日程</label><input type="text" id="hopeDate" placeholder="例：12/4・12/6・12/8"></div>
+    <div class="f"><label>工事工程日数</label>
+      <div class="opts" data-radio="days">
+        <label><input type="radio" name="days" value="1日">1日</label>
+        <label><input type="radio" name="days" value="2日">2日</label>
+        <label><input type="radio" name="days" value="3日">3日</label>
+        <label><input type="radio" name="days" value="その他">その他</label>
+      </div>
+      <input type="text" id="daysDetail" placeholder="2日以上の場合：工程詳細（例：1日目 屋根／2日目 電気）" style="margin-top:6px"></div>
+    <div class="f"><label>お客様希望工事日程</label><input type="text" id="hopeDate" placeholder="例：12/4・12/6（未定可）"></div>
   </div>
 
-  <!-- 10. 写真（Phase2でDriveアップ実装） -->
+  <!-- ⑨ 現場写真 -->
   <div class="sec">
-    <h2>10. 現場写真</h2>
+    <h2>⑨ 現場写真</h2>
     <div class="note">写真アップロード（→Drive保存）はPhase2で実装します。現状は撮影リストのチェックのみ。</div>
     <div class="f"><div class="opts">
       <label><input type="checkbox" name="photo" value="住宅全景">住宅全景</label>
       <label><input type="checkbox" name="photo" value="屋根">屋根</label>
       <label><input type="checkbox" name="photo" value="野地板">野地板</label>
-      <label><input type="checkbox" name="photo" value="分電盤周り">分電盤周り</label>
+      <label><input type="checkbox" name="photo" value="分電盤">分電盤</label>
       <label><input type="checkbox" name="photo" value="宅内工事予定">宅内工事予定</label>
       <label><input type="checkbox" name="photo" value="屋外工事予定">屋外工事予定</label>
-      <label><input type="checkbox" name="photo" value="電気購入明細">電気購入明細</label>
-      <label><input type="checkbox" name="photo" value="計器">計器</label>
-      <label><input type="checkbox" name="photo" value="Wi-Fi情報">Wi-Fi情報</label>
+      <label><input type="checkbox" name="photo" value="電気明細">電気明細</label>
+      <label><input type="checkbox" name="photo" value="メーター">メーター</label>
+      <label><input type="checkbox" name="photo" value="周辺（駐車判断用）">周辺（駐車判断用）</label>
+      <label><input type="checkbox" name="photo" value="Wi-Fi">Wi-Fi</label>
+    </div></div>
+  </div>
+
+  <!-- ⑧ 伝達事項（最終セクション） -->
+  <div class="sec">
+    <h2>⑧ 伝達事項（営業への申し送り）</h2>
+    <div class="f"><label>伝達事項・申し送り（自由記入）</label><textarea id="memo" style="min-height:100px" placeholder="営業へ事前連絡したいこと・現場の申し送りを記入"></textarea></div>
+    <div class="f"><div class="opts">
+      <label><input type="checkbox" id="salesContact">営業へ要連絡（重要）</label>
     </div></div>
   </div>
 
@@ -208,9 +324,66 @@
 </div>
 
 <script>
-  // ===== Phase1：送信先GAS（デプロイ後にURLを差し替える） =====
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbzO0H40b4kHrGRE_VaVESjKdqavYcH1bS-jhSQGxrLXoYDlUKfj5WoTFGg8k78_L7Fd/exec"; // GASウェブアプリ（2026-06-09）
+  // ===== 送信先GAS（2026-06-09デプロイ。Code.gs更新時は新バージョンに再デプロイ） =====
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbzO0H40b4kHrGRE_VaVESjKdqavYcH1bS-jhSQGxrLXoYDlUKfj5WoTFGg8k78_L7Fd/exec";
 
+  // ===== 蓄電池・V2H マスタ（08/SANSEI_蓄電池V2H_機種容量マスタ 由来。改廃時はここを更新） =====
+  const BATT = {
+    "ニチコン":{
+      "トライブリッドT5/T6":[7.4,9.9,14.9,19.9],
+      "トライブリッドT3":[4.9,7.4,9.9,14.9],
+      "単機能U5(全負荷)":[7.7,9.7],
+      "単機能U4(全負荷)":[11.1,16.6],
+      "単機能U2系(旧・販売終了)":[11.1,12.0,16.6],
+      "その他":[]
+    },
+    "京セラ":{"エネレッツァ":[5.0,10.0,15.0],"エネレッツァ プラス(全負荷)":[5.5,11.0,16.5],"その他":[]},
+    "オムロン":{"マルチ蓄電プラットフォーム":[6.5,9.8,12.7,16.4],"その他":[]},
+    "長州産業":{"Smart PV multi":[6.5,9.8,12.7,16.4],"その他":[]},
+    "カナディアン(EP CUBE)":{"EP CUBE":[6.6,9.9,13.3],"その他":[]},
+    "ダイヤゼブラ(田淵)/DMM":{"EIBS7":[7.04,14.08],"その他":[]},
+    "パナソニック":{"創蓄連携S+":[3.5,5.6,6.3,9.1,11.2],"その他":[]},
+    "シャープ":{"クラウド蓄電池":[6.5,7.7,8.4,9.5,13.0,15.4],"その他":[]},
+    "ファーウェイ":{"LUNA2000":[5,7,10,14,15,21],"その他":[]},
+    "その他":{"その他":[]},
+    "不明・複数想定":{"未定":[]}
+  };
+  const V2H = {
+    "ニチコン":["EVパワステ スタンダード(VCG-663)","EVパワステ プレミアム(VCG-666)","EVパワステ 最新(VSG3-666)","トライブリッドV2H","その他"],
+    "デンソー":["DNEVC-D6075","その他"],
+    "東光高岳":["CFD1-B-V2H1","その他"],
+    "その他":["その他"],
+    "不明・複数想定":["未定"]
+  };
+
+  // ===== 既設機器→注意リマインド（※文言は確定後に追記。現状は空＝表示なし） =====
+  const EXISTING_REMINDER = {
+    // "エコキュート":"分電盤は1次でなく2次接続（※要確認・記憶曖昧のため保留）"
+  };
+
+  // ===== 条件表示 =====
+  function show(id,on){ const e=document.getElementById(id); if(e) e.classList.toggle('hidden',!on); }
+  function toggleReporterOther(){ show('reporterOther', radio('reporter')==='その他'); }
+  function toggleSurveyTypeOther(){ const c=document.querySelector('input[name="surveyType"][value="その他"]'); show('surveyTypeOther', c&&c.checked); }
+  function toggleCompanyOther(){ show('companyOther', val('company')==='その他'); }
+  function toggleKeiyakuOther(){ const c=document.querySelector('input[name="keiyaku"][value="その他"]'); show('keiyakuOther', c&&c.checked); }
+  function toggleExistingOther(){ const c=document.querySelector('input[name="existing"][value="その他"]'); show('existingOther', c&&c.checked); }
+  function toggleWifi(){ show('wifiId', radio('wifiStatus')==='あり'); }
+  function updateExistingReminder(){
+    const box=document.getElementById('existingReminder'); let msgs=[];
+    document.querySelectorAll('input[name="existing"]:checked').forEach(c=>{ if(EXISTING_REMINDER[c.value]) msgs.push(EXISTING_REMINDER[c.value]); });
+    if(msgs.length){ box.innerHTML=msgs.join('<br>'); box.classList.remove('hidden'); } else { box.classList.add('hidden'); box.innerHTML=''; }
+  }
+  function toggleMakerBlocks(){ show('battBlock', document.getElementById('typeBatt').checked); show('v2hBlock', document.getElementById('typeV2h').checked); }
+
+  function fillSelect(sel, items, ph){ sel.innerHTML='<option value="">'+ph+'</option>'+items.map(x=>'<option>'+x+'</option>').join(''); }
+  function fillBattSeries(){ const m=document.getElementById('battMaker').value; const s=document.getElementById('battSeries');
+    fillSelect(s, m&&BATT[m]?Object.keys(BATT[m]):[], 'シリーズ'); fillSelect(document.getElementById('battCap'),[], '容量(kWh)'); }
+  function fillBattCap(){ const m=document.getElementById('battMaker').value, se=document.getElementById('battSeries').value;
+    const caps=(m&&se&&BATT[m]&&BATT[m][se])?BATT[m][se]:[]; fillSelect(document.getElementById('battCap'), caps, '容量(kWh)'); }
+  function fillV2hModel(){ const m=document.getElementById('v2hMaker').value; fillSelect(document.getElementById('v2hModel'), m&&V2H[m]?V2H[m]:[], '機種'); }
+
+  // ===== 値取得 =====
   function val(id){ const e=document.getElementById(id); return e?e.value.trim():""; }
   function chk(id){ const e=document.getElementById(id); return e&&e.checked?"有":""; }
   function radio(name){ const e=document.querySelector('input[name="'+name+'"]:checked'); return e?e.value:""; }
@@ -218,28 +391,55 @@
   function caseKey(){ const d=new Date(); const p=n=>String(n).padStart(2,'0');
     return "G"+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+"-"+p(d.getHours())+p(d.getMinutes())+p(d.getSeconds()); }
 
+  function reporterVal(){ const r=radio('reporter'); return r==='その他'?('その他：'+val('reporterOther')):r; }
+  function companyVal(){ const c=val('company'); return c==='その他'?('その他：'+val('companyOther')):c; }
+  function surveyTypeVal(){ let a=multi('surveyType'); const o=val('surveyTypeOther'); if(o) a=a.replace('その他','その他：'+o); return a; }
+  function keiyakuVal(){ let a=multi('keiyaku'); const o=val('keiyakuOther'); if(o) a=a.replace('その他','その他：'+o); return a; }
+  function existingVal(){ let a=multi('existing'); const o=val('existingOther'); if(o) a=a.replace('その他','その他：'+o); return a; }
+  function blockVal(){ const t=val('blockType'),s=val('blockSize'),q=val('blockQty'),more=val('blockMore');
+    let base=(t||s||q)?(t+s+(q?(' '+q+'個'):'')):''; return [base,more].filter(Boolean).join(' / '); }
+  function lanVal(){ const l=val('lanLen'),q=val('lanQty'); return (l||q)?(l+' '+q+(q?'本':'')):''; }
+  function battVal(){ if(!document.getElementById('typeBatt').checked) return '';
+    return [val('battMaker'),val('battSeries'),val('battCap')?val('battCap')+'kWh':''].filter(Boolean).join(' '); }
+  function v2hVal(){ if(!document.getElementById('typeV2h').checked) return '';
+    return [val('v2hMaker'),val('v2hModel')].filter(Boolean).join(' '); }
+
+  // Wi-Fiなし/不明・屋根未確認・営業要連絡 → 伝達事項へ自動追記
+  function buildMemo(){
+    let base=val('memo'); let auto=[];
+    const w=radio('wifiStatus'); if(w==='なし'||w==='不明') auto.push('【Wi-Fi'+w+'→営業連絡要：モニタリング不可の恐れ】');
+    const ru=multi('roofUnconf'); const rm=val('roofUnconfMemo'); if(ru||rm) auto.push('【屋根未確認：'+[ru,rm].filter(Boolean).join('／')+'】');
+    if(document.getElementById('salesContact').checked) auto.push('【★営業へ要連絡】');
+    return [auto.join(' '), base].filter(Boolean).join('\n');
+  }
+
   function collect(){
     return {
-      caseKey: caseKey(),
-      registeredAt: new Date().toISOString(),
-      surveyDate: val('surveyDate'), reporter: radio('reporter'), surveyType: val('surveyType'),
-      company: val('company'),
+      caseKey: caseKey(), registeredAt: new Date().toISOString(),
+      surveyDate: val('surveyDate'), reporter: reporterVal(), surveyType: surveyTypeVal(),
+      roofUnconf: [multi('roofUnconf'),val('roofUnconfMemo')].filter(Boolean).join('／'),
+      company: companyVal(),
       custName: val('custName'), custKana: val('custKana'), addr: val('addr'),
-      keiyaku: radio('keiyaku'), capacity: val('capacity'), meter: val('meter'), panel: val('panel'),
-      enefarm: chk('enefarm'), enefarmModel: val('enefarmModel'), ecocute: chk('ecocute'), ecocuteModel: val('ecocuteModel'),
-      circuits: val('circuits'), emptyCircuits: val('emptyCircuits'), kansen: val('kansen'), earth: chk('earth'),
+      keiyaku: keiyakuVal(), meter: val('meter'), panel: val('panel'),
+      existing: existingVal(),
+      wifiStatus: radio('wifiStatus'), wifiId: val('wifiId'),
+      circuits: val('circuits'), emptyCircuits: val('emptyCircuits'),
+      kansen: [val('kansenType'),val('kansenSize')].filter(Boolean).join('-'), earth: radio('earth'),
       cblPv: val('cblPv'), cblMain: val('cblMain'), cblBatt: val('cblBatt'), cblCt: val('cblCt'),
-      maker: val('maker'),
-      parts: val('parts'), lan: val('lan'), roof: val('roof'), elec: val('elec'),
-      remove: multi('remove'), addcost: radio('addcost'),
-      park: radio('park'), shakuchi: val('shakuchi'), flow: radio('flow'),
-      days: val('days'), wifi: val('wifi'), hopeDate: val('hopeDate'),
-      photo: multi('photo'), memo: val('memo')
+      battType: (document.getElementById('typeBatt').checked?'蓄電池':'')+(document.getElementById('typeV2h').checked?(document.getElementById('typeBatt').checked?'・':'')+'V2H':''),
+      battery: battVal(), v2h: v2hVal(),
+      block: blockVal(), lan: lanVal(),
+      addRoof: multi('addRoof'), addElec: multi('addElec'), addCommon: multi('addCommon'),
+      addJinkou: val('addJinkou'), addMemo: val('addMemo'),
+      park: radio('park'), parkMemo: val('parkMemo'),
+      shakuchi: [radio('shakuchi'),val('shakuchiMemo')].filter(Boolean).join('：'),
+      flow: radio('flow'), days: [radio('days'),val('daysDetail')].filter(Boolean).join('：'),
+      hopeDate: val('hopeDate'), photo: multi('photo'),
+      memo: buildMemo()
     };
   }
 
   function showMsg(text, ok){ const m=document.getElementById('msg'); m.textContent=text; m.className="msg "+(ok?"ok":"err"); }
-
   function validate(d){
     if(!d.surveyDate) return "現地調査日を入力してください";
     if(!d.reporter) return "報告者を選択してください";
@@ -247,18 +447,15 @@
     if(!d.company) return "会社名を選択してください";
     if(!d.custName) return "お客様名を入力してください";
     if(!d.addr) return "現場住所を入力してください";
+    if(!d.keiyaku) return "契約種別・容量を選択してください";
+    if(!d.wifiStatus) return "Wi-Fi状況を選択してください";
     return "";
   }
 
   function submitForm(){
-    const d = collect();
-    const err = validate(d);
+    const d = collect(); const err = validate(d);
     if(err){ showMsg(err, false); window.scrollTo({top:0,behavior:'smooth'}); return; }
     const btn=document.getElementById('submitBtn'); btn.disabled=true; btn.textContent="送信中…";
-    if(GAS_URL.indexOf("PLACEHOLDER")===0){
-      showMsg("（テスト）GAS未接続です。デプロイ後にGAS_URLを設定すると送信できます。入力内容は正常に取得できています。", true);
-      btn.disabled=false; btn.textContent="送信"; console.log(d); return;
-    }
     fetch(GAS_URL, { method:"POST", mode:"no-cors",
       headers:{"Content-Type":"text/plain;charset=utf-8"}, body: JSON.stringify(d) })
       .then(()=>{ showMsg("送信しました（案件キー："+d.caseKey+"）", true); btn.textContent="送信完了"; })
@@ -271,11 +468,17 @@
     document.querySelectorAll('input,textarea,select').forEach(e=>{
       if(e.type==='checkbox'||e.type==='radio') e.checked=false; else e.value="";
     });
+    document.querySelectorAll('.hidden').forEach(()=>{});
+    ['reporterOther','surveyTypeOther','companyOther','keiyakuOther','existingOther','wifiId','battBlock','v2hBlock'].forEach(id=>show(id,false));
+    document.getElementById('existingReminder').classList.add('hidden');
     showMsg("", true); document.getElementById('msg').className="msg";
+    document.getElementById('surveyDate').valueAsDate=new Date();
   }
 
-  // 既定で今日の日付
+  // 初期化
   document.getElementById('surveyDate').valueAsDate = new Date();
+  fillSelect(document.getElementById('battMaker'), Object.keys(BATT), 'メーカー');
+  fillSelect(document.getElementById('v2hMaker'), Object.keys(V2H), 'メーカー');
 </script>
 </body>
 </html>
