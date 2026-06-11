@@ -25,6 +25,11 @@
   .sec h2{font-size:15px;margin:0 0 10px;padding-left:8px;border-left:4px solid var(--accent);
     color:var(--accent)}
   .grp{font-size:13px;font-weight:700;color:#34536b;margin:12px 0 4px}
+  details.acc{border:1px solid var(--line);border-radius:10px;margin:6px 0;padding:2px 10px}
+  details.acc>summary{cursor:pointer;font-weight:700;color:#34536b;padding:8px 0;font-size:13px;list-style:none}
+  details.acc>summary::-webkit-details-marker{display:none}
+  details.acc>summary::before{content:"▸ ";color:var(--accent)}
+  details.acc[open]>summary::before{content:"▾ "}
   .f{margin:10px 0}
   .f label{display:block;font-size:13px;color:var(--sub);margin-bottom:4px}
   .f .req{color:#c0392b;margin-left:4px}
@@ -230,36 +235,63 @@
       <select id="lanLen"><option value="">長さ</option><option>5ｍ</option><option>10ｍ</option><option>15ｍ</option><option>20ｍ</option><option>その他</option></select>
       <select id="lanQty"><option value="">個数</option><option>1</option><option>2</option><option>3</option><option>4</option><option>その他</option></select>
     </div></div>
-    <div class="grp">追加付帯（屋根まわり）</div>
-    <div class="f"><div class="opts">
-      <label><input type="checkbox" name="addRoof" value="屋根急こう配">屋根急こう配</label>
-      <label><input type="checkbox" name="addRoof" value="屋根異こう配">屋根異こう配</label>
-      <label><input type="checkbox" name="addRoof" value="瓦施工">瓦施工</label>
-      <label><input type="checkbox" name="addRoof" value="特殊瓦">特殊瓦</label>
-      <label><input type="checkbox" name="addRoof" value="6寸以上">6寸以上</label>
-      <label><input type="checkbox" name="addRoof" value="3階建て">3階建て</label>
-      <label><input type="checkbox" name="addRoof" value="既存PV入替・増設">既存PV入替・増設</label>
-      <label><input type="checkbox" name="addRoof" value="太陽光増設">太陽光増設</label>
-    </div></div>
-    <div class="grp">追加付帯（電気まわり）</div>
-    <div class="f"><div class="opts">
-      <label><input type="checkbox" name="addElec" value="MCB(主幹切替)">MCB(主幹切替)</label>
-      <label><input type="checkbox" name="addElec" value="分電盤交換">分電盤交換</label>
-      <label><input type="checkbox" name="addElec" value="ブレーカー増設">ブレーカー増設</label>
-      <label><input type="checkbox" name="addElec" value="通線困難">通線困難</label>
-      <label><input type="checkbox" name="addElec" value="搬入搬出困難">搬入搬出困難</label>
-      <label><input type="checkbox" name="addElec" value="PF管延長">PF管延長</label>
-      <label><input type="checkbox" name="addElec" value="MDダクト">MDダクト</label>
-      <label><input type="checkbox" name="addElec" value="スリムダクト延長">スリムダクト延長</label>
-      <label><input type="checkbox" name="addElec" value="屋内モール">屋内モール</label>
-      <label><input type="checkbox" name="addElec" value="機器追加">機器追加</label>
-    </div></div>
-    <div class="grp">追加付帯（共通・その他）</div>
-    <div class="f"><div class="opts">
-      <label><input type="checkbox" name="addCommon" value="幹線延長">幹線延長(CV/CVT/SV)</label>
-      <label><input type="checkbox" name="addCommon" value="既設撤去・処分">既設撤去・処分</label>
-      <label><input type="checkbox" name="addCommon" value="遠方">遠方</label>
-    </div></div>
+    <div class="grp">追加付帯（該当する大分類を開いてチェック）</div>
+    <details class="acc"><summary>屋根まわり</summary>
+      <div class="opts">
+        <label><input type="checkbox" name="addRoof" value="屋根急勾配(6寸以上)">屋根急勾配(6寸以上)</label>
+        <label><input type="checkbox" name="addRoof" value="屋根異勾配">屋根異勾配</label>
+        <label><input type="checkbox" name="addRoof" value="瓦屋根施工">瓦屋根施工</label>
+        <label><input type="checkbox" name="addRoof" value="特殊瓦">特殊瓦</label>
+        <label><input type="checkbox" name="addRoof" value="多面設置(4面以上)">多面設置(4面以上)</label>
+        <label><input type="checkbox" name="addRoof" value="3階建て施工">3階建て施工</label>
+        <label><input type="checkbox" name="addRoof" value="野地板補強">野地板補強</label>
+        <label><input type="checkbox" name="addRoof" value="パネル手上げ">パネル手上げ</label>
+        <label><input type="checkbox" name="addRoof" value="既存PV撤去・入替">既存PV撤去・入替</label>
+        <label><input type="checkbox" name="addRoof" value="太陽光増設">太陽光増設</label>
+        <label><input type="checkbox" name="addRoof" value="アンテナ移設・撤去">アンテナ移設・撤去</label>
+      </div>
+    </details>
+    <details class="acc"><summary>電気まわり</summary>
+      <div class="opts">
+        <label><input type="checkbox" name="addElec" value="MCB/MCCB/ELB交換・追加">MCB/MCCB/ELB交換・追加</label>
+        <label><input type="checkbox" name="addElec" value="分電盤交換">分電盤交換</label>
+        <label><input type="checkbox" name="addElec" value="専用回路増設">専用回路増設</label>
+        <label><input type="checkbox" name="addElec" value="単2→単3切替">単2→単3切替</label>
+        <label><input type="checkbox" name="addElec" value="リレーBOX設置">リレーBOX設置</label>
+        <label><input type="checkbox" name="addElec" value="AiSEG設置">AiSEG設置</label>
+        <label><input type="checkbox" name="addElec" value="DR-BOX設置">DR-BOX設置</label>
+        <label><input type="checkbox" name="addElec" value="屋外ダクト(LD)延長">屋外ダクト(LD)延長</label>
+        <label><input type="checkbox" name="addElec" value="宅内ダクト(MD)">宅内ダクト(MD)</label>
+        <label><input type="checkbox" name="addElec" value="PFD延長">PFD延長</label>
+        <label><input type="checkbox" name="addElec" value="面違いダクト">面違いダクト</label>
+        <label><input type="checkbox" name="addElec" value="役物(チーズ/ジャバラ/立面L)">役物(チーズ/ジャバラ/立面L)</label>
+        <label><input type="checkbox" name="addElec" value="屋内モール">屋内モール</label>
+        <label><input type="checkbox" name="addElec" value="コア抜き・穴あけ困難">コア抜き・穴あけ困難</label>
+        <label><input type="checkbox" name="addElec" value="EVコンセント設置">EVコンセント設置</label>
+        <label><input type="checkbox" name="addElec" value="ネット接続(無線)">ネット接続(無線)</label>
+        <label><input type="checkbox" name="addElec" value="ネット接続(有線)">ネット接続(有線)</label>
+        <label><input type="checkbox" name="addElec" value="PCS〜蓄電池配線延長">PCS〜蓄電池配線延長</label>
+        <label><input type="checkbox" name="addElec" value="通線困難">通線困難</label>
+      </div>
+      <div class="f" style="margin-top:8px"><label>配線・幹線延長（別枠・長さ記入。種別は④参照／単価表準拠）</label><input type="text" id="kansenExt" placeholder="例：CV14を18m（リケンは15m基本・超過分）"></div>
+    </details>
+    <details class="acc"><summary>共通・その他</summary>
+      <div class="opts">
+        <label><input type="checkbox" name="addCommon" value="搬入困難(増員)">搬入困難(増員)</label>
+        <label><input type="checkbox" name="addCommon" value="宅内搬入">宅内搬入</label>
+        <label><input type="checkbox" name="addCommon" value="蓄電池屋内搬入">蓄電池屋内搬入</label>
+        <label><input type="checkbox" name="addCommon" value="蓄電池2段ラック">蓄電池2段ラック</label>
+        <label><input type="checkbox" name="addCommon" value="難工事">難工事</label>
+        <label><input type="checkbox" name="addCommon" value="PCS撤去・処分">PCS撤去・処分</label>
+        <label><input type="checkbox" name="addCommon" value="蓄電池撤去・処分">蓄電池撤去・処分</label>
+        <label><input type="checkbox" name="addCommon" value="PV撤去・処分">PV撤去・処分</label>
+        <label><input type="checkbox" name="addCommon" value="処分費">処分費</label>
+        <label><input type="checkbox" name="addCommon" value="遠方(50km以上)">遠方(50km以上)</label>
+        <label><input type="checkbox" name="addCommon" value="ブロック嵩上げ">ブロック嵩上げ</label>
+        <label><input type="checkbox" name="addCommon" value="土間打ち">土間打ち</label>
+        <label><input type="checkbox" name="addCommon" value="別工程日(足場干渉)">別工程日(足場干渉)</label>
+      </div>
+    </details>
     <div class="row2">
       <div class="f"><label>追加人工（目安・数値）</label><input type="number" id="addJinkou" inputmode="numeric" placeholder="例：2"><div class="hint">最終判断は事務</div></div>
     </div>
@@ -271,10 +303,12 @@
     <h2>⑦ 確認事項・お約束</h2>
     <div class="f"><label>駐車場の移動</label>
       <div class="opts" data-radio="park"><label><input type="radio" name="park" value="要">要</label><label><input type="radio" name="park" value="不要">不要</label></div>
+      <div class="opts" style="margin-top:6px"><label><input type="checkbox" id="parkInformed">営業/お客様へ伝達済み</label></div>
       <input type="text" id="parkMemo" placeholder="補足（任意）" style="margin-top:6px"></div>
     <div class="f"><label>借地の許可（足場含む）</label>
       <div class="opts" data-radio="shakuchi"><label><input type="radio" name="shakuchi" value="要">要</label><label><input type="radio" name="shakuchi" value="不要">不要</label></div>
       <input type="text" id="shakuchiMemo" placeholder="要の場合：場所・お隣氏名／方位・邸名" style="margin-top:6px"></div>
+    <div class="f"><label>足場予定位置</label><input type="text" id="scaffold" placeholder="例：南面／東側道路側／隣地側 等"></div>
     <div class="f"><label>工事当日の流れ説明</label>
       <div class="opts" data-radio="flow"><label><input type="radio" name="flow" value="済">済</label><label><input type="radio" name="flow" value="未">未</label></div></div>
     <div class="f"><label>工事工程日数</label>
@@ -430,8 +464,10 @@
       battery: battVal(), v2h: v2hVal(),
       block: blockVal(), lan: lanVal(),
       addRoof: multi('addRoof'), addElec: multi('addElec'), addCommon: multi('addCommon'),
+      kansenExt: val('kansenExt'),
       addJinkou: val('addJinkou'), addMemo: val('addMemo'),
-      park: radio('park'), parkMemo: val('parkMemo'),
+      park: (radio('park')||'')+(document.getElementById('parkInformed').checked?'・伝達済':''), parkMemo: val('parkMemo'),
+      scaffold: val('scaffold'),
       shakuchi: [radio('shakuchi'),val('shakuchiMemo')].filter(Boolean).join('：'),
       flow: radio('flow'), days: [radio('days'),val('daysDetail')].filter(Boolean).join('：'),
       hopeDate: val('hopeDate'), photo: multi('photo'),
