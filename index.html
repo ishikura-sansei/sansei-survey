@@ -271,17 +271,18 @@
       <div class="f">
         <input type="text" id="extKansen" placeholder="配線・幹線延長 CV等（種別は④。例：CV14を18m）">
         <div class="row2" style="margin-top:6px">
-          <input type="number" id="extPfd" inputmode="numeric" placeholder="PFD管 m">
+          <select id="extPfdSize"><option value="">PFD径</option><option>16</option><option>22</option><option>28</option><option>36</option></select>
+          <input type="number" id="extPfd" inputmode="numeric" placeholder="PFD 長さm">
+        </div>
+        <div class="row2" style="margin-top:6px">
           <input type="number" id="extLd" inputmode="numeric" placeholder="屋外ダクトLD m">
-        </div>
-        <div class="row2" style="margin-top:6px">
           <input type="number" id="extMd" inputmode="numeric" placeholder="宅内ダクトMD m">
-          <input type="number" id="extMen" inputmode="numeric" placeholder="面違いダクト 個/m">
         </div>
         <div class="row2" style="margin-top:6px">
+          <input type="number" id="extMen" inputmode="numeric" placeholder="面違いダクト 個/m">
           <input type="number" id="extMall" inputmode="numeric" placeholder="屋内モール m">
-          <input type="number" id="extPcsBt" inputmode="numeric" placeholder="PCS〜蓄電池配線 m">
         </div>
+        <div class="f" style="margin-top:6px"><input type="number" id="extPcsBt" inputmode="numeric" placeholder="PCS〜蓄電池配線 m"></div>
       </div>
     </details>
     <details class="acc"><summary>共通・その他</summary>
@@ -445,7 +446,8 @@
   function buildExt(){
     var parts=[];
     var k=val('extKansen'); if(k) parts.push('幹線:'+k);
-    [['extPfd','PFD'],['extLd','屋外ダクトLD'],['extMd','宅内ダクトMD'],['extMen','面違いダクト'],['extMall','屋内モール'],['extPcsBt','PCS〜蓄電池配線']].forEach(function(p){var v=val(p[0]); if(v) parts.push(p[1]+':'+v+'m');});
+    var pfd=val('extPfd'); if(pfd) parts.push('PFD'+(val('extPfdSize')||'')+':'+pfd+'m');
+    [['extLd','屋外ダクトLD'],['extMd','宅内ダクトMD'],['extMen','面違いダクト'],['extMall','屋内モール'],['extPcsBt','PCS〜蓄電池配線']].forEach(function(p){var v=val(p[0]); if(v) parts.push(p[1]+':'+v+'m');});
     return parts.join(' / ');
   }
   function battVal(){ if(!document.getElementById('typeBatt').checked) return '';
