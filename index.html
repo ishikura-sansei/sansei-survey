@@ -260,20 +260,29 @@
         <label><input type="checkbox" name="addElec" value="リレーBOX設置">リレーBOX設置</label>
         <label><input type="checkbox" name="addElec" value="AiSEG設置">AiSEG設置</label>
         <label><input type="checkbox" name="addElec" value="DR-BOX設置">DR-BOX設置</label>
-        <label><input type="checkbox" name="addElec" value="屋外ダクト(LD)延長">屋外ダクト(LD)延長</label>
-        <label><input type="checkbox" name="addElec" value="宅内ダクト(MD)">宅内ダクト(MD)</label>
-        <label><input type="checkbox" name="addElec" value="PFD延長">PFD延長</label>
-        <label><input type="checkbox" name="addElec" value="面違いダクト">面違いダクト</label>
         <label><input type="checkbox" name="addElec" value="役物(チーズ/ジャバラ/立面L)">役物(チーズ/ジャバラ/立面L)</label>
-        <label><input type="checkbox" name="addElec" value="屋内モール">屋内モール</label>
         <label><input type="checkbox" name="addElec" value="コア抜き・穴あけ困難">コア抜き・穴あけ困難</label>
         <label><input type="checkbox" name="addElec" value="EVコンセント設置">EVコンセント設置</label>
         <label><input type="checkbox" name="addElec" value="ネット接続(無線)">ネット接続(無線)</label>
         <label><input type="checkbox" name="addElec" value="ネット接続(有線)">ネット接続(有線)</label>
-        <label><input type="checkbox" name="addElec" value="PCS〜蓄電池配線延長">PCS〜蓄電池配線延長</label>
         <label><input type="checkbox" name="addElec" value="通線困難">通線困難</label>
       </div>
-      <div class="f" style="margin-top:8px"><label>配線・幹線延長（別枠・長さ記入。種別は④参照／単価表準拠）</label><input type="text" id="kansenExt" placeholder="例：CV14を18m（リケンは15m基本・超過分）"></div>
+      <div class="grp" style="margin-top:10px">延長もの（使う物だけ長さをm記入。単価表準拠）</div>
+      <div class="f">
+        <input type="text" id="extKansen" placeholder="配線・幹線延長 CV等（種別は④。例：CV14を18m）">
+        <div class="row2" style="margin-top:6px">
+          <input type="number" id="extPfd" inputmode="numeric" placeholder="PFD管 m">
+          <input type="number" id="extLd" inputmode="numeric" placeholder="屋外ダクトLD m">
+        </div>
+        <div class="row2" style="margin-top:6px">
+          <input type="number" id="extMd" inputmode="numeric" placeholder="宅内ダクトMD m">
+          <input type="number" id="extMen" inputmode="numeric" placeholder="面違いダクト 個/m">
+        </div>
+        <div class="row2" style="margin-top:6px">
+          <input type="number" id="extMall" inputmode="numeric" placeholder="屋内モール m">
+          <input type="number" id="extPcsBt" inputmode="numeric" placeholder="PCS〜蓄電池配線 m">
+        </div>
+      </div>
     </details>
     <details class="acc"><summary>共通・その他</summary>
       <div class="opts">
@@ -433,6 +442,12 @@
   function blockVal(){ const t=val('blockType'),s=val('blockSize'),q=val('blockQty'),more=val('blockMore');
     let base=(t||s||q)?(t+s+(q?(' '+q+'個'):'')):''; return [base,more].filter(Boolean).join(' / '); }
   function lanVal(){ const l=val('lanLen'),q=val('lanQty'); return (l||q)?(l+' '+q+(q?'本':'')):''; }
+  function buildExt(){
+    var parts=[];
+    var k=val('extKansen'); if(k) parts.push('幹線:'+k);
+    [['extPfd','PFD'],['extLd','屋外ダクトLD'],['extMd','宅内ダクトMD'],['extMen','面違いダクト'],['extMall','屋内モール'],['extPcsBt','PCS〜蓄電池配線']].forEach(function(p){var v=val(p[0]); if(v) parts.push(p[1]+':'+v+'m');});
+    return parts.join(' / ');
+  }
   function battVal(){ if(!document.getElementById('typeBatt').checked) return '';
     return [val('battMaker'),val('battSeries'),val('battCap')?val('battCap')+'kWh':''].filter(Boolean).join(' '); }
   function v2hVal(){ if(!document.getElementById('typeV2h').checked) return '';
@@ -464,7 +479,7 @@
       battery: battVal(), v2h: v2hVal(),
       block: blockVal(), lan: lanVal(),
       addRoof: multi('addRoof'), addElec: multi('addElec'), addCommon: multi('addCommon'),
-      kansenExt: val('kansenExt'),
+      kansenExt: buildExt(),
       addJinkou: val('addJinkou'), addMemo: val('addMemo'),
       park: (radio('park')||'')+(document.getElementById('parkInformed').checked?'・伝達済':''), parkMemo: val('parkMemo'),
       scaffold: val('scaffold'),
