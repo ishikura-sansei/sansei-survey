@@ -100,7 +100,7 @@
       <input type="text" id="roofUnconfMemo" placeholder="やり取りの記録（例：雨天で屋根は次回、〇/〇再訪を説明済み）" style="margin-top:6px">
     </div>
     <div class="f"><label>会社名（元請け）<span class="req">*</span></label>
-      <select id="company" onchange="toggleCompanyOther()">
+      <select id="company" onchange="toggleCompanyOther();refreshFutai()">
         <option value="">選択してください</option>
         <option>リケンエナジー</option><option>アルファエレクトロ</option>
         <option>キョウエイ</option><option>ライズ</option><option>ATEL</option><option>その他</option>
@@ -235,73 +235,11 @@
       <select id="lanLen"><option value="">長さ</option><option>5ｍ</option><option>10ｍ</option><option>15ｍ</option><option>20ｍ</option><option>その他</option></select>
       <select id="lanQty"><option value="">個数</option><option>1</option><option>2</option><option>3</option><option>4</option><option>その他</option></select>
     </div></div>
-    <div class="grp">追加付帯（該当する大分類を開いてチェック）</div>
-    <details class="acc"><summary>屋根まわり</summary>
-      <div class="opts">
-        <label><input type="checkbox" name="addRoof" value="屋根急勾配(6寸以上)">屋根急勾配(6寸以上)</label>
-        <label><input type="checkbox" name="addRoof" value="屋根異勾配">屋根異勾配</label>
-        <label><input type="checkbox" name="addRoof" value="瓦屋根施工">瓦屋根施工</label>
-        <label><input type="checkbox" name="addRoof" value="特殊瓦">特殊瓦</label>
-        <label><input type="checkbox" name="addRoof" value="多面設置(4面以上)">多面設置(4面以上)</label>
-        <label><input type="checkbox" name="addRoof" value="3階建て施工">3階建て施工</label>
-        <label><input type="checkbox" name="addRoof" value="野地板補強">野地板補強</label>
-        <label><input type="checkbox" name="addRoof" value="パネル手上げ">パネル手上げ</label>
-        <label><input type="checkbox" name="addRoof" value="既存PV撤去・入替">既存PV撤去・入替</label>
-        <label><input type="checkbox" name="addRoof" value="太陽光増設">太陽光増設</label>
-        <label><input type="checkbox" name="addRoof" value="アンテナ移設・撤去">アンテナ移設・撤去</label>
-      </div>
-    </details>
-    <details class="acc"><summary>電気まわり</summary>
-      <div class="opts">
-        <label><input type="checkbox" name="addElec" value="MCB/MCCB/ELB交換・追加">MCB/MCCB/ELB交換・追加</label>
-        <label><input type="checkbox" name="addElec" value="分電盤交換">分電盤交換</label>
-        <label><input type="checkbox" name="addElec" value="専用回路増設">専用回路増設</label>
-        <label><input type="checkbox" name="addElec" value="単2→単3切替">単2→単3切替</label>
-        <label><input type="checkbox" name="addElec" value="リレーBOX設置">リレーBOX設置</label>
-        <label><input type="checkbox" name="addElec" value="AiSEG設置">AiSEG設置</label>
-        <label><input type="checkbox" name="addElec" value="DR-BOX設置">DR-BOX設置</label>
-        <label><input type="checkbox" name="addElec" value="役物(チーズ/ジャバラ/立面L)">役物(チーズ/ジャバラ/立面L)</label>
-        <label><input type="checkbox" name="addElec" value="コア抜き・穴あけ困難">コア抜き・穴あけ困難</label>
-        <label><input type="checkbox" name="addElec" value="EVコンセント設置">EVコンセント設置</label>
-        <label><input type="checkbox" name="addElec" value="ネット接続(無線)">ネット接続(無線)</label>
-        <label><input type="checkbox" name="addElec" value="ネット接続(有線)">ネット接続(有線)</label>
-        <label><input type="checkbox" name="addElec" value="通線困難">通線困難</label>
-      </div>
-      <div class="grp" style="margin-top:10px">延長もの（使う物だけ長さをm記入。単価表準拠）</div>
-      <div class="f">
-        <input type="text" id="extKansen" placeholder="配線・幹線延長 CV等（種別は④。例：CV14を18m）">
-        <div class="row2" style="margin-top:6px">
-          <select id="extPfdSize"><option value="">PFD径</option><option>16</option><option>22</option><option>28</option><option>36</option></select>
-          <input type="number" id="extPfd" inputmode="numeric" placeholder="PFD 長さm">
-        </div>
-        <div class="row2" style="margin-top:6px">
-          <input type="number" id="extLd" inputmode="numeric" placeholder="屋外ダクトLD m">
-          <input type="number" id="extMd" inputmode="numeric" placeholder="宅内ダクトMD m">
-        </div>
-        <div class="row2" style="margin-top:6px">
-          <input type="number" id="extMen" inputmode="numeric" placeholder="面違いダクト 個/m">
-          <input type="number" id="extMall" inputmode="numeric" placeholder="屋内モール m">
-        </div>
-        <div class="f" style="margin-top:6px"><input type="number" id="extPcsBt" inputmode="numeric" placeholder="PCS〜蓄電池配線 m"></div>
-      </div>
-    </details>
-    <details class="acc"><summary>共通・その他</summary>
-      <div class="opts">
-        <label><input type="checkbox" name="addCommon" value="搬入困難(増員)">搬入困難(増員)</label>
-        <label><input type="checkbox" name="addCommon" value="宅内搬入">宅内搬入</label>
-        <label><input type="checkbox" name="addCommon" value="蓄電池屋内搬入">蓄電池屋内搬入</label>
-        <label><input type="checkbox" name="addCommon" value="蓄電池2段ラック">蓄電池2段ラック</label>
-        <label><input type="checkbox" name="addCommon" value="難工事">難工事</label>
-        <label><input type="checkbox" name="addCommon" value="PCS撤去・処分">PCS撤去・処分</label>
-        <label><input type="checkbox" name="addCommon" value="蓄電池撤去・処分">蓄電池撤去・処分</label>
-        <label><input type="checkbox" name="addCommon" value="PV撤去・処分">PV撤去・処分</label>
-        <label><input type="checkbox" name="addCommon" value="処分費">処分費</label>
-        <label><input type="checkbox" name="addCommon" value="遠方(50km以上)">遠方(50km以上)</label>
-        <label><input type="checkbox" name="addCommon" value="ブロック嵩上げ">ブロック嵩上げ</label>
-        <label><input type="checkbox" name="addCommon" value="土間打ち">土間打ち</label>
-        <label><input type="checkbox" name="addCommon" value="別工程日(足場干渉)">別工程日(足場干渉)</label>
-      </div>
-    </details>
+    <div class="grp">付帯（会社別・該当を追加）</div>
+    <div class="note">①で選んだ会社の単価表(v6)の付帯項目です。使う物を「＋付帯を追加」で選び、数量を入れてください（CV/PFD/ダクト等は複数行OK）。単位は項目に表示。金額は事務が算定。</div>
+    <div id="futaiHint" class="hint">※先に①で会社を選んでください。</div>
+    <div id="futaiList"></div>
+    <button type="button" class="btn ghost" style="max-width:220px;margin-top:8px;flex:0 0 auto" onclick="addFutaiRow()">＋ 付帯を追加</button>
     <div class="row2">
       <div class="f"><label>追加人工（目安・数値）</label><input type="number" id="addJinkou" inputmode="numeric" placeholder="例：2"><div class="hint">最終判断は事務</div></div>
     </div>
@@ -443,12 +381,51 @@
   function blockVal(){ const t=val('blockType'),s=val('blockSize'),q=val('blockQty'),more=val('blockMore');
     let base=(t||s||q)?(t+s+(q?(' '+q+'個'):'')):''; return [base,more].filter(Boolean).join(' / '); }
   function lanVal(){ const l=val('lanLen'),q=val('lanQty'); return (l||q)?(l+' '+q+(q?'本':'')):''; }
-  function buildExt(){
-    var parts=[];
-    var k=val('extKansen'); if(k) parts.push('幹線:'+k);
-    var pfd=val('extPfd'); if(pfd) parts.push('PFD'+(val('extPfdSize')||'')+':'+pfd+'m');
-    [['extLd','屋外ダクトLD'],['extMd','宅内ダクトMD'],['extMen','面違いダクト'],['extMall','屋内モール'],['extPcsBt','PCS〜蓄電池配線']].forEach(function(p){var v=val(p[0]); if(v) parts.push(p[1]+':'+v+'m');});
-    return parts.join(' / ');
+  // ===== 会社別付帯マスタ（v6準拠。{n:名称, u:単位, g:roof/elec/line/common}） =====
+  var FUTAI = {
+    "リケンエナジー":[
+      {n:"CV-5.5延長",u:"m",g:"line"},{n:"CV-8延長",u:"m",g:"line"},{n:"CV-14延長",u:"m",g:"line"},
+      {n:"屋根線延長(DC)",u:"m/系統",g:"line"},{n:"VVF延長",u:"m",g:"line"},{n:"FCPV線",u:"m",g:"line"},
+      {n:"屋外用ダクト(LD)延長",u:"m",g:"line"},{n:"PFD(16〜36)延長",u:"m",g:"line"},{n:"宅内用ダクト施工(MD)",u:"m",g:"line"},
+      {n:"特殊役物使用(ジャバラ・立面等)",u:"個",g:"line"},{n:"役物多数使用(MD/LD)",u:"式",g:"line"},{n:"床下配線",u:"式",g:"line"},{n:"穴あけ困難(コア・タイル)",u:"箇所",g:"line"},
+      {n:"屋根急勾配・異勾配(6寸以上)",u:"人",g:"roof"},{n:"瓦屋根施工 追加人工",u:"人",g:"roof"},{n:"3F施工",u:"人",g:"roof"},{n:"搬入困難 追加人工",u:"人",g:"roof"},{n:"パネル手上げ 追加人工",u:"人",g:"roof"},{n:"蓄電池2段ラック施工",u:"式",g:"roof"},
+      {n:"電気工事難工事一式",u:"式",g:"elec"},{n:"リレーボックス設置",u:"式",g:"elec"},{n:"MCB追加(60A以下/以上)",u:"式",g:"elec"},{n:"京セラEnerezza追加材料費",u:"式",g:"elec"},{n:"京セラエネレッツァ追加人工",u:"人",g:"elec"},{n:"ニチコン19.9追加人工",u:"人",g:"elec"},{n:"追加PCS設置",u:"台",g:"elec"},{n:"AiSEG設置",u:"式",g:"elec"},{n:"DR対象施工",u:"式",g:"elec"},{n:"EVコンセント設置",u:"台",g:"elec"},{n:"機器設備メクラ処理",u:"式",g:"elec"},{n:"防犯カメラ電源移植(簡易)",u:"式",g:"elec"},
+      {n:"PCS類撤去・処分(1台)",u:"台",g:"common"},{n:"蓄電池撤去・処分費(1台)",u:"台",g:"common"},{n:"PV撤去・処分(1枚)",u:"枚",g:"common"},{n:"その他既設機器撤去・処分",u:"式",g:"common"},{n:"遠方交通費(100km)",u:"式",g:"common"},{n:"追加工程分交通費",u:"台",g:"common"},{n:"ブロック嵩上げ",u:"式",g:"common"},{n:"土間打ち",u:"箇所",g:"common"},{n:"追加行程分(状況)",u:"式",g:"common"}
+    ],
+    "アルファエレクトロ":[
+      {n:"PFD延長(10m以降)",u:"m",g:"line"},{n:"スリムダクト延長",u:"m",g:"line"},{n:"屋根線延長(DC)1系統ごと",u:"m",g:"line"},{n:"CV5.5(10m以降)",u:"m",g:"line"},{n:"CV8(10m以降)",u:"m",g:"line"},{n:"CV14(全長)",u:"m",g:"line"},
+      {n:"瓦屋根",u:"式",g:"roof"},{n:"急こう配6寸以上",u:"式",g:"roof"},{n:"パネル手上げ",u:"式",g:"roof"},{n:"搬入困難",u:"式",g:"roof"},{n:"PV3面以降",u:"面",g:"roof"},{n:"パネル6kW以降加算",u:"kW",g:"roof"},
+      {n:"MCB・ELB設置 50Aまで",u:"個",g:"elec"},{n:"MCB・ELB設置 75Aまで",u:"個",g:"elec"},{n:"フリーボックスW",u:"個",g:"elec"},{n:"MDモール1式",u:"式",g:"elec"},{n:"点検口設置",u:"式",g:"elec"},{n:"蓄電池基礎(1台当たり)",u:"個",g:"elec"}
+    ],
+    "汎用":[
+      {n:"瓦屋根施工 追加人工",u:"人",g:"roof"},{n:"急勾配(6寸以上)",u:"人",g:"roof"},{n:"パネル手上げ",u:"人",g:"roof"},{n:"搬入困難",u:"人",g:"roof"},{n:"3F施工・難工事",u:"人",g:"roof"},{n:"PV多面設置(3面目以降)",u:"面",g:"roof"},
+      {n:"ダクト延長",u:"m",g:"line"},{n:"屋根線延長(DC)",u:"m/系統",g:"line"},{n:"CV5.5延長",u:"m",g:"line"},{n:"CV8延長",u:"m",g:"line"},{n:"CV14延長",u:"m",g:"line"},{n:"VVF延長",u:"m",g:"line"},
+      {n:"電気工事難工事一式",u:"式",g:"elec"},{n:"MCB/ELB(60A以下)",u:"式",g:"elec"},{n:"MCB/ELB(75A以下)",u:"式",g:"elec"},{n:"MDモール(通常)",u:"式",g:"elec"},{n:"コア抜き",u:"箇所",g:"elec"},{n:"点検口設置",u:"式",g:"elec"},{n:"追加PCS設置",u:"台",g:"elec"},
+      {n:"宅内PCS撤去・処分",u:"台",g:"common"},{n:"蓄電池撤去処分費",u:"式",g:"common"},{n:"PV撤去費",u:"式",g:"common"},{n:"処分費",u:"式",g:"common"},{n:"遠方交通費(50km以上)",u:"式",g:"common"},{n:"別日交通費",u:"式",g:"common"},{n:"別工程日費用",u:"式",g:"common"},{n:"東電申請",u:"式",g:"common"}
+    ]
+  };
+  function futaiList(){ var c=val('company'); if(FUTAI[c]) return FUTAI[c]; if(c.indexOf('リケン')===0) return FUTAI['リケンエナジー']; if(c.indexOf('アルファ')===0) return FUTAI['アルファエレクトロ']; return FUTAI['汎用']; }
+  function fillFutaiSelect(sel){ var items=futaiList(); var cur=sel.value; sel.innerHTML='<option value="">付帯を選択</option>'+items.map(function(it){return '<option value="'+it.n+'" data-u="'+it.u+'" data-g="'+it.g+'">'+it.n+'（'+it.u+'）</option>';}).join(''); sel.value=cur; }
+  function refreshFutai(){ var c=val('company'); var h=document.getElementById('futaiHint'); if(h) h.textContent=c?('「'+c+'」の付帯項目から選べます（複数行OK）。'):'※先に①で会社を選んでください。'; document.querySelectorAll('#futaiList select.futai-item').forEach(fillFutaiSelect); }
+  function addFutaiRow(){
+    var row=document.createElement('div'); row.className='futai-row f'; row.style.marginTop='6px';
+    var inner=document.createElement('div'); inner.className='row2';
+    var sel=document.createElement('select'); sel.className='futai-item'; fillFutaiSelect(sel);
+    var qty=document.createElement('input'); qty.type='text'; qty.className='futai-qty'; qty.placeholder='数量';
+    var del=document.createElement('button'); del.type='button'; del.textContent='✕'; del.style.cssText='flex:0 0 auto;border:1px solid var(--line);border-radius:10px;background:#fff;color:#c0392b;width:44px';
+    del.onclick=function(){ row.remove(); };
+    inner.appendChild(sel); inner.appendChild(qty); inner.appendChild(del); row.appendChild(inner);
+    document.getElementById('futaiList').appendChild(row);
+  }
+  function collectFutai(){
+    var g={roof:[],elec:[],line:[],common:[]};
+    document.querySelectorAll('#futaiList .futai-row').forEach(function(row){
+      var sel=row.querySelector('.futai-item'); var qel=row.querySelector('.futai-qty'); var qty=(qel?qel.value:'').trim();
+      var name=sel.value; if(!name) return;
+      var opt=sel.options[sel.selectedIndex]; var u=opt.getAttribute('data-u')||''; var grp=opt.getAttribute('data-g')||'common';
+      g[grp].push(name+(qty?(' '+qty+u):''));
+    });
+    return {roof:g.roof.join(' / '), elec:g.elec.join(' / '), line:g.line.join(' / '), common:g.common.join(' / ')};
   }
   function battVal(){ if(!document.getElementById('typeBatt').checked) return '';
     return [val('battMaker'),val('battSeries'),val('battCap')?val('battCap')+'kWh':''].filter(Boolean).join(' '); }
@@ -465,6 +442,7 @@
   }
 
   function collect(){
+    var FT=collectFutai();
     return {
       caseKey: caseKey(), registeredAt: new Date().toISOString(),
       surveyDate: val('surveyDate'), reporter: reporterVal(), surveyType: surveyTypeVal(),
@@ -480,8 +458,8 @@
       battType: (document.getElementById('typeBatt').checked?'蓄電池':'')+(document.getElementById('typeV2h').checked?(document.getElementById('typeBatt').checked?'・':'')+'V2H':''),
       battery: battVal(), v2h: v2hVal(),
       block: blockVal(), lan: lanVal(),
-      addRoof: multi('addRoof'), addElec: multi('addElec'), addCommon: multi('addCommon'),
-      kansenExt: buildExt(),
+      addRoof: FT.roof, addElec: FT.elec, addCommon: FT.common,
+      kansenExt: FT.line,
       addJinkou: val('addJinkou'), addMemo: val('addMemo'),
       park: (radio('park')||'')+(document.getElementById('parkInformed').checked?'・伝達済':''), parkMemo: val('parkMemo'),
       scaffold: val('scaffold'),
