@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SANSEI 現地調査シート</title>
 <style>
-  /* ===== v5 試作（2026-06-12）UI刷新：SANSEI配色（白基調＋オレンジ＋ブルー）。金額は一切表示しない ===== */
+  /* ===== v6 RC（2026-06-13 改修反映）UI刷新：SANSEI配色（白基調＋オレンジ＋ブルー）。金額は一切表示しない ===== */
   :root{
     --bg:#f4f5f7; --panel:#ffffff; --line:#e7e9ee; --ink:#111827; --sub:#6b7280;
     --accent:#f97316; --accent-soft:#fff1e6; --accent-deep:#c2410c;
@@ -98,16 +98,25 @@
   .pempty{grid-column:1/-1;text-align:center;color:var(--sub);font-size:12px;padding:6px 0}
 
   /* 描画モーダル */
-  .modal{position:fixed;inset:0;background:#1f2430;z-index:100;display:flex;flex-direction:column}
-  .modal .mbar{display:flex;align-items:center;gap:8px;padding:10px 12px;background:#11151c}
-  .modal .mbar button{border:none;border-radius:9px;padding:9px 12px;font-size:13px;font-weight:800;background:#2b313c;color:#fff}
+  /* ===== 描画モーダル強化 ===== */
+  .modal{position:fixed;inset:0;background:#11151c;z-index:100;display:flex;flex-direction:column}
+  .modal.hidden{display:none}
+  .mbar{display:flex;align-items:center;gap:6px;padding:8px 10px;background:#11151c;flex-wrap:wrap;min-height:52px}
+  .modal .mbar button{border:none;border-radius:9px;padding:7px 10px;font-size:12px;font-weight:800;background:#2b313c;color:#fff;cursor:pointer}
   .modal .mbar .save{background:var(--accent);margin-left:auto}
   .modal .mbar .cancel{background:#3a3f4a}
-  .modal .tools{display:flex;gap:6px;margin-left:6px}
-  .modal .tools .pen{width:30px;height:30px;border-radius:50%;padding:0;border:2px solid #fff6}
-  .modal .tools .pen.sel{border-color:#fff;box-shadow:0 0 0 2px #fff4}
-  .canvaswrap{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:8px}
-  #drawCanvas{background:#fff;border-radius:10px;touch-action:none;max-width:100%;max-height:100%;box-shadow:0 6px 24px rgba(0,0,0,.4)}
+  .modal .tools{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+  .modal .tools .pen{width:22px;height:22px;border-radius:50%;border:2px solid #444;cursor:pointer;padding:0}
+  .modal .tools .pen.sel{border-color:#fff;transform:scale(1.2)}
+  .modal .tool-btn{background:#2b313c;color:#e2e8f0;font-size:12px;padding:5px 8px;border-radius:7px;border:1.5px solid #444;cursor:pointer}
+  .modal .tool-btn.active{background:#f97316;color:#fff;border-color:#f97316}
+  .mbar-row{display:flex;align-items:center;gap:6px;width:100%;padding:4px 10px;background:#1a2030;flex-wrap:wrap}
+  .stamp-btn{background:#1e3a5f;color:#93c5fd;font-size:11px;font-weight:700;padding:5px 8px;border-radius:7px;border:1.5px solid #2563eb;cursor:pointer;white-space:nowrap}
+  .stamp-btn.active{background:#2563eb;color:#fff}
+  .preset-btn{background:#1a2a1a;color:#86efac;font-size:11px;font-weight:700;padding:5px 8px;border-radius:7px;border:1.5px solid #16a34a;cursor:pointer}
+  .canvaswrap{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#1a1d24;padding:4px}
+  #drawCanvas{background:#fff;border-radius:6px;touch-action:none;max-width:100%;max-height:100%;display:block}
+
 
   .bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);
     padding:11px 16px;display:flex;gap:10px;justify-content:center;box-shadow:0 -2px 10px rgba(17,24,39,.04)}
@@ -143,6 +152,15 @@
       </div>
       <input type="text" id="reporterOther" class="hidden" placeholder="氏名を記入" style="margin-top:6px">
     </div>
+    <div class="f"><label>会社名（元請け）<span class="req">*</span></label>
+      <select id="company" onchange="toggleCompanyOther();refreshFutai();updateDrivePath()">
+        <option value="">選択してください</option>
+        <option>リケンエナジー</option><option>アルファエレクトロ</option>
+        <option>キョウエイ</option><option>ライズ</option><option>ATEL</option><option>その他</option>
+      </select>
+      <input type="text" id="companyOther" class="hidden" placeholder="会社名を記入" style="margin-top:6px" oninput="updateDrivePath()">
+      <div class="hint">記録用。「その他」を選ぶと付帯は汎用単価の項目になります。</div>
+    </div>
     <div class="f"><label>現地調査内容<span class="req">*</span>（複数選択可）</label>
       <div class="opts">
         <label><input type="checkbox" name="surveyType" value="PV">PV</label>
@@ -161,15 +179,6 @@
         <label><input type="checkbox" name="roofUnconf" value="お客様に説明した">お客様に説明した</label>
       </div>
       <input type="text" id="roofUnconfMemo" placeholder="やり取りの記録（例：雨天で屋根は次回、〇/〇再訪を説明済み）" style="margin-top:6px">
-    </div>
-    <div class="f"><label>会社名（元請け）<span class="req">*</span></label>
-      <select id="company" onchange="toggleCompanyOther();refreshFutai();updateDrivePath()">
-        <option value="">選択してください</option>
-        <option>リケンエナジー</option><option>アルファエレクトロ</option>
-        <option>キョウエイ</option><option>ライズ</option><option>ATEL</option><option>その他</option>
-      </select>
-      <input type="text" id="companyOther" class="hidden" placeholder="会社名を記入" style="margin-top:6px" oninput="updateDrivePath()">
-      <div class="hint">記録用。「その他」を選ぶと付帯は汎用単価の項目になります。</div>
     </div>
   </div>
 
@@ -301,9 +310,6 @@
     <div id="futaiHint" class="hint">※先に①で会社を選んでください。</div>
     <div id="futaiList"></div>
     <button type="button" class="addbtn" style="margin-top:8px" onclick="addFutaiRow()">＋ 付帯を追加</button>
-    <div class="row2" style="margin-top:8px">
-      <div class="f"><label>追加人工（目安・数値）</label><input type="number" id="addJinkou" inputmode="numeric" placeholder="例：2"><div class="hint">最終判断は事務</div></div>
-    </div>
     <div class="f"><label>追加工事の補足（自由記入）</label><textarea id="addMemo" placeholder="無い場合は空欄でOK"></textarea></div>
   </div>
 
@@ -337,6 +343,7 @@
     <div class="stepbtns">
       <button type="button" onclick="addStep('PT（パネル＋蓄電池）')">PT</button>
       <button type="button" onclick="addStep('BT（蓄電池）')">BT</button>
+      <button type="button" onclick="addStep('PV（太陽光）')">PV</button>
       <button type="button" onclick="addStep('PV+PCS（太陽光）')">PV+PCS</button>
       <button type="button" onclick="addStep('EQ')">EQ</button>
       <button type="button" onclick="addStep('足場設置')">足場設置</button>
@@ -365,13 +372,20 @@
       <div id="drivePath" class="pathval">お客様名・会社名を入れると表示されます</div>
     </div>
 
-    <details class="guide">
-      <summary>📋 撮影ガイド（リケン標準・撮り忘れ防止）</summary>
-      <div class="guidegrid">
-        <span>住宅全景</span><span>屋根</span><span>野地板</span><span>分電盤</span>
-        <span>宅内工事予定</span><span>屋外工事予定</span><span>電気明細</span><span>メーター</span><span>周辺(駐車判断)</span>
+    <div class="photo-checklist">
+      <div class="pcl-title">📋 撮影チェック（撮ったらチェック）</div>
+      <div class="pcl-grid">
+        <label><input type="checkbox" class="pcl-cb"> 住宅全景</label>
+        <label><input type="checkbox" class="pcl-cb"> 屋根</label>
+        <label><input type="checkbox" class="pcl-cb"> 野地板</label>
+        <label><input type="checkbox" class="pcl-cb"> 分電盤</label>
+        <label><input type="checkbox" class="pcl-cb"> 宅内工事予定</label>
+        <label><input type="checkbox" class="pcl-cb"> 屋外工事予定</label>
+        <label><input type="checkbox" class="pcl-cb"> 電気明細</label>
+        <label><input type="checkbox" class="pcl-cb"> メーター</label>
+        <label><input type="checkbox" class="pcl-cb"> 周辺(駐車判断)</label>
       </div>
-    </details>
+    </div>
 
     <label class="bigadd">
       📷 写真を撮る／選ぶ（複数OK）
@@ -395,15 +409,34 @@
 
 <!-- 描画モーダル -->
 <div id="drawModal" class="modal hidden">
+  <!-- 行1: キャンセル / 色 / ツール / 戻す / 保存 -->
   <div class="mbar">
-    <button class="cancel" onclick="closeDraw()">キャンセル</button>
+    <button class="cancel" onclick="closeDraw()">✕ 閉じる</button>
     <div class="tools">
       <button class="pen sel" style="background:#e11d48" data-color="#e11d48" onclick="pickPen(this)"></button>
       <button class="pen" style="background:#2563eb" data-color="#2563eb" onclick="pickPen(this)"></button>
       <button class="pen" style="background:#111827" data-color="#111827" onclick="pickPen(this)"></button>
-      <button onclick="undoDraw()">戻す</button>
     </div>
-    <button class="save" onclick="saveDraw()">保存</button>
+    <button class="tool-btn active" id="tbFree" onclick="setDrawMode('free')">✏ フリー</button>
+    <button class="tool-btn" id="tbLine" onclick="setDrawMode('line')">╱ 直線</button>
+    <button class="tool-btn" id="tbRect" onclick="setDrawMode('rect')">▭ 四角</button>
+    <button class="tool-btn" id="tbErase" onclick="setDrawMode('erase')">◻ 消しゴム</button>
+    <button onclick="undoDraw()">↩ 戻す</button>
+    <button class="save" onclick="saveDraw()">💾 保存</button>
+  </div>
+  <!-- 行2: スタンプ / 北マーク / キャンバスプリセット -->
+  <div class="mbar-row">
+    <span style="color:#94a3b8;font-size:11px;font-weight:700">スタンプ：</span>
+    <button class="stamp-btn" id="stPCS"    onclick="setStamp('PCS')">PCS</button>
+    <button class="stamp-btn" id="stBT"     onclick="setStamp('BT')">BT</button>
+    <button class="stamp-btn" id="stEco"    onclick="setStamp('エコ')">エコ</button>
+    <button class="stamp-btn" id="stPanel"  onclick="setStamp('分電盤')">分電盤</button>
+    <button class="stamp-btn" id="stRemote" onclick="setStamp('リモコン')">リモコン</button>
+    <button class="stamp-btn" id="stNorth"  onclick="setStamp('north')">🧭北</button>
+    <span style="color:#94a3b8;font-size:11px;font-weight:700;margin-left:10px">用紙：</span>
+    <button class="preset-btn" onclick="setPreset('sq')">■ 正方形</button>
+    <button class="preset-btn" onclick="setPreset('v')">▯ 縦</button>
+    <button class="preset-btn" onclick="setPreset('h')">▭ 横</button>
   </div>
   <div class="canvaswrap"><canvas id="drawCanvas"></canvas></div>
 </div>
@@ -438,7 +471,7 @@
   const FUTAI_GROUPS = [["jin","人工・屋根"],["hai","配線・ダクト"],["kik","機器・分電盤"],["tek","撤去・処分"],["oth","交通・申請・その他"]];
   const FUTAI = {
     "リケンエナジー":[
-      {n:"瓦屋根施工 追加人工",u:"人",g:"jin"},{n:"屋根急勾配・屋根異勾配(6寸以上、又は難工事等)",u:"人",g:"jin"},{n:"パネル手上げ 追加人工",u:"人",g:"jin"},{n:"搬入困難 追加人工",u:"人",g:"jin"},{n:"3F施工（危険作業費・人員増加）",u:"人",g:"jin"},{n:"蓄電池2段ラック施工",u:"式",g:"jin"},{n:"電気工事難工事一式",u:"式",g:"jin"},{n:"穴あけ困難（コア・タイル等）",u:"箇所",g:"jin"},{n:"ブロック嵩上げ(範囲により)",u:"式",g:"jin"},{n:"土間打ち",u:"箇所",g:"jin"},
+      {n:"瓦屋根施工 追加人工",u:"人",g:"jin"},{n:"屋根急勾配・異勾配（6寸以上）",u:"人",g:"jin"},{n:"難工事",u:"式",g:"jin"},{n:"パネル手上げ 追加人工",u:"人",g:"jin"},{n:"搬入困難 追加人工",u:"人",g:"jin"},{n:"3F施工（危険作業費・人員増加）",u:"人",g:"jin"},{n:"蓄電池2段ラック施工",u:"式",g:"jin"},{n:"電気工事難工事一式",u:"式",g:"jin"},{n:"穴あけ困難（コア・タイル等）",u:"箇所",g:"jin"},{n:"ブロック嵩上げ(範囲により)",u:"式",g:"jin"},{n:"土間打ち",u:"箇所",g:"jin"},
       {n:"屋外用ダクト(LD)延長",u:"m",g:"hai"},{n:"宅内用ダクト施工(MD)",u:"m",g:"hai"},{n:"PFD（16〜36）延長",u:"m",g:"hai"},{n:"CV-5.5 延長",u:"m",g:"hai"},{n:"CV-8 延長",u:"m",g:"hai"},{n:"CV-14 延長",u:"m",g:"hai"},{n:"屋根線延長(DC)",u:"m/系統",g:"hai"},{n:"VVF延長",u:"m",g:"hai"},{n:"FCPV線",u:"m",g:"hai"},{n:"特殊役物使用(ジャバラ、立面等)",u:"個",g:"hai"},{n:"役物多数使用(MD/LD)",u:"式",g:"hai"},{n:"床下配線",u:"式",g:"hai"},
       {n:"リレーボックス設置",u:"式",g:"kik"},{n:"MCB追加（60A以下／60A以上）",u:"式",g:"kik"},{n:"京セラ Enerezza 追加材料費",u:"式",g:"kik"},{n:"京セラエネレッツァ 追加人工",u:"人",g:"kik"},{n:"ニチコン19.9 追加人工",u:"人",g:"kik"},{n:"追加PCS設置",u:"台",g:"kik"},{n:"AiSEG設置",u:"式",g:"kik"},{n:"DR対象施工",u:"式",g:"kik"},{n:"EVコンセント設置",u:"台",g:"kik"},{n:"機器設備メクラ処理",u:"式",g:"kik"},{n:"防犯カメラ電源移植（簡易）",u:"式",g:"kik"},
       {n:"PCS類撤去・処分(1台につき)",u:"台",g:"tek"},{n:"蓄電池撤去・処分費（1台につき）",u:"台",g:"tek"},{n:"PV撤去・処分(1枚につき)",u:"枚",g:"tek"},{n:"その他既設機器撤去・処分",u:"式",g:"tek"},
@@ -446,7 +479,7 @@
     ],
     "アルファエレクトロ":[
       {n:"瓦屋根",u:"式",g:"jin"},{n:"急こう配 6寸",u:"式",g:"jin"},{n:"パネル手上げ",u:"式",g:"jin"},{n:"搬入困難",u:"式",g:"jin"},{n:"PV３面以降",u:"面",g:"jin"},{n:"蓄電池基礎（1台当たり）",u:"個",g:"jin"},
-      {n:"PFD延長 10m以降",u:"m",g:"hai"},{n:"スリムダクト延長",u:"m",g:"hai"},{n:"屋根線延長（DC）1系統ごと",u:"m",g:"hai"},{n:"CV5.5 10m以降",u:"m",g:"hai"},{n:"CV8 10m以降",u:"m",g:"hai"},{n:"CV14",u:"m",g:"hai"},{n:"MDモール（通常利用分）",u:"式",g:"hai"},
+      {n:"PFD延長",u:"m",g:"hai"},{n:"スリムダクト延長",u:"m",g:"hai"},{n:"屋根線延長（DC）1系統ごと",u:"m",g:"hai"},{n:"CV5.5 延長",u:"m",g:"hai"},{n:"CV8 延長",u:"m",g:"hai"},{n:"CV14",u:"m",g:"hai"},{n:"MDモール（通常利用分）",u:"式",g:"hai"},
       {n:"MCB・ELB設置 50Aまで",u:"個",g:"kik"},{n:"MCB・ELB設置 75Aまで",u:"個",g:"kik"},{n:"フリーボックスW",u:"個",g:"kik"},{n:"点検口設置",u:"式",g:"kik"}
     ],
     "ATEL":[
@@ -457,7 +490,7 @@
     ],
     "キョウエイ":[
       {n:"PV多面設置（4面目から1面）",u:"面",g:"jin"},{n:"急勾配工事（6寸）",u:"式",g:"jin"},{n:"野地板裏補強工事（5kWまで）",u:"式",g:"jin"},{n:"パワコン新規2台設置同時設置",u:"式",g:"jin"},{n:"特殊工事（足場設置不可・難工事等）",u:"式",g:"jin"},{n:"搬入困難（工員増員）",u:"式",g:"jin"},{n:"オムロン蓄電池 庇設置取付",u:"式",g:"jin"},
-      {n:"電気配線延長（10m以上）",u:"m",g:"hai"},{n:"リモコン線延長",u:"m",g:"hai"},{n:"幹線張替工事（CV14まで）",u:"式",g:"hai"},{n:"幹線張替延長（CV14 10m以上）",u:"m",g:"hai"},{n:"ケーブル埋設工事",u:"式",g:"hai"},{n:"ケーブル飛ばし",u:"式",g:"hai"},{n:"LANケーブル（10mまで）",u:"m",g:"hai"},{n:"配管延長（4m以上）",u:"m",g:"hai"},{n:"配管ダクト使用（太陽光・EQ）",u:"m",g:"hai"},{n:"エコキュート用ヒーターバンド",u:"m",g:"hai"},{n:"新築先行配線・配管",u:"回",g:"hai"},
+      {n:"電気配線延長",u:"m",g:"hai"},{n:"リモコン線延長",u:"m",g:"hai"},{n:"幹線張替工事（CV14まで）",u:"式",g:"hai"},{n:"幹線張替延長（CV14）",u:"m",g:"hai"},{n:"ケーブル埋設工事",u:"式",g:"hai"},{n:"ケーブル飛ばし",u:"式",g:"hai"},{n:"LANケーブル（10mまで）",u:"m",g:"hai"},{n:"配管延長（4m以上）",u:"m",g:"hai"},{n:"配管ダクト使用（太陽光・EQ）",u:"m",g:"hai"},{n:"エコキュート用ヒーターバンド",u:"m",g:"hai"},{n:"新築先行配線・配管",u:"回",g:"hai"},
       {n:"MCCB交換（60Aまで）",u:"台",g:"kik"},{n:"ELBの交換（75Aまで）",u:"台",g:"kik"},{n:"専用コンセント増設工事",u:"箇所",g:"kik"},{n:"分電盤交換（機器代別途）",u:"台",g:"kik"},{n:"メーターBOX",u:"台",g:"kik"},{n:"コンクリート基礎コア抜き",u:"箇所",g:"kik"},{n:"単2→単3切替工事",u:"式",g:"kik"},{n:"点検口",u:"式",g:"kik"},{n:"ハイブリット蓄電池 系統組換え（PV既設）",u:"式",g:"kik"},{n:"機器代金（分電盤・アンテナ等）",u:"式",g:"kik"},
       {n:"アンテナ移設・撤去",u:"式",g:"tek"},{n:"温水ソーラー撤去費用",u:"式",g:"tek"},
       {n:"遠方交通費（50km以上片道）",u:"車両",g:"oth"},{n:"事前先行基礎工事（蓄電池・EQ）",u:"式",g:"oth"},{n:"風呂循環口交換",u:"箇所",g:"oth"},{n:"風呂循環口新設",u:"箇所",g:"oth"},{n:"リモコン追加・移設",u:"台",g:"oth"},{n:"ヒートポンプ2段置き架台設置",u:"台",g:"oth"},{n:"加圧ポンプ設置のみ",u:"式",g:"oth"},{n:"砂こし器設置のみ",u:"式",g:"oth"},{n:"エアコン室外機移設",u:"台",g:"oth"},{n:"レンジフード交換",u:"台",g:"oth"},{n:"電気式オーブン設置",u:"台",g:"oth"}
@@ -577,9 +610,11 @@
     const row=document.createElement('div'); row.className='futai-row f'; row.style.marginTop='6px';
     const inner=document.createElement('div'); inner.className='row2';
     const sel=document.createElement('select'); sel.className='futai-item'; fillFutaiSelect(sel);
-    const qty=document.createElement('input'); qty.type='text'; qty.className='futai-qty'; qty.placeholder='数量'; qty.style.flex='0 0 90px';
+    const qty=document.createElement('input'); qty.type='text'; qty.className='futai-qty'; qty.placeholder='数量'; qty.style.flex='0 0 70px';
+    const unit=document.createElement('span'); unit.className='futai-unit'; unit.style.cssText='font-size:12px;color:var(--sub);min-width:28px;flex:0 0 auto;align-self:center;padding-left:2px';
+    sel.addEventListener('change',()=>{ const opt=sel.options[sel.selectedIndex]; unit.textContent=opt?opt.getAttribute('data-u')||'':''; });
     const del=document.createElement('button'); del.type='button'; del.className='delbtn'; del.textContent='✕'; del.onclick=()=>row.remove();
-    inner.appendChild(sel); inner.appendChild(qty); inner.appendChild(del); row.appendChild(inner);
+    inner.appendChild(sel); inner.appendChild(qty); inner.appendChild(unit); inner.appendChild(del); row.appendChild(inner);
     document.getElementById('futaiList').appendChild(row);
   }
   function collectFutai(){
@@ -650,44 +685,145 @@
   }
   function delPhoto(id){ photos = photos.filter(p=>p.id!==id); renderPhotos(); }
 
-  // ----- 描画（写真への注釈 / 白紙図面） -----
-  let drawCtx, drawing=false, lastX=0, lastY=0, penColor='#e11d48', curDrawId=null, strokes=[], curStroke=null;
+  // ----- 描画強化（フリー/直線/四角/消しゴム/スタンプ/北マーク） -----
+  let drawCtx, drawing=false, lastX=0, lastY=0, startX=0, startY=0;
+  let penColor='#e11d48', curDrawId=null, strokes=[], curStroke=null, baseImg=null;
+  let drawMode='free';   // 'free' | 'line' | 'rect' | 'erase' | 'stamp'
+  let curStamp=null;     // 'PCS' | 'BT' | 'エコ' | '分電盤' | 'リモコン' | 'north'
+  let northAngle=0;      // 北マーク角度
   const cv = ()=>document.getElementById('drawCanvas');
-  function pickPen(btn){ penColor=btn.dataset.color; document.querySelectorAll('.modal .pen').forEach(b=>b.classList.remove('sel')); btn.classList.add('sel'); }
+
+  function setDrawMode(mode){
+    drawMode=mode; curStamp=null;
+    document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.stamp-btn').forEach(b=>b.classList.remove('active'));
+    const m={'free':'tbFree','line':'tbLine','rect':'tbRect','erase':'tbErase'};
+    if(m[mode]) document.getElementById(m[mode]).classList.add('active');
+  }
+  const STAMP_IDS={'PCS':'stPCS','BT':'stBT','エコ':'stEco','分電盤':'stPanel','リモコン':'stRemote','north':'stNorth'};
+  function setStamp(s){
+    if(curStamp===s){ curStamp=null; const b=document.getElementById(STAMP_IDS[s]); if(b) b.classList.remove('active'); drawMode='free'; document.getElementById('tbFree').classList.add('active'); return; }
+    curStamp=s; drawMode='stamp';
+    document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.stamp-btn').forEach(b=>b.classList.remove('active'));
+    if(STAMP_IDS[s]) document.getElementById(STAMP_IDS[s]).classList.add('active');
+  }
+  function setPreset(p){
+    const canvas=cv(); const ww=canvas.parentElement.clientWidth-8; const wh=canvas.parentElement.clientHeight-8;
+    const saved=canvas.toDataURL();
+    let w,h;
+    if(p==='sq'){ const s=Math.min(ww,wh); w=s; h=s; }
+    else if(p==='v'){ w=Math.min(ww, Math.floor(wh*0.707)); h=Math.min(wh, Math.floor(ww/0.707)); }
+    else { h=Math.min(wh, Math.floor(ww*0.707)); w=Math.min(ww, Math.floor(wh/0.707)); }
+    canvas.width=w; canvas.height=h;
+    drawCtx=canvas.getContext('2d');
+    drawCtx.fillStyle='#fff'; drawCtx.fillRect(0,0,w,h);
+    baseImg=canvas.toDataURL(); strokes=[];
+  }
+  function pickPen(btn){ penColor=btn.dataset.color; document.querySelectorAll('.modal .pen').forEach(b=>b.classList.remove('sel')); btn.classList.add('sel'); if(drawMode==='stamp'){}else if(drawMode==='erase'){}else setDrawMode('free'); }
   function openDraw(id){
-    curDrawId = id; strokes=[]; curStroke=null;
-    const canvas = cv(); const modal=document.getElementById('drawModal'); modal.classList.remove('hidden');
-    const W = Math.min(window.innerWidth-32, 900);
+    curDrawId=id; strokes=[]; curStroke=null; drawMode='free'; curStamp=null;
+    document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.stamp-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById('tbFree').classList.add('active');
+    const canvas=cv(); const modal=document.getElementById('drawModal'); modal.classList.remove('hidden');
+    // キャンバスサイズ = 利用可能な領域いっぱい
+    const wrap=canvas.parentElement;
     function setup(img){
-      let w=W, h=W*0.75;
-      if(img){ h = W * (img.height/img.width); }
-      canvas.width=w; canvas.height=h;
-      drawCtx = canvas.getContext('2d');
-      drawCtx.fillStyle='#fff'; drawCtx.fillRect(0,0,w,h);
-      if(img) drawCtx.drawImage(img,0,0,w,h);
-      baseImg = canvas.toDataURL();
+      const ww=wrap.clientWidth-8; const wh=wrap.clientHeight-8;
+      let w,h;
+      if(img){ const ratio=img.width/img.height; w=Math.min(ww,wh*ratio); h=w/ratio; }
+      else { w=Math.min(ww,Math.floor(wh*1.33)); h=Math.min(wh,Math.floor(ww*0.75)); }
+      canvas.width=Math.max(w,100); canvas.height=Math.max(h,100);
+      drawCtx=canvas.getContext('2d');
+      drawCtx.fillStyle='#fff'; drawCtx.fillRect(0,0,canvas.width,canvas.height);
+      if(img) drawCtx.drawImage(img,0,0,canvas.width,canvas.height);
+      baseImg=canvas.toDataURL();
     }
     if(id){ const p=photos.find(x=>x.id===id); const img=new Image(); img.onload=()=>setup(img); img.src=p.dataURL; }
     else setup(null);
   }
-  let baseImg=null;
   function redraw(){
     const canvas=cv(); const img=new Image();
     img.onload=()=>{
       drawCtx.clearRect(0,0,canvas.width,canvas.height); drawCtx.drawImage(img,0,0);
-      strokes.forEach(s=>{ drawCtx.strokeStyle=s.c; drawCtx.lineWidth=4; drawCtx.lineCap='round'; drawCtx.lineJoin='round';
-        drawCtx.beginPath(); s.pts.forEach((pt,i)=>{ i?drawCtx.lineTo(pt.x,pt.y):drawCtx.moveTo(pt.x,pt.y); }); drawCtx.stroke(); });
+      strokes.forEach(s=>{
+        if(s.type==='stamp'){ placeStampDirect(s.stamp,s.x,s.y,s.angle||0); return; }
+        if(s.type==='line'){ drawCtx.strokeStyle=s.c; drawCtx.lineWidth=3; drawCtx.lineCap='round';
+          drawCtx.beginPath(); drawCtx.moveTo(s.x0,s.y0); drawCtx.lineTo(s.x1,s.y1); drawCtx.stroke(); return; }
+        if(s.type==='rect'){ drawCtx.strokeStyle=s.c; drawCtx.lineWidth=3;
+          drawCtx.strokeRect(s.x0,s.y0,s.x1-s.x0,s.y1-s.y0); return; }
+        drawCtx.strokeStyle=s.c; drawCtx.lineWidth=4; drawCtx.lineCap='round'; drawCtx.lineJoin='round';
+        drawCtx.beginPath(); s.pts.forEach((pt,i)=>{ i?drawCtx.lineTo(pt.x,pt.y):drawCtx.moveTo(pt.x,pt.y); }); drawCtx.stroke();
+      });
     };
     img.src=baseImg;
   }
-  function pos(e){ const c=cv(); const r=c.getBoundingClientRect(); const t=e.touches?e.touches[0]:e;
+  function placeStampDirect(stamp,x,y,angle){
+    if(stamp==='north'){
+      drawCtx.save(); drawCtx.translate(x,y); drawCtx.rotate(angle);
+      // 北マーク（矢印）
+      drawCtx.strokeStyle='#111'; drawCtx.fillStyle='#e11d48'; drawCtx.lineWidth=2;
+      drawCtx.beginPath(); drawCtx.moveTo(0,-20); drawCtx.lineTo(6,0); drawCtx.lineTo(0,-4); drawCtx.lineTo(-6,0); drawCtx.closePath(); drawCtx.fill(); drawCtx.stroke();
+      drawCtx.fillStyle='#fff'; drawCtx.beginPath(); drawCtx.moveTo(0,-4); drawCtx.lineTo(6,0); drawCtx.lineTo(0,20); drawCtx.lineTo(-6,0); drawCtx.closePath(); drawCtx.fill(); drawCtx.stroke();
+      drawCtx.fillStyle='#111'; drawCtx.font='bold 11px sans-serif'; drawCtx.textAlign='center'; drawCtx.fillText('N',0,-26);
+      drawCtx.restore(); return;
+    }
+    drawCtx.save();
+    drawCtx.font='bold 13px sans-serif'; drawCtx.textAlign='left';
+    const tw=drawCtx.measureText(stamp).width;
+    const pad=6; const bw=tw+pad*2; const bh=22;
+    drawCtx.fillStyle='rgba(30,58,138,0.85)'; drawCtx.strokeStyle='#93c5fd'; drawCtx.lineWidth=1.5;
+    roundRect(drawCtx,x-bw/2,y-bh/2,bw,bh,5);
+    drawCtx.fill(); drawCtx.stroke();
+    drawCtx.fillStyle='#fff'; drawCtx.fillText(stamp,x-bw/2+pad,y+5);
+    drawCtx.restore();
+  }
+  function roundRect(ctx,x,y,w,h,r){
+    ctx.beginPath(); ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+    ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h); ctx.lineTo(x+r,y+h);
+    ctx.quadraticCurveTo(x,y+h,x,y+h-r); ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath();
+  }
+  function pos(e){ const c=cv(); const r=c.getBoundingClientRect(); const t=(e.changedTouches&&e.changedTouches.length)?e.changedTouches[0]:(e.touches?e.touches[0]:e);
     return {x:(t.clientX-r.left)*(c.width/r.width), y:(t.clientY-r.top)*(c.height/r.height)}; }
-  function startDraw(e){ e.preventDefault(); drawing=true; const p=pos(e); curStroke={c:penColor,pts:[p]}; strokes.push(curStroke); lastX=p.x; lastY=p.y; }
-  function moveDraw(e){ if(!drawing) return; e.preventDefault(); const p=pos(e);
-    drawCtx.strokeStyle=penColor; drawCtx.lineWidth=4; drawCtx.lineCap='round'; drawCtx.lineJoin='round';
-    drawCtx.beginPath(); drawCtx.moveTo(lastX,lastY); drawCtx.lineTo(p.x,p.y); drawCtx.stroke();
-    curStroke.pts.push(p); lastX=p.x; lastY=p.y; }
-  function endDraw(){ drawing=false; }
+  function startDraw(e){
+    e.preventDefault(); const p=pos(e);
+    if(drawMode==='stamp'){
+      // スタンプ配置
+      placeStampDirect(curStamp,p.x,p.y,curStamp==='north'?northAngle:0);
+      strokes.push({type:'stamp',stamp:curStamp,x:p.x,y:p.y,angle:curStamp==='north'?northAngle:0});
+      baseImg=cv().toDataURL(); strokes=[];
+      return;
+    }
+    drawing=true; startX=p.x; startY=p.y; lastX=p.x; lastY=p.y;
+    if(drawMode==='free'||drawMode==='erase'){
+      curStroke={c:(drawMode==='erase'?'#ffffff':penColor),pts:[p]}; strokes.push(curStroke);
+    }
+  }
+  function moveDraw(e){
+    if(!drawing) return; e.preventDefault(); const p=pos(e);
+    if(drawMode==='free'||drawMode==='erase'){
+      const col=drawMode==='erase'?'#ffffff':penColor;
+      drawCtx.strokeStyle=col; drawCtx.lineWidth=drawMode==='erase'?20:4; drawCtx.lineCap='round'; drawCtx.lineJoin='round';
+      drawCtx.beginPath(); drawCtx.moveTo(lastX,lastY); drawCtx.lineTo(p.x,p.y); drawCtx.stroke();
+      curStroke.pts.push(p); lastX=p.x; lastY=p.y;
+    } else if(drawMode==='line'||drawMode==='rect'){
+      // プレビュー: redraw + 仮線
+      redraw();
+      drawCtx.strokeStyle=penColor; drawCtx.lineWidth=3; drawCtx.lineCap='round';
+      if(drawMode==='line'){ drawCtx.beginPath(); drawCtx.moveTo(startX,startY); drawCtx.lineTo(p.x,p.y); drawCtx.stroke(); }
+      else { drawCtx.strokeRect(startX,startY,p.x-startX,p.y-startY); }
+    }
+  }
+  function endDraw(e){
+    if(!drawing) return; drawing=false;
+    if(e && (drawMode==='line'||drawMode==='rect')){
+      const p=pos(e);
+      if(drawMode==='line') strokes.push({type:'line',c:penColor,x0:startX,y0:startY,x1:p.x,y1:p.y});
+      else strokes.push({type:'rect',c:penColor,x0:startX,y0:startY,x1:p.x,y1:p.y});
+      redraw();
+    }
+  }
   function undoDraw(){ strokes.pop(); redraw(); }
   function closeDraw(){ document.getElementById('drawModal').classList.add('hidden'); }
   function saveDraw(){
@@ -779,7 +915,7 @@
       battery: battVal(), v2h: v2hVal(),
       block: collectBase(), lan: collectLan(),
       futaiJin: FT.jin, futaiHai: FT.hai, futaiKik: FT.kik, futaiTek: FT.tek, futaiOth: FT.oth,
-      addJinkou: val('addJinkou'), addMemo: val('addMemo'),
+      addMemo: val('addMemo'),
       park: radio('park'), parkInformed: (radio('park')==='必要'?radio('parkInformed'):''), parkMemo: val('parkMemo'),
       shakuchi: radio('shakuchi'), shakuchiArea: val('shakuchiArea'),
       scaffold: val('scaffold'), flow: radio('flow'),
@@ -838,9 +974,9 @@
   renderPhotos(); updateDrivePath();
   (function(){ const c=cv();
     c.addEventListener('mousedown',startDraw); c.addEventListener('mousemove',moveDraw);
-    window.addEventListener('mouseup',endDraw);
+    window.addEventListener('mouseup',e=>endDraw(e));
     c.addEventListener('touchstart',startDraw,{passive:false}); c.addEventListener('touchmove',moveDraw,{passive:false});
-    c.addEventListener('touchend',endDraw);
+    c.addEventListener('touchend',e=>{e.preventDefault();endDraw(e);},{passive:false});
   })();
 </script>
 </body>
