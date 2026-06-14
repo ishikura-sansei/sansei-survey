@@ -123,6 +123,7 @@
   .btn{flex:1;max-width:300px;border:0;border-radius:13px;padding:15px;font-size:16px;font-weight:800;
     background:linear-gradient(180deg,#fb8a2e,var(--accent));color:#fff;box-shadow:0 2px 8px rgba(249,115,22,.35)}
   .btn.ghost{background:#fff;color:var(--accent-deep);border:1.5px solid var(--accent);max-width:120px;flex:0 0 auto;box-shadow:none}
+  .btn.sheet{background:linear-gradient(180deg,#38bdf8,#0284c7);box-shadow:0 2px 8px rgba(2,132,199,.35);max-width:160px}
   .msg{padding:11px 14px;border-radius:11px;margin:10px 0;font-size:14px;display:none}
   .msg.ok{background:#eaf6ea;color:var(--ok);border:1px solid #cfe8cf;display:block}
   .msg.err{background:#fdecea;color:#c0392b;border:1px solid #f5c6c0;display:block}
@@ -443,6 +444,7 @@
 
 <div class="bar">
   <button class="btn ghost" onclick="clearForm()">クリア</button>
+  <button class="btn sheet" onclick="generateSheet()">📄 シート生成</button>
   <button class="btn" id="submitBtn" onclick="submitForm()">送信</button>
 </div>
 
@@ -971,6 +973,159 @@
       .then(()=>{ showMsg("送信しました（案件キー："+d.caseKey+"）", true); btn.textContent="送信完了"; })
       .catch(()=>{ showMsg("送信に失敗しました。電波を確認してもう一度お試しください。", false);
         btn.disabled=false; btn.textContent="送信"; });
+  }
+
+
+  // ===== 📄 現調シート生成（クライアント側・写真埋め込み・編集可） =====
+  function generateSheet(){
+    const d = collect();
+    const H = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const row = (lbl, val) => {
+      const v = (val===undefined||val===null||val==='')?null:String(val).trim();
+      if(!v) return '';
+      return '<tr><td class="lbl">'+lbl+'</td><td contenteditable>'+H(v)+'</td></tr>';
+    };
+    const futaiRows = [
+      d.futaiJin && row('人工', d.futaiJin),
+      d.futaiHai && row('配線', d.futaiHai),
+      d.futaiKik && row('機器', d.futaiKik),
+      d.futaiTek && row('適用品', d.futaiTek),
+      d.futaiOth && row('その他付帯', d.futaiOth),
+    ].filter(Boolean).join('') ||
+      '<tr><td colspan="2" style="text-align:center;color:#aaa;padding:10px">付帯工事なし</td></tr>';
+
+    const photoSec = d.photos && d.photos.length
+      ? '<div class="pgrid">' +
+          d.photos.map((src,i)=>'<div class="pcell"><img src="'+src+'"><div class="cap" contenteditable>写真'+(i+1)+'</div></div>').join('') +
+        '</div>'
+      : '<p class="nophoto">写真なし</p>';
+
+    const filename = ('現調シート_'+(d.custName||'未入力')+'_'+(d.surveyDate||'日付なし')+'.html').replace(/[\\/:*?"<>|]/g,'_');
+
+    const dlScript = [
+      '<scr'+'ipt>',
+      "document.getElementById('dlbtn').addEventListener('click',function(){",
+      "  var fn="+JSON.stringify(filename)+";",
+      "  var b=new Blob([document.documentElement.outerHTML],{type:'text/html;charset=utf-8'});",
+      "  var a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=fn; a.click();",
+      "});",
+      '<'+ '/scr'+'ipt>'
+    ].join('\n');
+
+    const parts = [
+      '<!DOCTYPE html>',
+      '<html lang="ja"><head>',
+      '<meta charset="UTF-8">',
+      '<meta name="viewport" content="width=device-width,initial-scale=1">',
+      '<title>現調シート - '+H(d.custName||'未入力')+'</title>',
+      '<style>',
+      '*{box-sizing:border-box;margin:0;padding:0}',
+      "body{font-family:-apple-system,'Hiragino Sans','Noto Sans JP','Meiryo',sans-serif;font-size:13px;color:#111;background:#f0f0f0}",
+      '.page{background:#fff;max-width:820px;margin:0 auto;padding:24px 28px 80px}',
+      '.hint-e{background:#fffbf0;border:1px solid #f97316;border-radius:8px;padding:8px 14px;margin-bottom:16px;font-size:12px;color:#c2410c;font-weight:700;text-align:center}',
+      '.sh{border-bottom:4px solid #f97316;margin-bottom:18px;padding-bottom:12px}',
+      '.sh h1{font-size:20px;font-weight:900}',
+      '.sh .meta{font-size:11px;color:#555;margin-top:5px;line-height:1.9}',
+      '.s{margin:12px 0}',
+      ".st{background:#f97316;color:#fff;font-weight:800;font-size:13px;padding:5px 12px;border-radius:6px 6px 0 0;display:block}",
+      'table{width:100%;border-collapse:collapse}',
+      'td{border:1px solid #e5e7eb;padding:7px 10px;vertical-align:top;font-size:12.5px;line-height:1.5}',
+      'td.lbl{font-weight:700;color:#374151;background:#f9fafb;width:28%;white-space:nowrap}',
+      '.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:12px;border:1px solid #e5e7eb;border-top:none;background:#fff}',
+      '.pcell img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb;display:block}',
+      '.cap{font-size:11px;color:#666;text-align:center;margin-top:4px;min-height:18px;padding:2px}',
+      ".cap:empty::before{content:'（キャプション）';color:#ccc}",
+      '.nophoto{color:#aaa;font-size:12px;padding:12px;border:1px solid #e5e7eb;border-top:none;text-align:center;background:#fff}',
+      '[contenteditable]:hover{outline:2px dashed rgba(249,115,22,.5);border-radius:3px;cursor:text}',
+      '[contenteditable]:focus{outline:2px solid #f97316;border-radius:3px;background:#fffcf5}',
+      '.bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e7eb;padding:10px 16px;display:flex;gap:10px;justify-content:center;z-index:100}',
+      '.pbtn{background:linear-gradient(180deg,#fb8a2e,#f97316);color:#fff;border:none;border-radius:10px;padding:12px 28px;font-size:15px;font-weight:800;cursor:pointer}',
+      '.sbtn{background:#fff;color:#1e40af;border:1.5px solid #2563eb;border-radius:10px;padding:12px 20px;font-size:14px;font-weight:700;cursor:pointer}',
+      '@media print{',
+      'body{background:#fff}',
+      '.bar,.hint-e{display:none!important}',
+      '.page{max-width:100%;padding:8mm 12mm;margin:0}',
+      '[contenteditable]{outline:none!important;background:transparent!important}',
+      '@page{margin:10mm 12mm;size:A4}',
+      '}',
+      '</style></head><body>',
+      '<div class="page">',
+      '<div class="hint-e">✏ 各セル・キャプションをクリックして編集できます　　🖨 右下ボタンで印刷 / PDF保存</div>',
+      '<div class="sh"><h1>📋 現地調査シート</h1>',
+      '<div class="meta">案件キー: <b>'+H(d.caseKey)+'</b>　／　調査日: <b>'+H(d.surveyDate||'—')+'</b>　／　報告者: <b>'+H(d.reporter||'—')+'</b><br>',
+      '会社: <b>'+H(d.company||'—')+'</b>　／　調査種別: '+H(d.surveyType||'—')+'<br>',
+      '生成日時: '+H(new Date().toLocaleString('ja-JP'))+'</div></div>',
+
+      '<div class="s"><div class="st">① お客様情報</div><table>',
+      row('お客様名', (d.custName||'')+(d.custKana?' （'+d.custKana+'）':'')),
+      row('現場住所', d.addr),
+      d.roofUnconf ? row('屋根等現調延期', d.roofUnconf) : '',
+      '</table></div>',
+
+      '<div class="s"><div class="st">② 電気設備</div><table>',
+      row('契約種別・容量', d.keiyaku),
+      row('電力計', d.meter),
+      row('太陽光パネル', d.panel),
+      row('既設機器', d.existing),
+      row('分岐回路 / 空き', [d.circuits, d.emptyCircuits].filter(Boolean).join(' / ')),
+      row('幹線', d.kansen),
+      row('接地', d.earth),
+      '</table></div>',
+
+      '<div class="s"><div class="st">③ Wi-Fi</div><table>',
+      row('状況', d.wifiStatus),
+      row('SSID', d.wifiId),
+      row('パスワード', d.wifiPass),
+      '</table></div>',
+
+      '<div class="s"><div class="st">④ 配線ルート</div><table>',
+      row('PV側', d.cblPv),
+      row('主幹側', d.cblMain),
+      row('蓄電池', d.cblBatt),
+      row('CT', d.cblCt),
+      row('その他', d.cblOther),
+      '</table></div>',
+
+      d.battType ? '<div class="s"><div class="st">⑤ 蓄電池 / V2H</div><table>'+row('種別',d.battType)+row('蓄電池',d.battery)+row('V2H',d.v2h)+'</table></div>' : '',
+
+      (d.block||d.lan) ? '<div class="s"><div class="st">⑥ 基礎 / LAN</div><table>'+row('基礎ブロック',d.block)+row('LAN',d.lan)+'</table></div>' : '',
+
+      '<div class="s"><div class="st">⑦ 付帯工事</div><table>'+futaiRows+'</table></div>',
+
+      d.addMemo ? '<div class="s"><div class="st">付帯メモ</div><table><tr><td contenteditable style="white-space:pre-wrap">'+H(d.addMemo)+'</td></tr></table></div>' : '',
+
+      '<div class="s"><div class="st">⑧ 工程・スケジュール</div><table>',
+      row('工程', d.steps),
+      row('合計日数', d.totalDays ? d.totalDays+'日' : ''),
+      row('希望日', d.hopeDate),
+      row('NG日', d.ngDate),
+      row('時間帯', d.timeSlot),
+      row('駐車場移動', d.park + (d.parkInformed ? ' / 伝達：'+d.parkInformed : '') + (d.parkMemo ? ' / '+d.parkMemo : '')),
+      row('借地許可', d.shakuchi + (d.shakuchiArea ? ' / '+d.shakuchiArea : '')),
+      row('足場撤去後', d.scaffold),
+      row('工事フロー', d.flow),
+      '</table></div>',
+
+      d.memo ? '<div class="s"><div class="st">⑨ 申し送り・メモ</div><table><tr><td contenteditable style="white-space:pre-wrap">'+H(d.memo)+'</td></tr></table></div>' : '',
+
+      '<div class="s"><div class="st">【現調写真】（'+(d.photoCount||0)+'枚）</div>',
+      photoSec,
+      '</div>',
+
+      '</div>',
+      '<div class="bar">',
+      '<button class="sbtn" id="dlbtn">💾 HTMLで保存</button>',
+      '<button class="pbtn" onclick="window.print()">🖨 印刷 / PDF保存</button>',
+      '</div>',
+      dlScript,
+      '</body></html>'
+    ];
+
+    const html = parts.join('\n');
+    const blob = new Blob([html], {type: 'text/html;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const w = window.open(url, '_blank');
+    if(!w) alert('ポップアップがブロックされました。アドレスバー付近の許可ボタンを押してください。');
   }
 
   function clearForm(){
