@@ -11,7 +11,7 @@
     --accent:#f97316; --accent-soft:#fff1e6; --accent-deep:#c2410c;
     --blue:#2563eb; --blue-soft:#e9f0ff; --blue-deep:#1e40af;
     --ok:#2e7d32; --warn:#c08a00; --chip:#f3f5f7; --radius:16px;
-  }
+  }h
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);
     font-family:-apple-system,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Meiryo",sans-serif;
@@ -156,8 +156,8 @@
     <div class="f"><label>会社名（元請け）<span class="req">*</span></label>
       <select id="company" onchange="toggleCompanyOther();refreshFutai();updateDrivePath()">
         <option value="">選択してください</option>
-        <option>リケンエナジー</option><option>アルファエレクトロ</option>
-        <option>キョウエイ</option><option>ライズ</option><option>ATEL</option><option>その他</option>
+        <option>有限会社リケンエナジー</option><option>株式会社Alpha Electro</option>
+        <option>株式会社キョウエイ</option><option>株式会社ATEL</option><option>その他</option>
       </select>
       <input type="text" id="companyOther" class="hidden" placeholder="会社名を記入" style="margin-top:6px" oninput="updateDrivePath()">
       <div class="hint">記録用。「その他」を選ぶと付帯は汎用単価の項目になります。</div>
@@ -505,7 +505,7 @@
       {n:"遠方交通費（50km以上）",u:"式",g:"oth"},{n:"別日交通費",u:"式",g:"oth"},{n:"別工程日費用",u:"式",g:"oth"},{n:"東電申請",u:"式",g:"oth"}
     ]
   };
-  FUTAI["ライズ"] = FUTAI["キョウエイ"];
+  FUTAI["ライズ"] = FUTAI["キョウエイ"]; const COMPANY_MAP = { "有限会社リケンエナジー": { futai: "リケンエナジー", folder: "有限会社リケンエナジー" }, "株式会社Alpha Electro": { futai: "アルファエレクトロ", folder: "株式会社Alpha Electro" }, "株式会社ATEL": { futai: "ATEL", folder: "株式会社ATEL" }, "株式会社キョウエイ": { futai: "キョウエイ", folder: "株式会社キョウエイ" } };
 
   function show(id,on){ const e=document.getElementById(id); if(e) e.classList.toggle('hidden',!on); }
   function toggleReporterOther(){ show('reporterOther', radio('reporter')==='その他'); }
@@ -589,7 +589,7 @@
     return a.join(' / ');
   }
 
-  function futaiList(){ const c=val('company'); if(FUTAI[c]) return FUTAI[c];
+  function futaiList(){ const c=val('company'); const key=(COMPANY_MAP[c]||{}).futai||c; return FUTAI[key]||FUTAI['汎用']; }
     if(c.indexOf('リケン')===0) return FUTAI['リケンエナジー'];
     if(c.indexOf('アルファ')===0) return FUTAI['アルファエレクトロ'];
     return FUTAI['汎用']; }
@@ -605,7 +605,7 @@
   }
   function refreshFutai(){
     const c=val('company'); const h=document.getElementById('futaiHint');
-    if(h) h.textContent=c?('「'+(FUTAI[c]?c:(c==='その他'?'汎用':c))+'」の付帯項目（5区分）から選べます。'):'※先に①で会社を選んでください。';
+    if(h){ const key=(COMPANY_MAP[c]||{}).futai||c; h.textContent=c?('「'+(FUTAI[key]?c:(c==='その他'?'汎用':c))+'」の付帯項目（5区分）から選べます。'):'※先に①で会社を選んでください。'; }
     document.querySelectorAll('#futaiList select.futai-item').forEach(fillFutaiSelect);
   }
   function addFutaiRow(){
