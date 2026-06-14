@@ -448,7 +448,7 @@
 
 <script>
   // ===== 送信先GAS（試作のためダミー。本番デプロイ時に実URL＋写真base64送信を実装） =====
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbz17yf-WuwJAZlQqS0UI4IMp6VbztjFatWqgj805XyqgEda0rkN98W0EwxDy5o5txMe/exec"; // 現調シート自動生成
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbzO0H40b4kHrGRE_VaVESjKdqavYcH1bS-jhSQGxrLXoYDlUKfj5WoTFGg8k78_L7Fd/exec"; // 現調シート自動生成
   const PROTO = false; // 本番モード
 
   const BATT = {
@@ -922,6 +922,7 @@
       steps: collectSteps(), totalDays: document.getElementById('totalDays').textContent,
       hopeDate: val('hopeDate'), ngDate: val('ngDate'), timeSlot: radio('timeSlot'),
       photoCount: photos.length,
+      photos: photos.map(p => p.dataURL),
       memo: buildMemo()
     };
   }
@@ -939,7 +940,22 @@
     return "";
   }
 
-  function submitForm(){
+  async function resizeDataURL(dataURL, maxW){
+    return new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => {
+        const w = Math.min(img.width, maxW);
+        const h = Math.round(img.height * w / img.width);
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(c.toDataURL('image/jpeg', 0.75));
+      };
+      img.src = dataURL;
+    });
+  }
+
+  async function submitForm(){
     const d = collect(); const err = validate(d);
     if(err){ showMsg(err, false); window.scrollTo({top:0,behavior:'smooth'}); return; }
     if(PROTO){
@@ -947,6 +963,9 @@
       window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}); return;
     }
     const btn=document.getElementById('submitBtn'); btn.disabled=true; btn.textContent="送信中…";
+    if(d.photos && d.photos.length){
+      d.photos = await Promise.all(d.photos.map(url => resizeDataURL(url, 1024)));
+    }
     fetch(GAS_URL, { method:"POST", mode:"no-cors",
       headers:{"Content-Type":"text/plain;charset=utf-8"}, body: JSON.stringify(d) })
       .then(()=>{ showMsg("送信しました（案件キー："+d.caseKey+"）", true); btn.textContent="送信完了"; })
