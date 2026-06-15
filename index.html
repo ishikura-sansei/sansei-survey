@@ -935,18 +935,46 @@
     return "";
   }
 
-  function submitForm(){
+  // 写真をリサイズ・JPEG圧縮する（長辺1000px / 品質70%）
+  function compressPhoto(dataURL, maxPx, quality) {
+    return new Promise(function(resolve) {
+      const img = new Image();
+      img.onload = function() {
+        const scale = Math.min(1, maxPx / Math.max(img.width, img.height));
+        const w = Math.round(img.width * scale);
+        const h = Math.round(img.height * scale);
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(c.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = function() { resolve(dataURL); };
+      img.src = dataURL;
+    });
+  }
+
+  async function submitForm(){
     const d = collect(); const err = validate(d);
     if(err){ showMsg(err, false); window.scrollTo({top:0,behavior:'smooth'}); return; }
     if(PROTO){
       showMsg("【試作】送信OK（案件キー："+d.caseKey+" / 写真"+d.photoCount+"枚）。本番では写真がDriveの保存先フォルダへ自動格納されます。", true);
       window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}); return;
     }
-    const btn=document.getElementById('submitBtn'); btn.disabled=true; btn.textContent="送信中…";
+    const btn=document.getElementById('submitBtn'); btn.disabled=true;
+    // 写真を圧縮
+    if(d.photos && d.photos.length > 0){
+      btn.textContent="写真を圧縮中…("+d.photos.length+"枚)";
+      d.photos = await Promise.all(d.photos.map(async function(p){
+        if(!p || !p.dataURL) return p;
+        const compressed = await compressPhoto(p.dataURL, 1000, 0.7);
+        return Object.assign({}, p, { dataURL: compressed });
+      }));
+    }
+    btn.textContent="送信中…";
     fetch(GAS_URL, { method:"POST", mode:"no-cors",
       headers:{"Content-Type":"text/plain;charset=utf-8"}, body: JSON.stringify(d) })
-      .then(()=>{ showMsg("送信しました（案件キー："+d.caseKey+"）", true); btn.textContent="送信完了"; })
-      .catch(()=>{ showMsg("送信に失敗しました。電波を確認してもう一度お試しください。", false);
+      .then(function(){ showMsg("送信しました（案件キー："+d.caseKey+"）", true); btn.textContent="送信完了"; })
+      .catch(function(){ showMsg("送信に失敗しました。電波を確認してもう一度お試しください。", false);
         btn.disabled=false; btn.textContent="送信"; });
   }
 
