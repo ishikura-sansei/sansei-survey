@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SANSEI 現地調査シート</title>
 <style>
-  /* ===== v5 本番（2026-06-15）SANSEI配色（白基調＋オレンジ＋ブルー）。金額は一切表示しない ===== */
+  /* ===== v6 本番（2026-06-15）SANSEI配色（白基調＋オレンジ＋ブルー）。金額は一切表示しない ===== */
   :root{
     --bg:#f4f5f7; --panel:#ffffff; --line:#e7e9ee; --ink:#111827; --sub:#6b7280;
     --accent:#f97316; --accent-soft:#fff1e6; --accent-deep:#c2410c;
@@ -106,7 +106,19 @@
   .modal .tools{display:flex;gap:6px;margin-left:6px}
   .modal .tools .pen{width:30px;height:30px;border-radius:50%;padding:0;border:2px solid #fff6}
   .modal .tools .pen.sel{border-color:#fff;box-shadow:0 0 0 2px #fff4}
-  .canvaswrap{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:8px}
+  
+  /* === スケッチ強化 === */
+  .draw-tools{display:flex;gap:4px;margin-left:4px}
+  .dtool{border:1.5px solid #fff3;border-radius:8px;background:#2b313c;color:#ccc;padding:5px 9px;font-size:15px;font-weight:700;cursor:pointer}
+  .dtool.active{background:var(--accent);color:#fff;border-color:var(--accent-deep)}
+  .stamp-bar{display:flex;flex-wrap:wrap;gap:5px;padding:7px 12px;background:#151920;border-bottom:1px solid #2a2f3a}
+  .stamp-bar button{background:#2b313c;color:#e0e0e0;border:1.5px solid #fff2;border-radius:8px;padding:5px 9px;font-size:12px;font-weight:800;cursor:pointer}
+  .stamp-bar button.ssel{background:var(--blue);border-color:var(--blue-deep);color:#fff}
+  .preset-bar{display:flex;gap:6px;padding:4px 12px;background:#11151c;border-bottom:1px solid #1e2330;align-items:center}
+  .preset-bar span{font-size:11px;color:#666}
+  .preset-bar button{background:#2b313c;color:#999;border:1px solid #fff2;border-radius:7px;padding:3px 10px;font-size:12px;cursor:pointer}
+  .preset-bar button.psel{background:#3a4050;color:#fff;border-color:#fff4}
+  .canvaswrap{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:4px}
   #drawCanvas{background:#fff;border-radius:10px;touch-action:none;max-width:100%;max-height:100%;box-shadow:0 6px 24px rgba(0,0,0,.4)}
 
   .bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);
@@ -141,6 +153,15 @@
       </div>
       <input type="text" id="reporterOther" class="hidden" placeholder="氏名を記入" style="margin-top:6px">
     </div>
+    <div class="f"><label>会社名（元請け）<span class="req">*</span></label>
+      <select id="company" onchange="toggleCompanyOther();refreshFutai();updateDrivePath()">
+        <option value="">選択してください</option>
+        <option>リケンエナジー</option><option>アルファエレクトロ</option>
+        <option>キョウエイ</option><option>ライズ</option><option>ATEL</option><option>その他</option>
+      </select>
+      <input type="text" id="companyOther" class="hidden" placeholder="会社名を記入" style="margin-top:6px" oninput="updateDrivePath()">
+      <div class="hint">記録用。「その他」を選ぶと付帯は汎用単価の項目になります。</div>
+    </div>
     <div class="f"><label>現地調査内容<span class="req">*</span>（複数選択可）</label>
       <div class="opts">
         <label><input type="checkbox" name="surveyType" value="PV">PV</label>
@@ -159,15 +180,6 @@
         <label><input type="checkbox" name="roofUnconf" value="お客様に説明した">お客様に説明した</label>
       </div>
       <input type="text" id="roofUnconfMemo" placeholder="やり取りの記録（例：雨天で屋根は次回、〇/〇再訪を説明済み）" style="margin-top:6px">
-    </div>
-    <div class="f"><label>会社名（元請け）<span class="req">*</span></label>
-      <select id="company" onchange="toggleCompanyOther();refreshFutai();updateDrivePath()">
-        <option value="">選択してください</option>
-        <option>リケンエナジー</option><option>アルファエレクトロ</option>
-        <option>キョウエイ</option><option>ライズ</option><option>ATEL</option><option>その他</option>
-      </select>
-      <input type="text" id="companyOther" class="hidden" placeholder="会社名を記入" style="margin-top:6px" oninput="updateDrivePath()">
-      <div class="hint">記録用。「その他」を選ぶと付帯は汎用単価の項目になります。</div>
     </div>
   </div>
 
@@ -334,7 +346,10 @@
     <div class="note">作業ボタンを押すと工程の末尾に追加されます。各ステップに日数を入れてください（合計は自動）。足場の設置・解体も工程に挟めます。1日案件はPT1ステップでOK。</div>
     <div class="stepbtns">
       <button type="button" onclick="addStep('PT（パネル＋蓄電池）')">PT</button>
+      <button type="button" onclick="addStep('PTE（パネル＋蓄電池＋EQ）')">PTE</button>
       <button type="button" onclick="addStep('BT（蓄電池）')">BT</button>
+      <button type="button" onclick="addStep('TE（蓄電池＋EQ）')">TE</button>
+      <button type="button" onclick="addStep('PV（太陽光のみ）')">PV</button>
       <button type="button" onclick="addStep('PV+PCS（太陽光）')">PV+PCS</button>
       <button type="button" onclick="addStep('EQ')">EQ</button>
       <button type="button" onclick="addStep('足場設置')">足場設置</button>
@@ -394,14 +409,33 @@
 <!-- 描画モーダル -->
 <div id="drawModal" class="modal hidden">
   <div class="mbar">
-    <button class="cancel" onclick="closeDraw()">キャンセル</button>
+    <button class="cancel" onclick="closeDraw()">✕</button>
     <div class="tools">
       <button class="pen sel" style="background:#e11d48" data-color="#e11d48" onclick="pickPen(this)"></button>
       <button class="pen" style="background:#2563eb" data-color="#2563eb" onclick="pickPen(this)"></button>
       <button class="pen" style="background:#111827" data-color="#111827" onclick="pickPen(this)"></button>
-      <button onclick="undoDraw()">戻す</button>
     </div>
+    <div class="draw-tools">
+      <button id="dtPen" class="dtool active" onclick="setDrawMode('pen')" title="自由描き">✏</button>
+      <button id="dtLine" class="dtool" onclick="setDrawMode('line')" title="直線">╱</button>
+      <button id="dtStamp" class="dtool" onclick="setDrawMode('stamp')" title="スタンプ">⬛</button>
+    </div>
+    <button onclick="undoDraw()" style="margin-left:4px">戻す</button>
     <button class="save" onclick="saveDraw()">保存</button>
+  </div>
+  <div id="stampBar" class="stamp-bar hidden">
+    <button onclick="setStamp(this,'PCS')">PCS</button>
+    <button onclick="setStamp(this,'蓄電池')">蓄電池</button>
+    <button onclick="setStamp(this,'パワコン')">パワコン</button>
+    <button onclick="setStamp(this,'分電盤')">分電盤</button>
+    <button onclick="setStamp(this,'EQ')">EQ</button>
+    <button onclick="setStamp(this,'V2H')">V2H</button>
+    <button onclick="setStamp(this,'北↑')" style="background:#dc2626;color:#fff;border-color:#dc2626">北↑</button>
+  </div>
+  <div class="preset-bar">
+    <span>プリセット:</span>
+    <button id="prstStd" class="psel" onclick="setPreset('std')">標準(4:3)</button>
+    <button id="prstSq" onclick="setPreset('sq')">真四角</button>
   </div>
   <div class="canvaswrap"><canvas id="drawCanvas"></canvas></div>
 </div>
@@ -436,7 +470,7 @@
   const FUTAI_GROUPS = [["jin","人工・屋根"],["hai","配線・ダクト"],["kik","機器・分電盤"],["tek","撤去・処分"],["oth","交通・申請・その他"]];
   const FUTAI = {
     "リケンエナジー":[
-      {n:"瓦屋根施工 追加人工",u:"人",g:"jin"},{n:"屋根急勾配・屋根異勾配(6寸以上、又は難工事等)",u:"人",g:"jin"},{n:"パネル手上げ 追加人工",u:"人",g:"jin"},{n:"搬入困難 追加人工",u:"人",g:"jin"},{n:"3F施工（危険作業費・人員増加）",u:"人",g:"jin"},{n:"蓄電池2段ラック施工",u:"式",g:"jin"},{n:"電気工事難工事一式",u:"式",g:"jin"},{n:"穴あけ困難（コア・タイル等）",u:"箇所",g:"jin"},{n:"ブロック嵩上げ(範囲により)",u:"式",g:"jin"},{n:"土間打ち",u:"箇所",g:"jin"},
+      {n:"瓦屋根施工 追加人工",u:"人",g:"jin"},{n:"屋根急勾配・異勾配（6寸以上）",u:"人",g:"jin"},{n:"難工事",u:"式",g:"jin"},{n:"パネル手上げ 追加人工",u:"人",g:"jin"},{n:"搬入困難 追加人工",u:"人",g:"jin"},{n:"3F施工（危険作業費・人員増加）",u:"人",g:"jin"},{n:"蓄電池2段ラック施工",u:"式",g:"jin"},{n:"電気工事難工事一式",u:"式",g:"jin"},{n:"穴あけ困難（コア・タイル等）",u:"箇所",g:"jin"},{n:"ブロック嵩上げ(範囲により)",u:"式",g:"jin"},{n:"土間打ち",u:"箇所",g:"jin"},
       {n:"屋外用ダクト(LD)延長",u:"m",g:"hai"},{n:"宅内用ダクト施工(MD)",u:"m",g:"hai"},{n:"PFD（16〜36）延長",u:"m",g:"hai"},{n:"CV-5.5 延長",u:"m",g:"hai"},{n:"CV-8 延長",u:"m",g:"hai"},{n:"CV-14 延長",u:"m",g:"hai"},{n:"屋根線延長(DC)",u:"m/系統",g:"hai"},{n:"VVF延長",u:"m",g:"hai"},{n:"FCPV線",u:"m",g:"hai"},{n:"特殊役物使用(ジャバラ、立面等)",u:"個",g:"hai"},{n:"役物多数使用(MD/LD)",u:"式",g:"hai"},{n:"床下配線",u:"式",g:"hai"},
       {n:"リレーボックス設置",u:"式",g:"kik"},{n:"MCB追加（60A以下／60A以上）",u:"式",g:"kik"},{n:"京セラ Enerezza 追加材料費",u:"式",g:"kik"},{n:"京セラエネレッツァ 追加人工",u:"人",g:"kik"},{n:"ニチコン19.9 追加人工",u:"人",g:"kik"},{n:"追加PCS設置",u:"台",g:"kik"},{n:"AiSEG設置",u:"式",g:"kik"},{n:"DR対象施工",u:"式",g:"kik"},{n:"EVコンセント設置",u:"台",g:"kik"},{n:"機器設備メクラ処理",u:"式",g:"kik"},{n:"防犯カメラ電源移植（簡易）",u:"式",g:"kik"},
       {n:"PCS類撤去・処分(1台につき)",u:"台",g:"tek"},{n:"蓄電池撤去・処分費（1台につき）",u:"台",g:"tek"},{n:"PV撤去・処分(1枚につき)",u:"枚",g:"tek"},{n:"その他既設機器撤去・処分",u:"式",g:"tek"},
@@ -444,7 +478,7 @@
     ],
     "アルファエレクトロ":[
       {n:"瓦屋根",u:"式",g:"jin"},{n:"急こう配 6寸",u:"式",g:"jin"},{n:"パネル手上げ",u:"式",g:"jin"},{n:"搬入困難",u:"式",g:"jin"},{n:"PV３面以降",u:"面",g:"jin"},{n:"蓄電池基礎（1台当たり）",u:"個",g:"jin"},
-      {n:"PFD延長 10m以降",u:"m",g:"hai"},{n:"スリムダクト延長",u:"m",g:"hai"},{n:"屋根線延長（DC）1系統ごと",u:"m",g:"hai"},{n:"CV5.5 10m以降",u:"m",g:"hai"},{n:"CV8 10m以降",u:"m",g:"hai"},{n:"CV14",u:"m",g:"hai"},{n:"MDモール（通常利用分）",u:"式",g:"hai"},
+      {n:"PFD延長",u:"m",g:"hai"},{n:"スリムダクト延長",u:"m",g:"hai"},{n:"屋根線延長（DC）1系統ごと",u:"m",g:"hai"},{n:"CV5.5 延長",u:"m",g:"hai"},{n:"CV8 延長",u:"m",g:"hai"},{n:"CV14",u:"m",g:"hai"},{n:"MDモール（通常利用分）",u:"式",g:"hai"},
       {n:"MCB・ELB設置 50Aまで",u:"個",g:"kik"},{n:"MCB・ELB設置 75Aまで",u:"個",g:"kik"},{n:"フリーボックスW",u:"個",g:"kik"},{n:"点検口設置",u:"式",g:"kik"}
     ],
     "ATEL":[
@@ -455,7 +489,7 @@
     ],
     "キョウエイ":[
       {n:"PV多面設置（4面目から1面）",u:"面",g:"jin"},{n:"急勾配工事（6寸）",u:"式",g:"jin"},{n:"野地板裏補強工事（5kWまで）",u:"式",g:"jin"},{n:"パワコン新規2台設置同時設置",u:"式",g:"jin"},{n:"特殊工事（足場設置不可・難工事等）",u:"式",g:"jin"},{n:"搬入困難（工員増員）",u:"式",g:"jin"},{n:"オムロン蓄電池 庇設置取付",u:"式",g:"jin"},
-      {n:"電気配線延長（10m以上）",u:"m",g:"hai"},{n:"リモコン線延長",u:"m",g:"hai"},{n:"幹線張替工事（CV14まで）",u:"式",g:"hai"},{n:"幹線張替延長（CV14 10m以上）",u:"m",g:"hai"},{n:"ケーブル埋設工事",u:"式",g:"hai"},{n:"ケーブル飛ばし",u:"式",g:"hai"},{n:"LANケーブル（10mまで）",u:"m",g:"hai"},{n:"配管延長（4m以上）",u:"m",g:"hai"},{n:"配管ダクト使用（太陽光・EQ）",u:"m",g:"hai"},{n:"エコキュート用ヒーターバンド",u:"m",g:"hai"},{n:"新築先行配線・配管",u:"回",g:"hai"},
+      {n:"電気配線延長",u:"m",g:"hai"},{n:"リモコン線延長",u:"m",g:"hai"},{n:"幹線張替工事（CV14まで）",u:"式",g:"hai"},{n:"幹線張替延長（CV14）",u:"m",g:"hai"},{n:"ケーブル埋設工事",u:"式",g:"hai"},{n:"ケーブル飛ばし",u:"式",g:"hai"},{n:"LANケーブル（10mまで）",u:"m",g:"hai"},{n:"配管延長（4m以上）",u:"m",g:"hai"},{n:"配管ダクト使用（太陽光・EQ）",u:"m",g:"hai"},{n:"エコキュート用ヒーターバンド",u:"m",g:"hai"},{n:"新築先行配線・配管",u:"回",g:"hai"},
       {n:"MCCB交換（60Aまで）",u:"台",g:"kik"},{n:"ELBの交換（75Aまで）",u:"台",g:"kik"},{n:"専用コンセント増設工事",u:"箇所",g:"kik"},{n:"分電盤交換（機器代別途）",u:"台",g:"kik"},{n:"メーターBOX",u:"台",g:"kik"},{n:"コンクリート基礎コア抜き",u:"箇所",g:"kik"},{n:"単2→単3切替工事",u:"式",g:"kik"},{n:"点検口",u:"式",g:"kik"},{n:"ハイブリット蓄電池 系統組換え（PV既設）",u:"式",g:"kik"},{n:"機器代金（分電盤・アンテナ等）",u:"式",g:"kik"},
       {n:"アンテナ移設・撤去",u:"式",g:"tek"},{n:"温水ソーラー撤去費用",u:"式",g:"tek"},
       {n:"遠方交通費（50km以上片道）",u:"車両",g:"oth"},{n:"事前先行基礎工事（蓄電池・EQ）",u:"式",g:"oth"},{n:"風呂循環口交換",u:"箇所",g:"oth"},{n:"風呂循環口新設",u:"箇所",g:"oth"},{n:"リモコン追加・移設",u:"台",g:"oth"},{n:"ヒートポンプ2段置き架台設置",u:"台",g:"oth"},{n:"加圧ポンプ設置のみ",u:"式",g:"oth"},{n:"砂こし器設置のみ",u:"式",g:"oth"},{n:"エアコン室外機移設",u:"台",g:"oth"},{n:"レンジフード交換",u:"台",g:"oth"},{n:"電気式オーブン設置",u:"台",g:"oth"}
@@ -573,11 +607,15 @@
   }
   function addFutaiRow(){
     const row=document.createElement('div'); row.className='futai-row f'; row.style.marginTop='6px';
-    const inner=document.createElement('div'); inner.className='row2';
+    const inner=document.createElement('div'); inner.className='row2'; inner.style.alignItems='center';
     const sel=document.createElement('select'); sel.className='futai-item'; fillFutaiSelect(sel);
-    const qty=document.createElement('input'); qty.type='text'; qty.className='futai-qty'; qty.placeholder='数量'; qty.style.flex='0 0 90px';
+    const qwrap=document.createElement('div'); qwrap.style.cssText='display:flex;align-items:center;gap:4px;flex:0 0 auto';
+    const qty=document.createElement('input'); qty.type='number'; qty.className='futai-qty'; qty.placeholder='数量'; qty.style.cssText='width:72px;flex:none'; qty.inputMode='decimal';
+    const uspan=document.createElement('span'); uspan.className='futai-unit'; uspan.style.cssText='font-size:13px;color:var(--sub);min-width:18px;font-weight:600';
+    qwrap.appendChild(qty); qwrap.appendChild(uspan);
+    sel.onchange=()=>{ const opt=sel.options[sel.selectedIndex]; uspan.textContent=opt?(opt.getAttribute('data-u')||''):''; };
     const del=document.createElement('button'); del.type='button'; del.className='delbtn'; del.textContent='✕'; del.onclick=()=>row.remove();
-    inner.appendChild(sel); inner.appendChild(qty); inner.appendChild(del); row.appendChild(inner);
+    inner.appendChild(sel); inner.appendChild(qwrap); inner.appendChild(del); row.appendChild(inner);
     document.getElementById('futaiList').appendChild(row);
   }
   function collectFutai(){
@@ -649,47 +687,144 @@
   function delPhoto(id){ photos = photos.filter(p=>p.id!==id); renderPhotos(); }
 
   // ----- 描画（写真への注釈 / 白紙図面） -----
-  let drawCtx, drawing=false, lastX=0, lastY=0, penColor='#e11d48', curDrawId=null, strokes=[], curStroke=null;
+  let drawCtx, drawing=false, lastX=0, lastY=0, penColor='#e11d48';
+  let curDrawId=null, strokes=[], curStroke=null;
+  let drawMode='pen', stampText='PCS', lineStartPt=null, snapImg=null, originalImg=null;
+  let canvasPreset='std';
   const cv = ()=>document.getElementById('drawCanvas');
-  function pickPen(btn){ penColor=btn.dataset.color; document.querySelectorAll('.modal .pen').forEach(b=>b.classList.remove('sel')); btn.classList.add('sel'); }
+
+  function pickPen(btn){
+    penColor=btn.dataset.color;
+    document.querySelectorAll('.modal .pen').forEach(b=>b.classList.remove('sel'));
+    btn.classList.add('sel');
+  }
+  function setDrawMode(mode){
+    drawMode=mode;
+    document.getElementById('dtPen').classList.toggle('active',mode==='pen');
+    document.getElementById('dtLine').classList.toggle('active',mode==='line');
+    document.getElementById('dtStamp').classList.toggle('active',mode==='stamp');
+    document.getElementById('stampBar').classList.toggle('hidden',mode!=='stamp');
+  }
+  function setStamp(btn, text){
+    stampText=text;
+    document.querySelectorAll('#stampBar button').forEach(b=>b.classList.remove('ssel'));
+    btn.classList.add('ssel');
+  }
+  function setPreset(p){
+    canvasPreset=p;
+    document.getElementById('prstStd').classList.toggle('psel',p==='std');
+    document.getElementById('prstSq').classList.toggle('psel',p==='sq');
+    openDraw(curDrawId); // キャンバスを再初期化
+  }
   function openDraw(id){
-    curDrawId = id; strokes=[]; curStroke=null;
-    const canvas = cv(); const modal=document.getElementById('drawModal'); modal.classList.remove('hidden');
-    const W = Math.min(window.innerWidth-32, 900);
-    function setup(img){
-      let w=W, h=W*0.75;
-      if(img){ h = W * (img.height/img.width); }
-      canvas.width=w; canvas.height=h;
-      drawCtx = canvas.getContext('2d');
-      drawCtx.fillStyle='#fff'; drawCtx.fillRect(0,0,w,h);
-      if(img) drawCtx.drawImage(img,0,0,w,h);
-      baseImg = canvas.toDataURL();
+    curDrawId=id; strokes=[]; curStroke=null; originalImg=null; lineStartPt=null; snapImg=null;
+    const modal=document.getElementById('drawModal'); modal.classList.remove('hidden');
+    setTimeout(()=>{
+      const wrap=modal.querySelector('.canvaswrap');
+      const W=wrap.clientWidth; const H=wrap.clientHeight;
+      const canvas=cv();
+      let cw, ch;
+      if(canvasPreset==='sq'){ cw=ch=Math.min(W,H)-8; }
+      else { cw=W-8; ch=Math.min(Math.round(cw*0.75),H-8); }
+      canvas.width=Math.max(cw,200); canvas.height=Math.max(ch,150);
+      drawCtx=canvas.getContext('2d');
+      function setupBase(img){
+        drawCtx.fillStyle='#fff'; drawCtx.fillRect(0,0,canvas.width,canvas.height);
+        if(img) drawCtx.drawImage(img,0,0,canvas.width,canvas.height);
+        originalImg=canvas.toDataURL();
+      }
+      if(id){ const p=photos.find(x=>x.id===id); const img=new Image(); img.onload=()=>setupBase(img); img.src=p.dataURL; }
+      else setupBase(null);
+    },60);
+  }
+
+  function redrawFull(){
+    const canvas=cv();
+    function doStrokes(){
+      strokes.forEach(s=>{
+        if(s.type==='line'){
+          drawCtx.strokeStyle=s.c; drawCtx.lineWidth=4; drawCtx.lineCap='round';
+          drawCtx.beginPath(); drawCtx.moveTo(s.x1,s.y1); drawCtx.lineTo(s.x2,s.y2); drawCtx.stroke();
+        } else if(s.type==='stamp'){
+          drawStampShape(s.text,s.x,s.y);
+        } else { // pen (s.pts)
+          drawCtx.strokeStyle=s.c; drawCtx.lineWidth=4; drawCtx.lineCap='round'; drawCtx.lineJoin='round';
+          drawCtx.beginPath(); (s.pts||[]).forEach((pt,i)=>{ i?drawCtx.lineTo(pt.x,pt.y):drawCtx.moveTo(pt.x,pt.y); }); drawCtx.stroke();
+        }
+      });
     }
-    if(id){ const p=photos.find(x=>x.id===id); const img=new Image(); img.onload=()=>setup(img); img.src=p.dataURL; }
-    else setup(null);
+    if(originalImg){
+      const img=new Image(); img.onload=()=>{ drawCtx.clearRect(0,0,canvas.width,canvas.height); drawCtx.drawImage(img,0,0); doStrokes(); }; img.src=originalImg;
+    } else {
+      drawCtx.clearRect(0,0,canvas.width,canvas.height); drawCtx.fillStyle='#fff'; drawCtx.fillRect(0,0,canvas.width,canvas.height); doStrokes();
+    }
   }
-  let baseImg=null;
-  function redraw(){
-    const canvas=cv(); const img=new Image();
-    img.onload=()=>{
-      drawCtx.clearRect(0,0,canvas.width,canvas.height); drawCtx.drawImage(img,0,0);
-      strokes.forEach(s=>{ drawCtx.strokeStyle=s.c; drawCtx.lineWidth=4; drawCtx.lineCap='round'; drawCtx.lineJoin='round';
-        drawCtx.beginPath(); s.pts.forEach((pt,i)=>{ i?drawCtx.lineTo(pt.x,pt.y):drawCtx.moveTo(pt.x,pt.y); }); drawCtx.stroke(); });
-    };
-    img.src=baseImg;
+
+  function drawStampShape(text, x, y){
+    if(text==='北↑'){
+      drawCtx.save(); drawCtx.fillStyle='#dc2626';
+      drawCtx.beginPath(); drawCtx.arc(x,y,20,0,Math.PI*2); drawCtx.fill();
+      drawCtx.fillStyle='#fff'; drawCtx.font='bold 13px sans-serif'; drawCtx.textAlign='center'; drawCtx.textBaseline='middle';
+      drawCtx.fillText('北↑',x,y); drawCtx.restore(); return;
+    }
+    drawCtx.save(); drawCtx.font='bold 13px sans-serif';
+    const tw=drawCtx.measureText(text).width; const pad=7; const bw=tw+pad*2; const bh=24;
+    const rx=x-bw/2; const ry=y-bh/2; const r=6;
+    drawCtx.fillStyle='#2563eb';
+    drawCtx.beginPath();
+    drawCtx.moveTo(rx+r,ry); drawCtx.lineTo(rx+bw-r,ry); drawCtx.arcTo(rx+bw,ry,rx+bw,ry+r,r);
+    drawCtx.lineTo(rx+bw,ry+bh-r); drawCtx.arcTo(rx+bw,ry+bh,rx+bw-r,ry+bh,r);
+    drawCtx.lineTo(rx+r,ry+bh); drawCtx.arcTo(rx,ry+bh,rx,ry+bh-r,r);
+    drawCtx.lineTo(rx,ry+r); drawCtx.arcTo(rx,ry,rx+r,ry,r); drawCtx.closePath(); drawCtx.fill();
+    drawCtx.fillStyle='#fff'; drawCtx.textAlign='center'; drawCtx.textBaseline='middle';
+    drawCtx.fillText(text,x,y); drawCtx.restore();
   }
-  function pos(e){ const c=cv(); const r=c.getBoundingClientRect(); const t=e.touches?e.touches[0]:e;
-    return {x:(t.clientX-r.left)*(c.width/r.width), y:(t.clientY-r.top)*(c.height/r.height)}; }
-  function startDraw(e){ e.preventDefault(); drawing=true; const p=pos(e); curStroke={c:penColor,pts:[p]}; strokes.push(curStroke); lastX=p.x; lastY=p.y; }
-  function moveDraw(e){ if(!drawing) return; e.preventDefault(); const p=pos(e);
-    drawCtx.strokeStyle=penColor; drawCtx.lineWidth=4; drawCtx.lineCap='round'; drawCtx.lineJoin='round';
-    drawCtx.beginPath(); drawCtx.moveTo(lastX,lastY); drawCtx.lineTo(p.x,p.y); drawCtx.stroke();
-    curStroke.pts.push(p); lastX=p.x; lastY=p.y; }
-  function endDraw(){ drawing=false; }
-  function undoDraw(){ strokes.pop(); redraw(); }
+
+  function pos(e){
+    const c=cv(); const r=c.getBoundingClientRect(); const t=e.touches?e.touches[0]:e;
+    if(!t) return null;
+    return {x:(t.clientX-r.left)*(c.width/r.width), y:(t.clientY-r.top)*(c.height/r.height)};
+  }
+  function startDraw(e){
+    e.preventDefault(); const p=pos(e); if(!p) return;
+    if(drawMode==='pen'){
+      drawing=true; curStroke={type:'pen',c:penColor,pts:[p]}; strokes.push(curStroke); lastX=p.x; lastY=p.y;
+    } else if(drawMode==='line'){
+      lineStartPt=p; snapImg=cv().toDataURL();
+    } else if(drawMode==='stamp'){
+      strokes.push({type:'stamp',text:stampText,x:p.x,y:p.y}); redrawFull();
+    }
+  }
+  function moveDraw(e){
+    e.preventDefault(); const p=pos(e); if(!p) return;
+    if(drawMode==='pen' && drawing){
+      drawCtx.strokeStyle=penColor; drawCtx.lineWidth=4; drawCtx.lineCap='round'; drawCtx.lineJoin='round';
+      drawCtx.beginPath(); drawCtx.moveTo(lastX,lastY); drawCtx.lineTo(p.x,p.y); drawCtx.stroke();
+      curStroke.pts.push(p); lastX=p.x; lastY=p.y;
+    } else if(drawMode==='line' && lineStartPt && snapImg){
+      const img=new Image(); img.onload=()=>{
+        drawCtx.clearRect(0,0,cv().width,cv().height); drawCtx.drawImage(img,0,0);
+        drawCtx.strokeStyle=penColor; drawCtx.lineWidth=4; drawCtx.lineCap='round';
+        drawCtx.beginPath(); drawCtx.moveTo(lineStartPt.x,lineStartPt.y); drawCtx.lineTo(p.x,p.y); drawCtx.stroke();
+      }; img.src=snapImg;
+    }
+  }
+  function endDraw(e){
+    if(drawMode==='pen'){ drawing=false; }
+    else if(drawMode==='line' && lineStartPt){
+      let p=null;
+      if(e && e.changedTouches && e.changedTouches[0]){
+        const t=e.changedTouches[0]; const c=cv(); const r=c.getBoundingClientRect();
+        p={x:(t.clientX-r.left)*(c.width/r.width),y:(t.clientY-r.top)*(c.height/r.height)};
+      } else if(e) { p=pos(e); }
+      if(p) strokes.push({type:'line',c:penColor,x1:lineStartPt.x,y1:lineStartPt.y,x2:p.x,y2:p.y});
+      lineStartPt=null; snapImg=null; redrawFull();
+    }
+  }
+  function undoDraw(){ strokes.pop(); redrawFull(); }
   function closeDraw(){ document.getElementById('drawModal').classList.add('hidden'); }
   function saveDraw(){
-    const data = cv().toDataURL('image/jpeg',0.9);
+    const data=cv().toDataURL('image/jpeg',0.92);
     if(curDrawId){ const p=photos.find(x=>x.id===curDrawId); p.dataURL=data; p.annotated=true; }
     else { photos.push({id:++pid, dataURL:data, annotated:true, isDrawing:true}); }
     renderPhotos(); closeDraw();
@@ -699,9 +834,7 @@
   function gyo(kana){
     if(!kana) return '';
     let c = kana.trim().charAt(0);
-    // 濁点・小書きを基本字へ寄せる簡易対応
     const map={'が':'か','ぎ':'き','ぐ':'く','げ':'け','ご':'こ','ざ':'さ','じ':'し','ず':'す','ぜ':'せ','ぞ':'そ','だ':'た','ぢ':'ち','づ':'つ','で':'て','ど':'と','ば':'は','び':'ひ','ぶ':'ふ','べ':'へ','ぼ':'ほ','ぱ':'は','ぴ':'ひ','ぷ':'ふ','ぺ':'へ','ぽ':'ほ'};
-    // カタカナ→ひらがな
     if(c>='ァ'&&c<='ン') c=String.fromCharCode(c.charCodeAt(0)-0x60);
     if(map[c]) c=map[c];
     const rows=[['あ','あいうえお'],['か','かきくけこ'],['さ','さしすせそ'],['た','たちつてと'],['な','なにぬねの'],['は','はひふへほ'],['ま','まみむめも'],['や','やゆよ'],['ら','らりるれろ'],['わ','わをん']];
