@@ -5,70 +5,124 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SANSEI 現地調査シート</title>
 <style>
-  /* ===== v4（2026-06-12 確定版①〜⑨反映）。白基調・金額は一切表示しない ===== */
+  /* ===== v5 本番（2026-06-15）SANSEI配色（白基調＋オレンジ＋ブルー）。金額は一切表示しない ===== */
   :root{
-    --bg:#ffffff; --panel:#ffffff; --line:#e4e7eb; --ink:#222; --sub:#6b7280;
-    --accent:#2f6f9f; --accent-soft:#eef4f9; --ok:#2e7d32; --warn:#c08a00;
-    --chip:#f3f5f7; --radius:12px;
+    --bg:#f4f5f7; --panel:#ffffff; --line:#e7e9ee; --ink:#111827; --sub:#6b7280;
+    --accent:#f97316; --accent-soft:#fff1e6; --accent-deep:#c2410c;
+    --blue:#2563eb; --blue-soft:#e9f0ff; --blue-deep:#1e40af;
+    --ok:#2e7d32; --warn:#c08a00; --chip:#f3f5f7; --radius:16px;
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);
-    font-family:"Hiragino Kaku Gothic ProN","Meiryo",system-ui,sans-serif;
-    font-size:16px;line-height:1.5;padding-bottom:90px}
+    font-family:-apple-system,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Meiryo",sans-serif;
+    font-size:16px;line-height:1.5;padding-bottom:96px}
   header{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);
-    padding:12px 16px;z-index:10}
-  header h1{font-size:17px;margin:0;font-weight:700}
-  header .sub{font-size:12px;color:var(--sub);margin-top:2px}
+    padding:10px 16px 11px;z-index:20;box-shadow:0 1px 0 rgba(17,24,39,.02)}
+  header::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;
+    background:linear-gradient(90deg,var(--accent),#fbbf24)}
+  .brand{font-weight:800;letter-spacing:.16em;font-size:15px;text-align:center;color:var(--ink)}
+  .brand span{color:var(--accent)}
+  header h1{font-size:16px;margin:2px 0 0;font-weight:700;text-align:center}
+  header .sub{font-size:11px;color:var(--sub);margin-top:1px;text-align:center}
   .wrap{max-width:640px;margin:0 auto;padding:12px 14px}
+  .note{background:var(--blue-soft);border:1px solid #d4e0fb;border-radius:12px;
+    padding:9px 11px;font-size:12px;color:var(--blue-deep);margin:10px 0}
+  .alert{background:#fff7e6;border:1px solid #f0d28a;border-radius:12px;
+    padding:9px 11px;font-size:12px;color:#8a6400;margin:8px 0}
+
   .sec{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
-    padding:14px;margin:12px 0}
-  .sec h2{font-size:15px;margin:0 0 10px;padding-left:8px;border-left:4px solid var(--accent);
-    color:var(--accent)}
-  .grp{font-size:13px;font-weight:700;color:#34536b;margin:12px 0 4px}
+    padding:16px 15px;margin:13px 0;box-shadow:0 1px 3px rgba(17,24,39,.05)}
+  .sec h2{font-size:15px;margin:0 0 12px;display:flex;align-items:center;gap:9px;font-weight:800;color:var(--ink)}
+  .sec h2 .n{width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;
+    font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:800}
+  .grp{font-size:13px;font-weight:800;color:var(--accent-deep);margin:14px 0 5px;
+    display:flex;align-items:center;gap:6px}
+  .grp::before{content:"";width:4px;height:13px;background:var(--accent);border-radius:2px}
   .f{margin:10px 0}
-  .f label{display:block;font-size:13px;color:var(--sub);margin-bottom:4px}
-  .f .req{color:#c0392b;margin-left:4px}
+  .f label{display:block;font-size:12.5px;color:var(--sub);margin-bottom:5px;font-weight:600}
+  .f .req{color:#dc2626;margin-left:4px}
   input[type=text],input[type=date],input[type=number],textarea,select{
-    width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;
-    font-size:16px;background:#fff;color:var(--ink)}
+    width:100%;padding:11px;border:1.5px solid var(--line);border-radius:11px;
+    font-size:16px;background:#fff;color:var(--ink);transition:border-color .15s}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-soft)}
   textarea{min-height:64px;resize:vertical}
-  .hint{font-size:12px;color:var(--sub);margin-top:3px}
-  .opts{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+  .hint{font-size:11.5px;color:var(--sub);margin-top:4px;line-height:1.45}
+  .opts{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
   .opts label{display:inline-flex;align-items:center;gap:6px;background:var(--chip);
-    border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:14px;color:var(--ink)}
-  .opts input{accent-color:var(--accent)}
+    border:1.5px solid var(--line);border-radius:999px;padding:8px 13px;font-size:14px;color:var(--ink);cursor:pointer}
+  .opts input{accent-color:var(--accent);width:16px;height:16px}
   .row2{display:flex;gap:8px}
   .row2>*{flex:1}
-  .note{background:var(--accent-soft);border:1px solid #d6e6f2;border-radius:10px;
-    padding:8px 10px;font-size:12px;color:#34536b;margin:8px 0}
-  .alert{background:#fff7e6;border:1px solid #f0d28a;border-radius:10px;
-    padding:8px 10px;font-size:12px;color:#8a6400;margin:8px 0}
-  .hidden{display:none}
-  .delbtn{flex:0 0 auto;border:1px solid var(--line);border-radius:10px;background:#fff;color:#c0392b;width:44px}
-  .addbtn{border:1px solid var(--accent);border-radius:10px;background:#fff;color:var(--accent);
-    padding:9px 14px;font-size:14px;font-weight:700}
+  .hidden{display:none !important}
+  .delbtn{flex:0 0 auto;border:1.5px solid var(--line);border-radius:11px;background:#fff;color:#dc2626;width:46px;font-size:15px}
+  .addbtn{border:1.5px solid var(--accent);border-radius:11px;background:var(--accent-soft);color:var(--accent-deep);
+    padding:10px 14px;font-size:14px;font-weight:800;width:100%}
   .stepbtns{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0}
-  .stepbtns button{border:1px solid var(--accent);border-radius:999px;background:#fff;color:var(--accent);
-    padding:8px 14px;font-size:14px;font-weight:700}
-  .steprow{display:flex;gap:8px;align-items:center;margin:6px 0}
-  .steprow .no{flex:0 0 26px;text-align:center;font-weight:700;color:var(--accent)}
+  .stepbtns button{border:1.5px solid var(--accent);border-radius:999px;background:#fff;color:var(--accent-deep);
+    padding:9px 15px;font-size:14px;font-weight:800}
+  .steprow{display:flex;gap:8px;align-items:center;margin:7px 0}
+  .steprow .no{flex:0 0 26px;text-align:center;font-weight:800;color:var(--accent)}
   .steprow .nm{flex:1;font-size:14px}
   .steprow input[type=number]{flex:0 0 84px}
   .steprow .unit{flex:0 0 auto;font-size:12px;color:var(--sub)}
-  .total{font-size:14px;font-weight:700;color:var(--accent);margin-top:8px}
+  .total{font-size:14px;font-weight:800;color:var(--accent-deep);margin-top:8px;
+    background:var(--accent-soft);border-radius:10px;padding:8px 11px;display:inline-block}
+
+  /* ===== ⑨ 写真・図面 ===== */
+  .pathbox{background:var(--blue-soft);border:1.5px solid #cfe;border-color:#cdd;border-radius:12px;padding:10px 12px;margin:6px 0 12px;border-color:#d4e0fb}
+  .pathbox .pathlabel{font-size:11px;color:var(--blue-deep);font-weight:800;margin-bottom:3px;letter-spacing:.03em}
+  .pathval{font-size:12px;color:#243;line-height:1.7;word-break:break-all;font-weight:600}
+  .pathval .seg{color:var(--blue-deep)}
+  .pathval .accent{color:var(--accent-deep);background:var(--accent-soft);border-radius:5px;padding:1px 5px}
+  details.guide{border:1.5px solid var(--line);border-radius:12px;margin:6px 0 12px;overflow:hidden}
+  details.guide summary{cursor:pointer;list-style:none;padding:11px 13px;font-size:13px;font-weight:800;
+    background:var(--chip);color:var(--ink)}
+  details.guide summary::-webkit-details-marker{display:none}
+  details.guide[open] summary{border-bottom:1px solid var(--line)}
+  .guidegrid{display:flex;flex-wrap:wrap;gap:6px;padding:12px}
+  .guidegrid span{font-size:12px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 11px;color:var(--sub)}
+  .bigadd{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+    border:2px dashed var(--accent);border-radius:14px;background:var(--accent-soft);
+    color:var(--accent-deep);font-weight:800;font-size:15px;padding:18px;margin-top:6px;cursor:pointer}
+  .bigadd.alt{border-color:var(--blue);background:var(--blue-soft);color:var(--blue-deep);margin-top:14px}
+  .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+  .pcell{position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;border:1.5px solid var(--line);background:#fafafa}
+  .pcell img{width:100%;height:100%;object-fit:cover;display:block}
+  .pcell .ann{position:absolute;left:5px;top:5px;background:var(--accent);color:#fff;font-size:10px;
+    font-weight:800;border-radius:999px;padding:2px 7px}
+  .pcell .edit,.pcell .del{position:absolute;width:30px;height:30px;border-radius:9px;border:none;
+    font-size:14px;display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer}
+  .pcell .edit{right:5px;bottom:5px;background:rgba(37,99,235,.92)}
+  .pcell .del{right:5px;top:5px;background:rgba(17,24,39,.6)}
+  .pempty{grid-column:1/-1;text-align:center;color:var(--sub);font-size:12px;padding:6px 0}
+
+  /* 描画モーダル */
+  .modal{position:fixed;inset:0;background:#1f2430;z-index:100;display:flex;flex-direction:column}
+  .modal .mbar{display:flex;align-items:center;gap:8px;padding:10px 12px;background:#11151c}
+  .modal .mbar button{border:none;border-radius:9px;padding:9px 12px;font-size:13px;font-weight:800;background:#2b313c;color:#fff}
+  .modal .mbar .save{background:var(--accent);margin-left:auto}
+  .modal .mbar .cancel{background:#3a3f4a}
+  .modal .tools{display:flex;gap:6px;margin-left:6px}
+  .modal .tools .pen{width:30px;height:30px;border-radius:50%;padding:0;border:2px solid #fff6}
+  .modal .tools .pen.sel{border-color:#fff;box-shadow:0 0 0 2px #fff4}
+  .canvaswrap{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:8px}
+  #drawCanvas{background:#fff;border-radius:10px;touch-action:none;max-width:100%;max-height:100%;box-shadow:0 6px 24px rgba(0,0,0,.4)}
+
   .bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);
-    padding:12px 16px;display:flex;gap:10px;justify-content:center}
-  .btn{flex:1;max-width:300px;border:0;border-radius:12px;padding:14px;font-size:16px;
-    font-weight:700;background:var(--accent);color:#fff}
-  .btn.ghost{background:#fff;color:var(--accent);border:1px solid var(--accent);max-width:140px;flex:0 0 auto}
-  .msg{padding:10px 14px;border-radius:10px;margin:10px 0;font-size:14px;display:none}
+    padding:11px 16px;display:flex;gap:10px;justify-content:center;box-shadow:0 -2px 10px rgba(17,24,39,.04)}
+  .btn{flex:1;max-width:300px;border:0;border-radius:13px;padding:15px;font-size:16px;font-weight:800;
+    background:linear-gradient(180deg,#fb8a2e,var(--accent));color:#fff;box-shadow:0 2px 8px rgba(249,115,22,.35)}
+  .btn.ghost{background:#fff;color:var(--accent-deep);border:1.5px solid var(--accent);max-width:120px;flex:0 0 auto;box-shadow:none}
+  .msg{padding:11px 14px;border-radius:11px;margin:10px 0;font-size:14px;display:none}
   .msg.ok{background:#eaf6ea;color:var(--ok);border:1px solid #cfe8cf;display:block}
   .msg.err{background:#fdecea;color:#c0392b;border:1px solid #f5c6c0;display:block}
-</style>
+  </style>
 </head>
 <body>
 <header>
-  <h1>SANSEI 現地調査シート</h1>
+  <div class="brand">SAN<span>SEI</span></div>
+  <h1>現地調査シート</h1>
   <div class="sub">工事に必要な情報を記録します（金額は扱いません）</div>
 </header>
 
@@ -77,7 +131,7 @@
 
   <!-- ① 現地調査 -->
   <div class="sec">
-    <h2>① 現地調査</h2>
+    <h2><span class="n">1</span>現地調査</h2>
     <div class="f"><label>現地調査日<span class="req">*</span></label><input type="date" id="surveyDate"></div>
     <div class="f"><label>報告者<span class="req">*</span></label>
       <div class="opts" data-radio="reporter">
@@ -107,28 +161,28 @@
       <input type="text" id="roofUnconfMemo" placeholder="やり取りの記録（例：雨天で屋根は次回、〇/〇再訪を説明済み）" style="margin-top:6px">
     </div>
     <div class="f"><label>会社名（元請け）<span class="req">*</span></label>
-      <select id="company" onchange="toggleCompanyOther();refreshFutai()">
+      <select id="company" onchange="toggleCompanyOther();refreshFutai();updateDrivePath()">
         <option value="">選択してください</option>
         <option>リケンエナジー</option><option>アルファエレクトロ</option>
         <option>キョウエイ</option><option>ライズ</option><option>ATEL</option><option>その他</option>
       </select>
-      <input type="text" id="companyOther" class="hidden" placeholder="会社名を記入" style="margin-top:6px">
+      <input type="text" id="companyOther" class="hidden" placeholder="会社名を記入" style="margin-top:6px" oninput="updateDrivePath()">
       <div class="hint">記録用。「その他」を選ぶと付帯は汎用単価の項目になります。</div>
     </div>
   </div>
 
   <!-- ② お客様情報 -->
   <div class="sec">
-    <h2>② お客様情報</h2>
+    <h2><span class="n">2</span>お客様情報</h2>
     <div class="alert">⚠ お客様名は<b>漢字を正確に・フルネーム</b>で入力してください（後で検索できなくなるため誤字厳禁）。</div>
-    <div class="f"><label>お客様名（フルネーム）<span class="req">*</span></label><input type="text" id="custName"></div>
-    <div class="f"><label>フリガナ<span class="req">*</span></label><input type="text" id="custKana"></div>
-    <div class="f"><label>現場住所<span class="req">*</span></label><input type="text" id="addr"></div>
+    <div class="f"><label>お客様名（フルネーム）<span class="req">*</span></label><input type="text" id="custName" oninput="updateDrivePath()"></div>
+    <div class="f"><label>フリガナ<span class="req">*</span></label><input type="text" id="custKana" oninput="updateDrivePath()"></div>
+    <div class="f"><label>現場住所<span class="req">*</span></label><input type="text" id="addr" oninput="updateDrivePath()"></div>
   </div>
 
-  <!-- ③ 既設状況（回路数・空き回路・アース・幹線種別を④から統合） -->
+  <!-- ③ 既設状況 -->
   <div class="sec">
-    <h2>③ 既設状況</h2>
+    <h2><span class="n">3</span>既設状況</h2>
     <div class="f"><label>契約種別・容量<span class="req">*</span>（種別＋容量を両方チェック）</label>
       <div class="opts">
         <label><input type="checkbox" name="keiyaku" value="単相2線">単相2線</label>
@@ -190,27 +244,27 @@
 
   <!-- ④ 配線・ケーブル延長 -->
   <div class="sec">
-    <h2>④ 配線・ケーブル延長</h2>
-    <div class="grp">ケーブル延長（機器系）</div>
+    <h2><span class="n">4</span>配線・ケーブル延長</h2>
+    <div class="grp">ケーブル延長（機器系・メーカー付属品の手配）</div>
+    <div class="hint" style="margin-bottom:4px">いずれも商社発注の付属品です。必要な長さを選んでください。</div>
     <div class="f">
       <div class="row2" style="margin-bottom:6px">
         <select id="cblPv"><option value="">PV〜PVユニット</option><option>5ｍ</option><option>20ｍ</option><option>30ｍ</option><option>40ｍ</option><option>その他</option></select>
         <select id="cblMain"><option value="">主幹</option><option>5ｍ</option><option>20ｍ</option><option>30ｍ</option><option>40ｍ</option><option>その他</option></select>
       </div>
       <div class="row2">
-        <select id="cblBatt"><option value="">蓄電池通信（商社発注用）</option><option>5ｍ</option><option>20ｍ</option><option>30ｍ</option><option>40ｍ</option><option>その他</option></select>
-        <select id="cblCt"><option value="">CTセンサー（商社発注用）</option><option>5ｍ</option><option>20ｍ</option><option>30ｍ</option><option>40ｍ</option><option>その他</option></select>
+        <select id="cblBatt"><option value="">蓄電池通信</option><option>5ｍ</option><option>20ｍ</option><option>30ｍ</option><option>40ｍ</option><option>その他</option></select>
+        <select id="cblCt"><option value="">CTセンサー</option><option>5ｍ</option><option>20ｍ</option><option>30ｍ</option><option>40ｍ</option><option>その他</option></select>
       </div>
       <div id="cblOtherList"></div>
       <button type="button" class="addbtn" style="margin-top:8px" onclick="addCblRow()">＋ その他のケーブル延長を追加（名称＋m）</button>
     </div>
-    <div class="grp">配線・幹線延長（別枠・該当に✔して総計mを入力）</div>
-    <div class="f" id="kansenExtBox"></div>
+    <div class="hint" style="margin-top:10px">※ CV・PFD等の幹線延長は <b>⑥付帯</b> で「総計m（多めに）」として記録してください（二重入力を避けるため④からは外しました）。</div>
   </div>
 
   <!-- ⑤ 蓄電池・V2H・部材 -->
   <div class="sec">
-    <h2>⑤ 蓄電池・V2H・部材</h2>
+    <h2><span class="n">5</span>蓄電池・V2H・部材</h2>
     <div class="hint">現調時にメーカー未定・複数想定の場合は「不明・複数想定」を選んでください（必須ではありません）。</div>
     <div class="f"><label>種別（複数選択可）</label>
       <div class="opts">
@@ -240,12 +294,12 @@
 
   <!-- ⑥ 付帯（会社別・5区分） -->
   <div class="sec">
-    <h2>⑥ 付帯（記録）</h2>
-    <div class="note">「工事に必要な物・人工」の記録です。金額は付けません（事務が単価表で算定）。①で選んだ会社の単価表の付帯項目を、5区分グループから選んで数量を入れてください（複数行OK）。</div>
+    <h2><span class="n">6</span>付帯（記録）</h2>
+    <div class="note">「工事に必要な物・人工」の記録です。金額は付けません（事務が単価表で算定）。①で選んだ会社の単価表の付帯項目を、5区分グループから選んで数量を入れてください（複数行OK）。CV・PFD等の延長は<b>総計mで多めに</b>記入。</div>
     <div id="futaiHint" class="hint">※先に①で会社を選んでください。</div>
     <div id="futaiList"></div>
     <button type="button" class="addbtn" style="margin-top:8px" onclick="addFutaiRow()">＋ 付帯を追加</button>
-    <div class="row2">
+    <div class="row2" style="margin-top:8px">
       <div class="f"><label>追加人工（目安・数値）</label><input type="number" id="addJinkou" inputmode="numeric" placeholder="例：2"><div class="hint">最終判断は事務</div></div>
     </div>
     <div class="f"><label>追加工事の補足（自由記入）</label><textarea id="addMemo" placeholder="無い場合は空欄でOK"></textarea></div>
@@ -253,7 +307,7 @@
 
   <!-- ⑦ 確認事項・お約束 -->
   <div class="sec">
-    <h2>⑦ 確認事項・お約束</h2>
+    <h2><span class="n">7</span>確認事項・お約束</h2>
     <div class="f"><label>駐車場の移動</label>
       <div class="opts" data-radio="park"><label><input type="radio" name="park" value="必要" onclick="togglePark()">必要</label><label><input type="radio" name="park" value="不要" onclick="togglePark()">不要</label></div>
       <div id="parkInformedBox" class="hidden" style="margin-top:6px">
@@ -269,14 +323,14 @@
       </div>
       <input type="text" id="shakuchiArea" class="hidden" placeholder="借地する部分（例：北側隣地〇〇様の庭先2m）" style="margin-top:6px"></div>
     <div class="f"><label>足場予定位置</label><input type="text" id="scaffold" placeholder="例：南面・東面・北面（具体的に記載）">
-      <div class="hint">具体的に記載・原則3面以上（※3面以上ルールは現状リケンのみ）。写真は⑨（Phase2で対応）。</div></div>
+      <div class="hint">具体的に記載・原則3面以上（※3面以上ルールは現状リケンのみ）。位置の写真は⑨で撮影。</div></div>
     <div class="f"><label>工事当日の流れ説明</label>
       <div class="opts" data-radio="flow"><label><input type="radio" name="flow" value="済">済</label><label><input type="radio" name="flow" value="未">未</label></div></div>
   </div>
 
   <!-- ⑧ 工程・希望日程（ステップ式） -->
   <div class="sec">
-    <h2>⑧ 工程・希望日程</h2>
+    <h2><span class="n">8</span>工程・希望日程</h2>
     <div class="note">作業ボタンを押すと工程の末尾に追加されます。各ステップに日数を入れてください（合計は自動）。足場の設置・解体も工程に挟めます。1日案件はPT1ステップでOK。</div>
     <div class="stepbtns">
       <button type="button" onclick="addStep('PT（パネル＋蓄電池）')">PT</button>
@@ -299,10 +353,34 @@
       </div></div>
   </div>
 
-  <!-- ⑨ 写真・伝達事項 -->
+  <!-- ⑨ 写真・図面・伝達事項 -->
   <div class="sec">
-    <h2>⑨ 写真・伝達事項</h2>
-    <div class="note">写真のアップロード（→Drive保存）はPhase2で対応します。当面は従来どおり（LINE等）で共有してください。</div>
+    <h2><span class="n">9</span>写真・図面・伝達事項</h2>
+    <div class="note">写真はこの場でアップ。送信すると下の<b>Driveフォルダへ自動保存</b>されます（現場のログイン不要・LINEに送る手間がなくなります）。枚数の上限はありません。</div>
+
+    <div class="pathbox">
+      <div class="pathlabel">📁 保存先（自動・お客様名と会社名から作成）</div>
+      <div id="drivePath" class="pathval">お客様名・会社名を入れると表示されます</div>
+    </div>
+
+    <details class="guide">
+      <summary>📋 撮影ガイド（リケン標準・撮り忘れ防止）</summary>
+      <div class="guidegrid">
+        <span>住宅全景</span><span>屋根</span><span>野地板</span><span>分電盤</span>
+        <span>宅内工事予定</span><span>屋外工事予定</span><span>電気明細</span><span>メーター</span><span>周辺(駐車判断)</span>
+      </div>
+    </details>
+
+    <label class="bigadd">
+      📷 写真を撮る／選ぶ（複数OK）
+      <input type="file" accept="image/*" multiple onchange="addPhotos(event)" hidden>
+    </label>
+    <div id="photoGrid" class="pgrid"><div class="pempty">まだ写真はありません</div></div>
+
+    <button type="button" class="bigadd alt" onclick="openDraw(null)">✏ 手書き図面を描く（白紙）</button>
+    <div class="hint" style="margin-top:6px;text-align:center">写真は ✏ ボタンで、設置予定など描き込みできます（必要な写真だけでOK）。</div>
+
+    <div class="grp" style="margin-top:16px">伝達事項</div>
     <div class="f"><label>伝達事項・申し送り（自由記入）</label><textarea id="memo" style="min-height:100px" placeholder="営業へ事前連絡したいこと・現場の申し送りを記入"></textarea></div>
     <div class="hint">Wi-Fiなし／動作未確認・屋根延期・駐車場伝達「未」などは送信時に自動で申し送りに追記されます。</div>
     <div class="f"><div class="opts">
@@ -313,25 +391,33 @@
   <div id="msg" class="msg"></div>
 </div>
 
+<!-- 描画モーダル -->
+<div id="drawModal" class="modal hidden">
+  <div class="mbar">
+    <button class="cancel" onclick="closeDraw()">キャンセル</button>
+    <div class="tools">
+      <button class="pen sel" style="background:#e11d48" data-color="#e11d48" onclick="pickPen(this)"></button>
+      <button class="pen" style="background:#2563eb" data-color="#2563eb" onclick="pickPen(this)"></button>
+      <button class="pen" style="background:#111827" data-color="#111827" onclick="pickPen(this)"></button>
+      <button onclick="undoDraw()">戻す</button>
+    </div>
+    <button class="save" onclick="saveDraw()">保存</button>
+  </div>
+  <div class="canvaswrap"><canvas id="drawCanvas"></canvas></div>
+</div>
+
 <div class="bar">
   <button class="btn ghost" onclick="clearForm()">クリア</button>
   <button class="btn" id="submitBtn" onclick="submitForm()">送信</button>
 </div>
 
 <script>
-  // ===== 送信先GAS（URL不変。Code.gs更新時は「デプロイを管理→新バージョン」で再デプロイ） =====
+  // ===== 送信先GAS =====
   const GAS_URL = "https://script.google.com/macros/s/AKfycbzO0H40b4kHrGRE_VaVESjKdqavYcH1bS-jhSQGxrLXoYDlUKfj5WoTFGg8k78_L7Fd/exec";
+  const PROTO = false; // 本番モード
 
-  // ===== 蓄電池・V2H マスタ（08/SANSEI_蓄電池V2H_機種容量マスタ 由来。改廃時はここを更新） =====
   const BATT = {
-    "ニチコン":{
-      "トライブリッドT5/T6":[7.4,9.9,14.9,19.9],
-      "トライブリッドT3":[4.9,7.4,9.9,14.9],
-      "単機能U5(全負荷)":[7.7,9.7],
-      "単機能U4(全負荷)":[11.1,16.6],
-      "単機能U2系(旧・販売終了)":[11.1,12.0,16.6],
-      "その他":[]
-    },
+    "ニチコン":{"トライブリッドT5/T6":[7.4,9.9,14.9,19.9],"トライブリッドT3":[4.9,7.4,9.9,14.9],"単機能U5(全負荷)":[7.7,9.7],"単機能U4(全負荷)":[11.1,16.6],"単機能U2系(旧・販売終了)":[11.1,12.0,16.6],"その他":[]},
     "京セラ":{"エネレッツァ":[5.0,10.0,15.0],"エネレッツァ プラス(全負荷)":[5.5,11.0,16.5],"その他":[]},
     "オムロン":{"マルチ蓄電プラットフォーム":[6.5,9.8,12.7,16.4],"その他":[]},
     "長州産業":{"Smart PV multi":[6.5,9.8,12.7,16.4],"その他":[]},
@@ -340,25 +426,13 @@
     "パナソニック":{"創蓄連携S+":[3.5,5.6,6.3,9.1,11.2],"その他":[]},
     "シャープ":{"クラウド蓄電池":[6.5,7.7,8.4,9.5,13.0,15.4],"その他":[]},
     "ファーウェイ":{"LUNA2000":[5,7,10,14,15,21],"その他":[]},
-    "その他":{"その他":[]},
-    "不明・複数想定":{"未定":[]}
+    "その他":{"その他":[]},"不明・複数想定":{"未定":[]}
   };
   const V2H = {
     "ニチコン":["EVパワステ スタンダード(VCG-663)","EVパワステ プレミアム(VCG-666)","EVパワステ 最新(VSG3-666)","トライブリッドV2H","その他"],
-    "デンソー":["DNEVC-D6075","その他"],
-    "東光高岳":["CFD1-B-V2H1","その他"],
-    "その他":["その他"],
-    "不明・複数想定":["未定"]
+    "デンソー":["DNEVC-D6075","その他"],"東光高岳":["CFD1-B-V2H1","その他"],"その他":["その他"],"不明・複数想定":["未定"]
   };
-
-  // ===== 既設機器→注意リマインド（※文言は確定後に追記。現状は空＝表示なし） =====
   const EXISTING_REMINDER = {};
-
-  // ===== 配線・幹線延長（別枠）の項目 =====
-  const KANSEN_EXT_ITEMS = ["CV5.5","CV8","CV14","PFD16","PFD22","PFD28","PFD36"];
-
-  // ===== 会社別付帯マスタ（単価台帳v5＝5区分整理 2026-06-12 から生成。金額・IDは載せない） =====
-  // g: jin=人工・屋根 / hai=配線・ダクト / kik=機器・分電盤 / tek=撤去・処分 / oth=交通・申請・その他
   const FUTAI_GROUPS = [["jin","人工・屋根"],["hai","配線・ダクト"],["kik","機器・分電盤"],["tek","撤去・処分"],["oth","交通・申請・その他"]];
   const FUTAI = {
     "リケンエナジー":[
@@ -394,9 +468,8 @@
       {n:"遠方交通費（50km以上）",u:"式",g:"oth"},{n:"別日交通費",u:"式",g:"oth"},{n:"別工程日費用",u:"式",g:"oth"},{n:"東電申請",u:"式",g:"oth"}
     ]
   };
-  FUTAI["ライズ"] = FUTAI["キョウエイ"]; // ライズはキョウエイ系単価表ベース（台帳v5と同一項目）
+  FUTAI["ライズ"] = FUTAI["キョウエイ"];
 
-  // ===== 条件表示 =====
   function show(id,on){ const e=document.getElementById(id); if(e) e.classList.toggle('hidden',!on); }
   function toggleReporterOther(){ show('reporterOther', radio('reporter')==='その他'); }
   function toggleSurveyTypeOther(){ const c=document.querySelector('input[name="surveyType"][value="その他"]'); show('surveyTypeOther', c&&c.checked); }
@@ -417,7 +490,6 @@
     if(msgs.length){ box.innerHTML=msgs.join('<br>'); box.classList.remove('hidden'); } else { box.classList.add('hidden'); box.innerHTML=''; }
   }
   function toggleMakerBlocks(){ show('battBlock', document.getElementById('typeBatt').checked); show('v2hBlock', document.getElementById('typeV2h').checked); }
-
   function fillSelect(sel, items, ph){ sel.innerHTML='<option value="">'+ph+'</option>'+items.map(x=>'<option>'+x+'</option>').join(''); }
   function fillBattSeries(){ const m=document.getElementById('battMaker').value; const s=document.getElementById('battSeries');
     fillSelect(s, m&&BATT[m]?Object.keys(BATT[m]):[], 'シリーズ'); fillSelect(document.getElementById('battCap'),[], '容量(kWh)'); }
@@ -425,7 +497,6 @@
     const caps=(m&&se&&BATT[m]&&BATT[m][se])?BATT[m][se]:[]; fillSelect(document.getElementById('battCap'), caps, '容量(kWh)'); }
   function fillV2hModel(){ const m=document.getElementById('v2hMaker').value; fillSelect(document.getElementById('v2hModel'), m&&V2H[m]?V2H[m]:[], '機種'); }
 
-  // ===== ④ その他ケーブル延長（名称＋m・複数追加） =====
   function addCblRow(){
     const row=document.createElement('div'); row.className='cbl-row row2'; row.style.marginTop='6px';
     const nm=document.createElement('input'); nm.type='text'; nm.className='cbl-name'; nm.placeholder='名称（例：リモコン線）';
@@ -443,27 +514,6 @@
     return a.join(' / ');
   }
 
-  // ===== ④ 配線・幹線延長（別枠：チェック＋総計m） =====
-  function buildKansenExt(){
-    const box=document.getElementById('kansenExtBox');
-    box.innerHTML=KANSEN_EXT_ITEMS.map((k,i)=>(
-      '<div class="row2" style="margin-top:6px;align-items:center">'+
-      '<label style="flex:0 0 110px;display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--ink)">'+
-      '<input type="checkbox" id="ke_c'+i+'" onclick="document.getElementById(\'ke_m'+i+'\').disabled=!this.checked">'+k+'</label>'+
-      '<input type="number" id="ke_m'+i+'" placeholder="総計m" disabled>'+
-      '</div>'
-    )).join('');
-  }
-  function collectKansenExt(){
-    const a=[];
-    KANSEN_EXT_ITEMS.forEach((k,i)=>{
-      const c=document.getElementById('ke_c'+i), m=document.getElementById('ke_m'+i);
-      if(c&&c.checked) a.push(k+'：総計'+(m.value.trim()||'?')+'m');
-    });
-    return a.join(' / ');
-  }
-
-  // ===== ⑤ ベース類（複数追加） =====
   function addBaseRow(){
     const row=document.createElement('div'); row.className='base-row row2'; row.style.marginTop='6px';
     const t=document.createElement('select'); t.className='base-type';
@@ -484,7 +534,6 @@
     return a.join(' / ');
   }
 
-  // ===== ⑤ LAN（長さ＋本数・複数追加） =====
   function addLanRow(){
     const row=document.createElement('div'); row.className='lan-row row2'; row.style.marginTop='6px';
     const l=document.createElement('select'); l.className='lan-len';
@@ -503,7 +552,6 @@
     return a.join(' / ');
   }
 
-  // ===== ⑥ 付帯（会社別・5区分 optgroup） =====
   function futaiList(){ const c=val('company'); if(FUTAI[c]) return FUTAI[c];
     if(c.indexOf('リケン')===0) return FUTAI['リケンエナジー'];
     if(c.indexOf('アルファ')===0) return FUTAI['アルファエレクトロ'];
@@ -543,7 +591,6 @@
     return {jin:g.jin.join(' / '),hai:g.hai.join(' / '),kik:g.kik.join(' / '),tek:g.tek.join(' / '),oth:g.oth.join(' / ')};
   }
 
-  // ===== ⑧ 工程ステップ =====
   function addStep(name, custom){
     const row=document.createElement('div'); row.className='steprow';
     const no=document.createElement('span'); no.className='no';
@@ -575,13 +622,119 @@
     return a.join('→');
   }
 
-  // ===== 値取得 =====
+  // ===== ⑨ 写真・図面 =====
+  let photos = [];   // {id, dataURL, annotated}
+  let pid = 0;
+  function addPhotos(ev){
+    const files = Array.from(ev.target.files||[]);
+    files.forEach(f=>{
+      const r = new FileReader();
+      r.onload = e=>{ photos.push({id:++pid, dataURL:e.target.result, annotated:false}); renderPhotos(); };
+      r.readAsDataURL(f);
+    });
+    ev.target.value='';
+  }
+  function renderPhotos(){
+    const grid = document.getElementById('photoGrid');
+    if(!photos.length){ grid.innerHTML='<div class="pempty">まだ写真はありません</div>'; return; }
+    grid.innerHTML = photos.map(p=>(
+      '<div class="pcell">'+
+        (p.annotated?'<div class="ann">✏ 描込</div>':'')+
+        '<img src="'+p.dataURL+'">'+
+        '<button class="del" onclick="delPhoto('+p.id+')">✕</button>'+
+        '<button class="edit" onclick="openDraw('+p.id+')">✏</button>'+
+      '</div>'
+    )).join('');
+  }
+  function delPhoto(id){ photos = photos.filter(p=>p.id!==id); renderPhotos(); }
+
+  // ----- 描画（写真への注釈 / 白紙図面） -----
+  let drawCtx, drawing=false, lastX=0, lastY=0, penColor='#e11d48', curDrawId=null, strokes=[], curStroke=null;
+  const cv = ()=>document.getElementById('drawCanvas');
+  function pickPen(btn){ penColor=btn.dataset.color; document.querySelectorAll('.modal .pen').forEach(b=>b.classList.remove('sel')); btn.classList.add('sel'); }
+  function openDraw(id){
+    curDrawId = id; strokes=[]; curStroke=null;
+    const canvas = cv(); const modal=document.getElementById('drawModal'); modal.classList.remove('hidden');
+    const W = Math.min(window.innerWidth-32, 900);
+    function setup(img){
+      let w=W, h=W*0.75;
+      if(img){ h = W * (img.height/img.width); }
+      canvas.width=w; canvas.height=h;
+      drawCtx = canvas.getContext('2d');
+      drawCtx.fillStyle='#fff'; drawCtx.fillRect(0,0,w,h);
+      if(img) drawCtx.drawImage(img,0,0,w,h);
+      baseImg = canvas.toDataURL();
+    }
+    if(id){ const p=photos.find(x=>x.id===id); const img=new Image(); img.onload=()=>setup(img); img.src=p.dataURL; }
+    else setup(null);
+  }
+  let baseImg=null;
+  function redraw(){
+    const canvas=cv(); const img=new Image();
+    img.onload=()=>{
+      drawCtx.clearRect(0,0,canvas.width,canvas.height); drawCtx.drawImage(img,0,0);
+      strokes.forEach(s=>{ drawCtx.strokeStyle=s.c; drawCtx.lineWidth=4; drawCtx.lineCap='round'; drawCtx.lineJoin='round';
+        drawCtx.beginPath(); s.pts.forEach((pt,i)=>{ i?drawCtx.lineTo(pt.x,pt.y):drawCtx.moveTo(pt.x,pt.y); }); drawCtx.stroke(); });
+    };
+    img.src=baseImg;
+  }
+  function pos(e){ const c=cv(); const r=c.getBoundingClientRect(); const t=e.touches?e.touches[0]:e;
+    return {x:(t.clientX-r.left)*(c.width/r.width), y:(t.clientY-r.top)*(c.height/r.height)}; }
+  function startDraw(e){ e.preventDefault(); drawing=true; const p=pos(e); curStroke={c:penColor,pts:[p]}; strokes.push(curStroke); lastX=p.x; lastY=p.y; }
+  function moveDraw(e){ if(!drawing) return; e.preventDefault(); const p=pos(e);
+    drawCtx.strokeStyle=penColor; drawCtx.lineWidth=4; drawCtx.lineCap='round'; drawCtx.lineJoin='round';
+    drawCtx.beginPath(); drawCtx.moveTo(lastX,lastY); drawCtx.lineTo(p.x,p.y); drawCtx.stroke();
+    curStroke.pts.push(p); lastX=p.x; lastY=p.y; }
+  function endDraw(){ drawing=false; }
+  function undoDraw(){ strokes.pop(); redraw(); }
+  function closeDraw(){ document.getElementById('drawModal').classList.add('hidden'); }
+  function saveDraw(){
+    const data = cv().toDataURL('image/jpeg',0.9);
+    if(curDrawId){ const p=photos.find(x=>x.id===curDrawId); p.dataURL=data; p.annotated=true; }
+    else { photos.push({id:++pid, dataURL:data, annotated:true, isDrawing:true}); }
+    renderPhotos(); closeDraw();
+  }
+
+  // ----- 保存先パスの自動生成 -----
+  function gyo(kana){
+    if(!kana) return '';
+    let c = kana.trim().charAt(0);
+    // 濁点・小書きを基本字へ寄せる簡易対応
+    const map={'が':'か','ぎ':'き','ぐ':'く','げ':'け','ご':'こ','ざ':'さ','じ':'し','ず':'す','ぜ':'せ','ぞ':'そ','だ':'た','ぢ':'ち','づ':'つ','で':'て','ど':'と','ば':'は','び':'ひ','ぶ':'ふ','べ':'へ','ぼ':'ほ','ぱ':'は','ぴ':'ひ','ぷ':'ふ','ぺ':'へ','ぽ':'ほ'};
+    // カタカナ→ひらがな
+    if(c>='ァ'&&c<='ン') c=String.fromCharCode(c.charCodeAt(0)-0x60);
+    if(map[c]) c=map[c];
+    const rows=[['あ','あいうえお'],['か','かきくけこ'],['さ','さしすせそ'],['た','たちつてと'],['な','なにぬねの'],['は','はひふへほ'],['ま','まみむめも'],['や','やゆよ'],['ら','らりるれろ'],['わ','わをん']];
+    for(const [g,set] of rows){ if(set.indexOf(c)>=0) return g+'行'; }
+    return '';
+  }
+  function shiku(addr){
+    if(!addr) return '';
+    let a=addr.replace(/^.+?[都道府県]/,'');
+    const m=a.match(/^.+?[市区町村]/);
+    return m?m[0]:'';
+  }
+  function updateDrivePath(){
+    const company = val('company')==='その他'? val('companyOther') : val('company');
+    const name = val('custName'); const kana = val('custKana'); const addr=val('addr');
+    const el = document.getElementById('drivePath');
+    if(!company && !name){ el.textContent='お客様名・会社名を入れると表示されます'; return; }
+    const g = gyo(kana) || '（行）';
+    const head = name? name.charAt(0) : '（頭）';
+    const sk = shiku(addr) || '（市区）';
+    el.innerHTML =
+      '<span class="seg">現場写真</span> / '+
+      '<span class="seg">'+(company||'（会社名）')+'</span> / '+
+      '<span class="seg">'+g+'₋お客様名₋現場住所</span> / '+
+      '<span class="accent">'+head+'_'+(name||'（お客様名）')+'_'+sk+'</span> / '+
+      '<span class="seg">現調写真</span>';
+  }
+
   function val(id){ const e=document.getElementById(id); return e?e.value.trim():""; }
   function radio(name){ const e=document.querySelector('input[name="'+name+'"]:checked'); return e?e.value:""; }
   function multi(name){ return Array.from(document.querySelectorAll('input[name="'+name+'"]:checked')).map(x=>x.value).join("・"); }
   function caseKey(){ const d=new Date(); const p=n=>String(n).padStart(2,'0');
     return "G"+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+"-"+p(d.getHours())+p(d.getMinutes())+p(d.getSeconds()); }
-
   function reporterVal(){ const r=radio('reporter'); return r==='その他'?('その他：'+val('reporterOther')):r; }
   function companyVal(){ const c=val('company'); return c==='その他'?('その他：'+val('companyOther')):c; }
   function surveyTypeVal(){ let a=multi('surveyType'); const o=val('surveyTypeOther'); if(o) a=a.replace('その他','その他：'+o); return a; }
@@ -593,7 +746,6 @@
   function v2hVal(){ if(!document.getElementById('typeV2h').checked) return '';
     return [val('v2hMaker'),val('v2hModel')].filter(Boolean).join(' '); }
 
-  // ===== 自動申し送り（各項目の「未/営業へ」を集約） =====
   function buildMemo(){
     const base=val('memo'); const auto=[];
     const w=radio('wifiStatus');
@@ -621,7 +773,6 @@
       wifiStatus: wifiStatusVal(), wifiId: val('wifiId'), wifiPass: val('wifiPass'),
       cblPv: val('cblPv'), cblMain: val('cblMain'), cblBatt: val('cblBatt'), cblCt: val('cblCt'),
       cblOther: collectCblOther(),
-      kansenExt: collectKansenExt(),
       battType: (document.getElementById('typeBatt').checked?'蓄電池':'')+(document.getElementById('typeV2h').checked?(document.getElementById('typeBatt').checked?'・':'')+'V2H':''),
       battery: battVal(), v2h: v2hVal(),
       block: collectBase(), lan: collectLan(),
@@ -632,6 +783,8 @@
       scaffold: val('scaffold'), flow: radio('flow'),
       steps: collectSteps(), totalDays: document.getElementById('totalDays').textContent,
       hopeDate: val('hopeDate'), ngDate: val('ngDate'), timeSlot: radio('timeSlot'),
+      photoCount: photos.length,
+      photos: photos.map(p=>({dataURL:p.dataURL, annotated:p.annotated})),
       memo: buildMemo()
     };
   }
@@ -652,6 +805,10 @@
   function submitForm(){
     const d = collect(); const err = validate(d);
     if(err){ showMsg(err, false); window.scrollTo({top:0,behavior:'smooth'}); return; }
+    if(PROTO){
+      showMsg("【試作】送信OK（案件キー："+d.caseKey+" / 写真"+d.photoCount+"枚）。本番では写真がDriveの保存先フォルダへ自動格納されます。", true);
+      window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}); return;
+    }
     const btn=document.getElementById('submitBtn'); btn.disabled=true; btn.textContent="送信中…";
     fetch(GAS_URL, { method:"POST", mode:"no-cors",
       headers:{"Content-Type":"text/plain;charset=utf-8"}, body: JSON.stringify(d) })
@@ -666,7 +823,7 @@
       if(e.type==='checkbox'||e.type==='radio') e.checked=false; else e.value="";
     });
     ['cblOtherList','baseList','lanList','futaiList','stepList'].forEach(id=>{ document.getElementById(id).innerHTML=''; });
-    buildKansenExt(); updateTotal();
+    photos=[]; renderPhotos(); updateTotal(); updateDrivePath();
     ['reporterOther','surveyTypeOther','companyOther','keiyakuOther','existingOther','wifiId','wifiPass','wifiNote','battBlock','v2hBlock','parkInformedBox','shakuchiArea'].forEach(id=>show(id,false));
     document.getElementById('existingReminder').classList.add('hidden');
     showMsg("", true); document.getElementById('msg').className="msg";
@@ -677,7 +834,13 @@
   document.getElementById('surveyDate').valueAsDate = new Date();
   fillSelect(document.getElementById('battMaker'), Object.keys(BATT), 'メーカー');
   fillSelect(document.getElementById('v2hMaker'), Object.keys(V2H), 'メーカー');
-  buildKansenExt();
+  renderPhotos(); updateDrivePath();
+  (function(){ const c=cv();
+    c.addEventListener('mousedown',startDraw); c.addEventListener('mousemove',moveDraw);
+    window.addEventListener('mouseup',endDraw);
+    c.addEventListener('touchstart',startDraw,{passive:false}); c.addEventListener('touchmove',moveDraw,{passive:false});
+    c.addEventListener('touchend',endDraw);
+  })();
 </script>
 </body>
 </html>
