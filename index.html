@@ -468,6 +468,7 @@
   };
   const EXISTING_REMINDER = {};
   const FUTAI_GROUPS = [["jin","人工・屋根"],["hai","配線・ダクト"],["kik","機器・分電盤"],["tek","撤去・処分"],["oth","交通・申請・その他"]];
+  const FUTAI_GRP_OVR = {'リケンエナジー':{'jin':'追加作業費'}};
   const FUTAI = {
     "リケンエナジー":[
       {n:"瓦屋根施工 追加人工",u:"人",g:"jin"},{n:"屋根急勾配・異勾配（6寸以上）",u:"人",g:"jin"},{n:"難工事",u:"式",g:"jin"},{n:"パネル手上げ 追加人工",u:"人",g:"jin"},{n:"搬入困難 追加人工",u:"人",g:"jin"},{n:"3F施工（危険作業費・人員増加）",u:"人",g:"jin"},{n:"蓄電池2段ラック施工",u:"式",g:"jin"},{n:"電気工事難工事一式",u:"式",g:"jin"},{n:"穴あけ困難（コア・タイル等）",u:"箇所",g:"jin"},{n:"ブロック嵩上げ(範囲により)",u:"式",g:"jin"},{n:"土間打ち",u:"箇所",g:"jin"},
@@ -596,7 +597,7 @@
     FUTAI_GROUPS.forEach(gr=>{
       const sub=items.filter(it=>it.g===gr[0]);
       if(!sub.length) return;
-      html+='<optgroup label="【'+gr[1]+'】">'+sub.map(it=>'<option value="'+it.n+'" data-u="'+it.u+'" data-g="'+gr[0]+'">'+it.n+'（'+it.u+'）</option>').join('')+'</optgroup>';
+      html+='<optgroup label="【'+(FUTAI_GRP_OVR[val('company')]||{})[gr[0]]||gr[1]+'】">'+sub.map(it=>'<option value="'+it.n+'" data-u="'+it.u+'" data-g="'+gr[0]+'">'+it.n+'（'+it.u+'）</option>').join('')+'</optgroup>';
     });
     sel.innerHTML=html; sel.value=cur;
   }
