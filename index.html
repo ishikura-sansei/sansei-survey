@@ -661,7 +661,7 @@
     FUTAI_GROUPS.forEach(gr=>{
       const sub=items.filter(it=>it.g===gr[0]);
       if(!sub.length) return;
-      html+='<optgroup label="【'+(FUTAI_GRP_OVR[val('company')]||{})[gr[0]]||gr[1]+'】">'+sub.map(it=>'<option value="'+it.n+'" data-u="'+it.u+'" data-g="'+gr[0]+'">'+it.n+'（'+it.u+'）</option>').join('')+'</optgroup>';
+      html+='<optgroup label="【'+((FUTAI_GRP_OVR[val('company')]||{})[gr[0]]||gr[1])+'】">'+sub.map(it=>'<option value="'+it.n+'" data-u="'+it.u+'" data-g="'+gr[0]+'">'+it.n+'（'+it.u+'）</option>').join('')+'</optgroup>';
     });
     sel.innerHTML=html; sel.value=cur;
   }
