@@ -311,9 +311,6 @@
     <div id="futaiHint" class="hint">※先に①で会社を選んでください。</div>
     <div id="futaiList"></div>
     <button type="button" class="addbtn" style="margin-top:8px" onclick="addFutaiRow()">＋ 付帯を追加</button>
-    <div class="row2" style="margin-top:8px">
-      <div class="f"><label>追加人工（目安・数値）</label><input type="number" id="addJinkou" inputmode="numeric" placeholder="例：2"><div class="hint">最終判断は事務</div></div>
-    </div>
     <div class="f"><label>追加工事の補足（自由記入）</label><textarea id="addMemo" placeholder="無い場合は空欄でOK"></textarea></div>
   </div>
 
@@ -681,6 +678,8 @@
     sel.onchange=()=>{ const opt=sel.options[sel.selectedIndex]; uspan.textContent=opt?(opt.getAttribute('data-u')||''):''; };
     const del=document.createElement('button'); del.type='button'; del.className='delbtn'; del.textContent='✕'; del.onclick=()=>row.remove();
     inner.appendChild(sel); inner.appendChild(qwrap); inner.appendChild(del); row.appendChild(inner);
+    const memo=document.createElement('textarea'); memo.className='futai-memo'; memo.placeholder='備考（例：狭所作業、搬入困難）'; memo.rows=1; memo.style.cssText='width:100%;margin-top:4px;font-size:13px;resize:vertical;border-radius:4px;border:1px solid var(--bdr);padding:4px 6px;box-sizing:border-box;color:var(--fg);background:var(--bg);';
+    row.appendChild(memo);
     document.getElementById('futaiList').appendChild(row);
   }
   function collectFutai(){
@@ -689,7 +688,8 @@
       const sel=row.querySelector('.futai-item'); const qel=row.querySelector('.futai-qty'); const qty=(qel?qel.value:'').trim();
       const name=sel.value; if(!name) return;
       const opt=sel.options[sel.selectedIndex]; const u=opt.getAttribute('data-u')||''; const grp=opt.getAttribute('data-g')||'oth';
-      g[grp].push(name+(qty?(' '+qty+u):''));
+      const mel=row.querySelector('.futai-memo'); const mo=(mel?mel.value:'').trim();
+      g[grp].push(name+(qty?(' '+qty+u):'')+(mo?' [備考：'+mo+']':''));
     });
     return {jin:g.jin.join(' / '),hai:g.hai.join(' / '),kik:g.kik.join(' / '),tek:g.tek.join(' / '),oth:g.oth.join(' / ')};
   }
