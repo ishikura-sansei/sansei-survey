@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SANSEI ç¾å°èª¿æ»ã·ã¼ã</title>
+<title>SANSEI 現地調査シート</title>
 <style>
-  /* ===== v6 æ¬çªï¼2026-06-15ï¼SANSEIéè²ï¼ç½åºèª¿ï¼ãªã¬ã³ã¸ï¼ãã«ã¼ï¼ãéé¡ã¯ä¸åè¡¨ç¤ºããªã ===== */
+  /* ===== v6 本番（2026-06-15）SANSEI配色（白基調＋オレンジ＋ブルー）。金額は一切表示しない ===== */
   :root{
     --bg:#f4f5f7; --panel:#ffffff; --line:#e7e9ee; --ink:#111827; --sub:#6b7280;
     --accent:#f97316; --accent-soft:#fff1e6; --accent-deep:#c2410c;
@@ -69,7 +69,7 @@
   .total{font-size:14px;font-weight:800;color:var(--accent-deep);margin-top:8px;
     background:var(--accent-soft);border-radius:10px;padding:8px 11px;display:inline-block}
 
-  /* ===== â¨ åçã»å³é¢ ===== */
+  /* ===== ⑨ 写真・図面 ===== */
   .pathbox{background:var(--blue-soft);border:1.5px solid #cfe;border-color:#cdd;border-radius:12px;padding:10px 12px;margin:6px 0 12px;border-color:#d4e0fb}
   .pathbox .pathlabel{font-size:11px;color:var(--blue-deep);font-weight:800;margin-bottom:3px;letter-spacing:.03em}
   .pathval{font-size:12px;color:#243;line-height:1.7;word-break:break-all;font-weight:600}
@@ -97,7 +97,7 @@
   .pcell .del{right:5px;top:5px;background:rgba(17,24,39,.6)}
   .pempty{grid-column:1/-1;text-align:center;color:var(--sub);font-size:12px;padding:6px 0}
 
-  /* æç»ã¢ã¼ãã« */
+  /* 描画モーダル */
   .modal{position:fixed;inset:0;background:#1f2430;z-index:100;display:flex;flex-direction:column}
   .modal .mbar{display:flex;align-items:center;gap:8px;padding:10px 12px;background:#11151c}
   .modal .mbar button{border:none;border-radius:9px;padding:9px 12px;font-size:13px;font-weight:800;background:#2b313c;color:#fff}
@@ -107,7 +107,7 @@
   .modal .tools .pen{width:30px;height:30px;border-radius:50%;padding:0;border:2px solid #fff6}
   .modal .tools .pen.sel{border-color:#fff;box-shadow:0 0 0 2px #fff4}
   
-  /* === ã¹ã±ããå¼·å === */
+  /* === スケッチ強化 === */
   .draw-tools{display:flex;gap:4px;margin-left:4px}
   .dtool{border:1.5px solid #fff3;border-radius:8px;background:#2b313c;color:#ccc;padding:5px 9px;font-size:15px;font-weight:700;cursor:pointer}
   .dtool.active{background:var(--accent);color:#fff;border-color:var(--accent-deep)}
@@ -134,460 +134,460 @@
 <body>
 <header>
   <div class="brand">SAN<span>SEI</span></div>
-  <h1>ç¾å°èª¿æ»ã·ã¼ã</h1>
-  <div class="sub">å·¥äºã«å¿è¦ãªæå ±ãè¨é²ãã¾ãï¼éé¡ã¯æ±ãã¾ããï¼</div>
+  <h1>現地調査シート</h1>
+  <div class="sub">工事に必要な情報を記録します（金額は扱いません）</div>
 </header>
 
 <div class="wrap">
-  <div class="note">â» ãã®ã·ã¼ãã¯ãå·¥äºæå ±ãã®è¨é²ã§ããä»å¸¯ï¼è«æ±ï¼ã®éé¡ã¯äºåå´ã§åä¾¡è¡¨ããç®å®ãã¾ããç¾èª¿èã¯è¦ãã¾ã¾ã»å¿è¦ãªãã®ãå¥åãã¦ãã ããã</div>
+  <div class="note">※ このシートは「工事情報」の記録です。付帯（請求）の金額は事務側で単価表から算定します。現調者は見たまま・必要なものを入力してください。</div>
 
-  <!-- â  ç¾å°èª¿æ» -->
+  <!-- ① 現地調査 -->
   <div class="sec">
-    <h2><span class="n">1</span>ç¾å°èª¿æ»</h2>
-    <div class="f"><label>ç¾å°èª¿æ»æ¥<span class="req">*</span></label><input type="date" id="surveyDate"></div>
-    <div class="f"><label>å ±åè<span class="req">*</span></label>
+    <h2><span class="n">1</span>現地調査</h2>
+    <div class="f"><label>現地調査日<span class="req">*</span></label><input type="date" id="surveyDate"></div>
+    <div class="f"><label>報告者<span class="req">*</span></label>
       <div class="opts" data-radio="reporter">
-        <label><input type="radio" name="reporter" value="å±±ä¸­" onclick="toggleReporterOther()">å±±ä¸­</label>
-        <label><input type="radio" name="reporter" value="åå²¡" onclick="toggleReporterOther()">åå²¡</label>
-        <label><input type="radio" name="reporter" value="ãã®ä»" onclick="toggleReporterOther()">ãã®ä»</label>
+        <label><input type="radio" name="reporter" value="山中" onclick="toggleReporterOther()">山中</label>
+        <label><input type="radio" name="reporter" value="吉岡" onclick="toggleReporterOther()">吉岡</label>
+        <label><input type="radio" name="reporter" value="その他" onclick="toggleReporterOther()">その他</label>
       </div>
-      <input type="text" id="reporterOther" class="hidden" placeholder="æ°åãè¨å¥" style="margin-top:6px">
+      <input type="text" id="reporterOther" class="hidden" placeholder="氏名を記入" style="margin-top:6px">
     </div>
-    <div class="f"><label>ä¼ç¤¾åï¼åè«ãï¼<span class="req">*</span></label>
+    <div class="f"><label>会社名（元請け）<span class="req">*</span></label>
       <select id="company" onchange="toggleCompanyOther();refreshFutai();updateDrivePath()">
-        <option value="">é¸æãã¦ãã ãã</option>
-        <option>ãªã±ã³ã¨ãã¸ã¼</option><option>ã¢ã«ãã¡ã¨ã¬ã¯ãã­</option>
-        <option>ã­ã§ã¦ã¨ã¤</option><option>ã©ã¤ãº</option><option>ATEL</option><option>ãã®ä»</option>
+        <option value="">選択してください</option>
+        <option>リケンエナジー</option><option>アルファエレクトロ</option>
+        <option>キョウエイ</option><option>ライズ</option><option>ATEL</option><option>その他</option>
       </select>
-      <input type="text" id="companyOther" class="hidden" placeholder="ä¼ç¤¾åãè¨å¥" style="margin-top:6px" oninput="updateDrivePath()">
-      <div class="hint">è¨é²ç¨ãããã®ä»ããé¸ã¶ã¨ä»å¸¯ã¯æ±ç¨åä¾¡ã®é ç®ã«ãªãã¾ãã</div>
+      <input type="text" id="companyOther" class="hidden" placeholder="会社名を記入" style="margin-top:6px" oninput="updateDrivePath()">
+      <div class="hint">記録用。「その他」を選ぶと付帯は汎用単価の項目になります。</div>
     </div>
-    <div class="f"><label>ç¾å°èª¿æ»åå®¹<span class="req">*</span>ï¼è¤æ°é¸æå¯ï¼</label>
+    <div class="f"><label>現地調査内容<span class="req">*</span>（複数選択可）</label>
       <div class="opts">
         <label><input type="checkbox" name="surveyType" value="PV">PV</label>
         <label><input type="checkbox" name="surveyType" value="BT">BT</label>
         <label><input type="checkbox" name="surveyType" value="EQ">EQ</label>
         <label><input type="checkbox" name="surveyType" value="V2H">V2H</label>
         <label><input type="checkbox" name="surveyType" value="IH">IH</label>
-        <label><input type="checkbox" name="surveyType" value="ãã®ä»" onclick="toggleSurveyTypeOther()">ãã®ä»</label>
+        <label><input type="checkbox" name="surveyType" value="その他" onclick="toggleSurveyTypeOther()">その他</label>
       </div>
-      <input type="text" id="surveyTypeOther" class="hidden" placeholder="ãã®ä»ã®åå®¹" style="margin-top:6px">
-      <div class="hint">PV=å¤ªé½å / BT=èé»æ±  / EQ=ã¨ã³ã­ã¥ã¼ã / V2H / IH</div>
+      <input type="text" id="surveyTypeOther" class="hidden" placeholder="その他の内容" style="margin-top:6px">
+      <div class="hint">PV=太陽光 / BT=蓄電池 / EQ=エコキュート / V2H / IH</div>
     </div>
-    <div class="f"><label>æªå¤©åç­ã§å±æ ¹ç­ã¯ç¾èª¿ãå»¶æã«ãªã£ãå ´åã¯ã¯ã¿è¨å¥</label>
+    <div class="f"><label>悪天候等で屋根等は現調が延期になった場合ははみ記入</label>
       <div class="opts">
-        <label><input type="checkbox" name="roofUnconf" value="æ¥ç¨èª¿æ´ãã">æ¥ç¨èª¿æ´ãã</label>
-        <label><input type="checkbox" name="roofUnconf" value="ãå®¢æ§ã«èª¬æãã">ãå®¢æ§ã«èª¬æãã</label>
+        <label><input type="checkbox" name="roofUnconf" value="日程調整した">日程調整した</label>
+        <label><input type="checkbox" name="roofUnconf" value="お客様に説明した">お客様に説明した</label>
       </div>
-      <input type="text" id="roofUnconfMemo" placeholder="ããåãã®è¨é²ï¼ä¾ï¼é¨å¤©ã§å±æ ¹ã¯æ¬¡åãã/ãåè¨ªãèª¬ææ¸ã¿ï¼" style="margin-top:6px">
+      <input type="text" id="roofUnconfMemo" placeholder="やり取りの記録（例：雨天で屋根は次回、〇/〇再訪を説明済み）" style="margin-top:6px">
     </div>
   </div>
 
-  <!-- â¡ ãå®¢æ§æå ± -->
+  <!-- ② お客様情報 -->
   <div class="sec">
-    <h2><span class="n">2</span>ãå®¢æ§æå ±</h2>
-    <div class="alert">â  ãå®¢æ§åã¯<b>æ¼¢å­ãæ­£ç¢ºã«ã»ãã«ãã¼ã </b>ã§å¥åãã¦ãã ããï¼å¾ã§æ¤ç´¢ã§ããªããªãããèª¤å­å³ç¦ï¼ã</div>
-    <div class="f"><label>ãå®¢æ§åï¼ãã«ãã¼ã ï¼<span class="req">*</span></label><input type="text" id="custName" oninput="updateDrivePath()"></div>
-    <div class="f"><label>ããªã¬ã<span class="req">*</span></label><input type="text" id="custKana" oninput="updateDrivePath()"></div>
-    <div class="f"><label>ç¾å ´ä½æ<span class="req">*</span></label><input type="text" id="addr" oninput="updateDrivePath()"></div>
+    <h2><span class="n">2</span>お客様情報</h2>
+    <div class="alert">⚠ お客様名は<b>漢字を正確に・フルネーム</b>で入力してください（後で検索できなくなるため誤字厳禁）。</div>
+    <div class="f"><label>お客様名（フルネーム）<span class="req">*</span></label><input type="text" id="custName" oninput="updateDrivePath()"></div>
+    <div class="f"><label>フリガナ<span class="req">*</span></label><input type="text" id="custKana" oninput="updateDrivePath()"></div>
+    <div class="f"><label>現場住所<span class="req">*</span></label><input type="text" id="addr" oninput="updateDrivePath()"></div>
   </div>
 
-  <!-- â¢ æ¢è¨­ç¶æ³ -->
+  <!-- ③ 既設状況 -->
   <div class="sec">
-    <h2><span class="n">3</span>æ¢è¨­ç¶æ³</h2>
-    <div class="f"><label>å¥ç´ç¨®å¥ã»å®¹é<span class="req">*</span>ï¼ç¨®å¥ï¼å®¹éãä¸¡æ¹ãã§ãã¯ï¼</label>
+    <h2><span class="n">3</span>既設状況</h2>
+    <div class="f"><label>契約種別・容量<span class="req">*</span>（種別＋容量を両方チェック）</label>
       <div class="opts">
-        <label><input type="checkbox" name="keiyaku" value="åç¸2ç·">åç¸2ç·</label>
-        <label><input type="checkbox" name="keiyaku" value="åç¸3ç·">åç¸3ç·</label>
+        <label><input type="checkbox" name="keiyaku" value="単相2線">単相2線</label>
+        <label><input type="checkbox" name="keiyaku" value="単相3線">単相3線</label>
         <label><input type="checkbox" name="keiyaku" value="20A">20A</label>
         <label><input type="checkbox" name="keiyaku" value="30A">30A</label>
         <label><input type="checkbox" name="keiyaku" value="40A">40A</label>
         <label><input type="checkbox" name="keiyaku" value="50A">50A</label>
         <label><input type="checkbox" name="keiyaku" value="60A">60A</label>
         <label><input type="checkbox" name="keiyaku" value="70A">70A</label>
-        <label><input type="checkbox" name="keiyaku" value="ãã®ä»" onclick="toggleKeiyakuOther()">ãã®ä»</label>
+        <label><input type="checkbox" name="keiyaku" value="その他" onclick="toggleKeiyakuOther()">その他</label>
       </div>
-      <input type="text" id="keiyakuOther" class="hidden" placeholder="ãã®ä»ï¼ä¾ï¼12kVAå¥ç´ ç­ï¼" style="margin-top:6px">
+      <input type="text" id="keiyakuOther" class="hidden" placeholder="その他（例：12kVA契約 等）" style="margin-top:6px">
     </div>
-    <div class="f"><label>ã¡ã¼ã¿ã¼çªå·</label><input type="text" id="meter"></div>
-    <div class="f"><label>åé»ç¤ã¡ã¼ã«ã¼ã»åå¼</label><input type="text" id="panel"></div>
+    <div class="f"><label>メーター番号</label><input type="text" id="meter"></div>
+    <div class="f"><label>分電盤メーカー・型式</label><input type="text" id="panel"></div>
     <div class="row2">
-      <div class="f"><label>åè·¯æ°ï¼å¨åè·¯ï¼</label><input type="number" id="circuits" inputmode="numeric" placeholder="ä¾ï¼20"><div class="hint">åä½ï¼åè·¯</div></div>
-      <div class="f"><label>ç©ºãåè·¯æ°</label><input type="number" id="emptyCircuits" inputmode="numeric" placeholder="ä¾ï¼2"><div class="hint">åä½ï¼åè·¯</div></div>
+      <div class="f"><label>回路数（全回路）</label><input type="number" id="circuits" inputmode="numeric" placeholder="例：20"><div class="hint">単位：回路</div></div>
+      <div class="f"><label>空き回路数</label><input type="number" id="emptyCircuits" inputmode="numeric" placeholder="例：2"><div class="hint">単位：回路</div></div>
     </div>
-    <div class="f"><label>å¹¹ç·ç¨®å¥ï¼æ¢è¨­ã»é»ç·æéã®è¨é²ï¼</label>
+    <div class="f"><label>幹線種別（既設・電線手配の記録）</label>
       <div class="row2">
         <select id="kansenType">
-          <option value="">ç¨®å¥</option><option>CV</option><option>CVT</option><option>SV</option><option>ãã®ä»</option>
+          <option value="">種別</option><option>CV</option><option>CVT</option><option>SV</option><option>その他</option>
         </select>
         <select id="kansenSize">
-          <option value="">ãµã¤ãº</option><option>8</option><option>14</option><option>ãã®ä»</option>
+          <option value="">サイズ</option><option>8</option><option>14</option><option>その他</option>
         </select>
       </div>
     </div>
-    <div class="f"><label>ã¢ã¼ã¹ç®è¦ç¢ºèª</label>
-      <div class="opts" data-radio="earth"><label><input type="radio" name="earth" value="æ">æ</label><label><input type="radio" name="earth" value="ç¡">ç¡</label></div></div>
-    <div class="f"><label>æ¢è¨­æ©å¨ï¼è¦ããç©ã ããã§ãã¯ï¼æï¼æªãã§ãã¯ï¼ç¡ï¼</label>
+    <div class="f"><label>アース目視確認</label>
+      <div class="opts" data-radio="earth"><label><input type="radio" name="earth" value="有">有</label><label><input type="radio" name="earth" value="無">無</label></div></div>
+    <div class="f"><label>既設機器（見える物だけチェック＝有／未チェック＝無）</label>
       <div class="opts">
-        <label><input type="checkbox" name="existing" value="ã¨ããã¡ã¼ã ">ã¨ããã¡ã¼ã </label>
-        <label><input type="checkbox" name="existing" value="ã¨ã³ã­ã¥ã¼ã" onclick="updateExistingReminder()">ã¨ã³ã­ã¥ã¼ã</label>
-        <label><input type="checkbox" name="existing" value="çµ¦æ¹¯å¨">çµ¦æ¹¯å¨</label>
-        <label><input type="checkbox" name="existing" value="æ¢è¨­å¤ªé½å">æ¢è¨­å¤ªé½å</label>
-        <label><input type="checkbox" name="existing" value="æ¢è¨­èé»æ± ">æ¢è¨­èé»æ± </label>
+        <label><input type="checkbox" name="existing" value="エネファーム">エネファーム</label>
+        <label><input type="checkbox" name="existing" value="エコキュート" onclick="updateExistingReminder()">エコキュート</label>
+        <label><input type="checkbox" name="existing" value="給湯器">給湯器</label>
+        <label><input type="checkbox" name="existing" value="既設太陽光">既設太陽光</label>
+        <label><input type="checkbox" name="existing" value="既設蓄電池">既設蓄電池</label>
         <label><input type="checkbox" name="existing" value="IH">IH</label>
-        <label><input type="checkbox" name="existing" value="ãã¬ãã¢ã³ãã">ãã¬ãã¢ã³ãã</label>
-        <label><input type="checkbox" name="existing" value="ãã®ä»" onclick="toggleExistingOther()">ãã®ä»</label>
+        <label><input type="checkbox" name="existing" value="テレビアンテナ">テレビアンテナ</label>
+        <label><input type="checkbox" name="existing" value="その他" onclick="toggleExistingOther()">その他</label>
       </div>
-      <input type="text" id="existingOther" class="hidden" placeholder="ãã®ä»ã®æ¢è¨­æ©å¨" style="margin-top:6px">
+      <input type="text" id="existingOther" class="hidden" placeholder="その他の既設機器" style="margin-top:6px">
       <div id="existingReminder" class="alert hidden"></div>
     </div>
-    <div class="f"><label>Wi-Fiç¶æ³<span class="req">*</span></label>
+    <div class="f"><label>Wi-Fi状況<span class="req">*</span></label>
       <div class="opts" data-radio="wifi">
-        <label><input type="radio" name="wifiStatus" value="ããï¼åä½ç¢ºèªæ¸ã¿ï¼" onclick="toggleWifi()">ããï¼åä½ç¢ºèªæ¸ã¿ï¼</label>
-        <label><input type="radio" name="wifiStatus" value="ãªã" onclick="toggleWifi()">ãªã</label>
-        <label><input type="radio" name="wifiStatus" value="ãããåä½æªç¢ºèª" onclick="toggleWifi()">ãããåä½æªç¢ºèª</label>
+        <label><input type="radio" name="wifiStatus" value="あり（動作確認済み）" onclick="toggleWifi()">あり（動作確認済み）</label>
+        <label><input type="radio" name="wifiStatus" value="なし" onclick="toggleWifi()">なし</label>
+        <label><input type="radio" name="wifiStatus" value="あるが動作未確認" onclick="toggleWifi()">あるが動作未確認</label>
       </div>
-      <div class="hint">ã¢ãã¿ãªã³ã°ã«å¿é ãããªããâé éã¢ãã¿ãªã³ã°ä¸å¯ãè¨å¥ï¼å¶æ¥­ã¸èªåã§ç³ãéãããã¾ãï¼ã</div>
-      <input type="text" id="wifiId" class="hidden" placeholder="Wi-Fi IDï¼SSIDï¼" style="margin-top:6px">
+      <div class="hint">モドタリングに必須。「なし」→遠隔モドタリング不可を記入（営業へ自動で申し送りされます）。</div>
+      <input type="text" id="wifiId" class="hidden" placeholder="Wi-Fi ID（SSID）" style="margin-top:6px">
       <input type="text" id="wifiPass" class="hidden" placeholder="Wi-Fi PASS" style="margin-top:6px">
-      <input type="text" id="wifiNote" class="hidden" placeholder="åä½æªç¢ºèªã®çç±ï¼ä¾ï¼ãå®¢æ§ä¸å¨ã§ç¢ºèªã§ããï¼" style="margin-top:6px">
+      <input type="text" id="wifiNote" class="hidden" placeholder="動作未確認の理由（例：お客様不在で確認でくず）" style="margin-top:6px">
     </div>
   </div>
 
-  <!-- â£ éç·ã»ã±ã¼ãã«å»¶é· -->
+  <!-- ④ 配線・ケーブル延長 -->
   <div class="sec">
-    <h2><span class="n">4</span>éç·ã»ã±ã¼ãã«å»¶é·</h2>
-    <div class="grp">ã±ã¼ãã«å»¶é·ï¼æ©å¨ç³»ã»ã¡ã¼ã«ã¼ä»å±åã®æéï¼</div>
-    <div class="hint" style="margin-bottom:4px">ããããåç¤¾çºæ³¨ã®ä»å±åã§ããå¿è¦ãªé·ããé¸ãã§ãã ããã</div>
+    <h2><span class="n">4</span>配線・ケーブル延長</h2>
+    <div class="grp">ケーブル延長（機器系・メーカー付属品の手配）</div>
+    <div class="hint" style="margin-bottom:4px">いずれも商社発注の付属品です。必要な長さを選んでください。</div>
     <div class="f">
       <div class="row2" style="margin-bottom:6px">
-        <select id="cblPv"><option value="">PVãPVã¦ããã</option><option>5ï½</option><option>20ï½</option><option>30ï½</option><option>40ï½</option><option>ãã®ä»</option></select>
-        <select id="cblMain"><option value="">ä¸»å¹¹</option><option>5ï½</option><option>20ï½</option><option>30ï½</option><option>40ï½</option><option>ãã®ä»</option></select>
+        <select id="cblPv"><option value="">PV〜PVユニット</option><option>5ｍ</option><option>20ｍ</option><option>30ｍ</option><option>40ｍ</option><option>その他</option></select>
+        <select id="cblMain"><option value="">主幹</option><option>5ｍ</option><option>20ｍ</option><option>30ｍ</option><option>40ｍ</option><option>その他</option></select>
       </div>
       <div class="row2">
-        <select id="cblBatt"><option value="">èé»æ± éä¿¡</option><option>5ï½</option><option>20ï½</option><option>30ï½</option><option>40ï½</option><option>ãã®ä»</option></select>
-        <select id="cblCt"><option value="">CTã»ã³ãµã¼</option><option>5ï½</option><option>20ï½</option><option>30ï½</option><option>40ï½</option><option>ãã®ä»</option></select>
+        <select id="cblBatt"><option value="">蓄電池通信</option><option>5ｍ</option><option>20ｍ</option><option>30ｍ</option><option>40ｍ</option><option>その他</option></select>
+        <select id="cblCt"><option value="">CTセンサー</option><option>5ｍ</option><option>20ｍ</option><option>30ｍ</option><option>40ｍ</option><option>その他</option></select>
       </div>
       <div id="cblOtherList"></div>
-      <button type="button" class="addbtn" style="margin-top:8px" onclick="addCblRow()">ï¼ ãã®ä»ã®ã±ã¼ãã«å»¶é·ãè¿½å ï¼åç§°ï¼mï¼</button>
+      <button type="button" class="addbtn" style="margin-top:8px" onclick="addCblRow()">＋ その他のケーブル延長を追加（名称＋m）</button>
     </div>
-    <div class="hint" style="margin-top:10px">â» CVã»PFDç­ã®å¹¹ç·å»¶é·ã¯ <b>â¥ä»å¸¯</b> ã§ãç·è¨mï¼å¤ãã«ï¼ãã¨ãã¦è¨é²ãã¦ãã ããï¼äºéå¥åãé¿ããããâ£ããã¯å¤ãã¾ããï¼ã</div>
+    <div class="hint" style="margin-top:10px">※ CV・PFD等の幹線延長は <b>⑥付帯</b> で「総計m（多めに）」として記録してください（二重入力を避けるため④からは外しました）。</div>
   </div>
 
-  <!-- â¤ èé»æ± ã»V2Hã»é¨æ -->
+  <!-- ⑤ 蓄電池・V2H・部材 -->
   <div class="sec">
-    <h2><span class="n">5</span>èé»æ± ã»V2Hã»é¨æ</h2>
-    <div class="hint">ç¾èª¿æã«ã¡ã¼ã«ã¼æªå®ã»è¤æ°æ³å®ã®å ´åã¯ãä¸æã»è¤æ°æ³å®ããé¸ãã§ãã ããï¼å¿é ã§ã¯ããã¾ããï¼ã</div>
-    <div class="f"><label>ç¨®å¥ï¼è¤æ°é¸æå¯ï¼</label>
+    <h2><span class="n">5</span>蓄電池・V2H・部材</h2>
+    <div class="hint">現調時にメーカー未定・複数想定の場合は「不明・複数想定」を選んでください（必須ではありません）。</div>
+    <div class="f"><label>種別（複数選択可）</label>
       <div class="opts">
-        <label><input type="checkbox" id="typeBatt" onclick="toggleMakerBlocks()">èé»æ± </label>
+        <label><input type="checkbox" id="typeBatt" onclick="toggleMakerBlocks()">蓄電池</label>
         <label><input type="checkbox" id="typeV2h" onclick="toggleMakerBlocks()">V2H</label>
       </div>
     </div>
     <div id="battBlock" class="hidden">
-      <div class="grp">èé»æ± </div>
-      <div class="f"><label>ã¡ã¼ã«ã¼</label><select id="battMaker" onchange="fillBattSeries()"></select></div>
-      <div class="f"><label>ã·ãªã¼ãº</label><select id="battSeries" onchange="fillBattCap()"></select></div>
-      <div class="f"><label>å®¹é(kWh)</label><select id="battCap"></select></div>
+      <div class="grp">蓄電池</div>
+      <div class="f"><label>メーカー</label><select id="battMaker" onchange="fillBattSeries()"></select></div>
+      <div class="f"><label>シリーズ</label><select id="battSeries" onchange="fillBattCap()"></select></div>
+      <div class="f"><label>容量(kWh)</label><select id="battCap"></select></div>
     </div>
     <div id="v2hBlock" class="hidden">
       <div class="grp">V2H</div>
-      <div class="f"><label>ã¡ã¼ã«ã¼</label><select id="v2hMaker" onchange="fillV2hModel()"></select></div>
-      <div class="f"><label>æ©ç¨®</label><select id="v2hModel"></select></div>
+      <div class="f"><label>メーカー</label><select id="v2hMaker" onchange="fillV2hModel()"></select></div>
+      <div class="f"><label>機種</label><select id="v2hModel"></select></div>
     </div>
-    <div class="grp">ãã¼ã¹é¡ï¼è¤æ°è¿½å OKï¼</div>
-    <div class="hint">â»2åã§1ã»ãã</div>
+    <div class="grp">ベース類（複数追加OK）</div>
+    <div class="hint">※2個で1セット</div>
     <div id="baseList"></div>
-    <button type="button" class="addbtn" style="margin-top:6px" onclick="addBaseRow()">ï¼ ãã¼ã¹ãè¿½å </button>
-    <div class="grp">LANã±ã¼ãã«ï¼è¤æ°è¿½å OKï¼</div>
+    <button type="button" class="addbtn" style="margin-top:6px" onclick="addBaseRow()">＋ ベースを追加</button>
+    <div class="grp">LANケーブル（複数追加OK）</div>
     <div id="lanList"></div>
-    <button type="button" class="addbtn" style="margin-top:6px" onclick="addLanRow()">ï¼ LANãè¿½å </button>
+    <button type="button" class="addbtn" style="margin-top:6px" onclick="addLanRow()">＋ LANを追加</button>
   </div>
 
-  <!-- â¥ ä»å¸¯ï¼ä¼ç¤¾å¥ã»5åºåï¼ -->
+  <!-- ⑥ 付帯（会社別・5区分） -->
   <div class="sec">
-    <h2><span class="n">6</span>ä»å¸¯ï¼è¨é²ï¼</h2>
-    <div class="note">ãå·¥äºã«å¿è¦ãªç©ã»äººå·¥ãã®è¨é²ã§ããéé¡ã¯ä»ãã¾ããï¼äºåãåä¾¡è¡¨ã§ç®å®ï¼ãâ ã§é¸ãã ä¼ç¤¾ã®åä¾¡è¡¨ã®ä»å¸¯é ç®ãã5åºåã°ã«ã¼ãããé¸ãã§æ°éãå¥ãã¦ãã ããï¼è¤æ°è¡OKï¼ãCVã»PFDç­ã®å»¶é·ã¯<b>ç·è¨mã§å¤ãã«</b>è¨å¥ã</div>
-    <div id="futaiHint" class="hint">â»åã«â ã§ä¼ç¤¾ãé¸ãã§ãã ããã</div>
+    <h2><span class="n">6</span>付帯（記録）</h2>
+    <div class="note">「工事に必要な物・人工」の記録です。金額は付けません（事務が単価表で算定）。①で選んだ会社の単価表の付帯項目を�5区分グループから選んで数量を入れてください（複数行OK）。CV・PFD等の延長は<b>総計mで多めに</b>記入。</div>
+    <div id="futaiHint" class="hint">※先に①で会社を選んでください。</div>
     <div id="futaiList"></div>
-    <button type="button" class="addbtn" style="margin-top:8px" onclick="addFutaiRow()">ï¼ ä»å¸¯ãè¿½å </button>
+    <button type="button" class="addbtn" style="margin-top:8px" onclick="addFutaiRow()">＋ 付帯を追加</button>
     <div class="row2" style="margin-top:8px">
     </div>
-    <div class="f"><label>è¿½å å·¥äºã®è£è¶³ï¼èªç±è¨å¥ï¼</label><textarea id="addMemo" placeholder="ç¡ãå ´åã¯ç©ºæ¬ã§OK"></textarea></div>
+    <div class="f"><label>追加工事の補足（自由記入）</label><textarea id="addMemo" placeholder="無い場合は空欄でOK"></textarea></div>
   </div>
 
-  <!-- â¦ ç¢ºèªäºé ã»ãç´æ -->
+  <!-- ⑦ 確認事項・お約束 -->
   <div class="sec">
-    <h2><span class="n">7</span>ç¢ºèªäºé ã»ãç´æ</h2>
-    <div class="f"><label>é§è»å ´ã®ç§»å</label>
-      <div class="opts" data-radio="park"><label><input type="radio" name="park" value="å¿è¦" onclick="togglePark()">å¿è¦</label><label><input type="radio" name="park" value="ä¸è¦" onclick="togglePark()">ä¸è¦</label></div>
+    <h2><span class="n">7</span>確認事項・お約束</h2>
+    <div class="f"><label>駐車場の移動</label>
+      <div class="opts" data-radio="park"><label><input type="radio" name="park" value="必要" onclick="togglePark()">必要</label><label><input type="radio" name="park" value="不要" onclick="togglePark()">不要</label></div>
       <div id="parkInformedBox" class="hidden" style="margin-top:6px">
-        <label style="font-size:13px;color:var(--sub)">ãå®¢æ§/å¶æ¥­ã¸ä¼éæ¸ã¿ï¼ï¼æªã®å ´åã¯å¶æ¥­ã¸èªåã§ç³ãéãããã¾ãï¼</label>
-        <div class="opts"><label><input type="radio" name="parkInformed" value="æ¸">æ¸</label><label><input type="radio" name="parkInformed" value="æª">æª</label></div>
+        <label style="font-size:13px;color:var(--sub)">お客様/営業へ伝達済み？（未の場合は営業へ自動で申し送りされます）</label>
+        <div class="opts"><label><input type="radio" name="parkInformed" value="済">済</label><label><input type="radio" name="parkInformed" value="未">未</label></div>
       </div>
-      <input type="text" id="parkMemo" placeholder="è£è¶³ï¼ä»»æï¼" style="margin-top:6px"></div>
-    <div class="f"><label>åå°ã®è¨±å¯ï¼è¶³å ´å«ãï¼</label>
+      <input type="text" id="parkMemo" placeholder="補足（任意）" style="margin-top:6px"></div>
+    <div class="f"><label>借地の許可（足場含む）</label>
       <div class="opts" data-radio="shakuchi">
-        <label><input type="radio" name="shakuchi" value="ä¸è¦" onclick="toggleShakuchi()">ä¸è¦</label>
-        <label><input type="radio" name="shakuchi" value="å¿è¦ã»è¨±å¯æ¸" onclick="toggleShakuchi()">å¿è¦ã»è¨±å¯æ¸</label>
-        <label><input type="radio" name="shakuchi" value="å¿è¦ã»æªåå¾" onclick="toggleShakuchi()">å¿è¦ã»æªåå¾</label>
+        <label><input type="radio" name="shakuchi" value="不要" onclick="toggleShakuchi()">不要</label>
+        <label><input type="radio" name="shakuchi" value="必要・許可済" onclick="toggleShakuchi()">必要・許可済</label>
+        <label><input type="radio" name="shakuchi" value="必要・未取得" onclick="toggleShakuchi()">必要・未取得</label>
       </div>
-      <input type="text" id="shakuchiArea" class="hidden" placeholder="åå°ããé¨åï¼ä¾ï¼åå´é£å°ããæ§ã®åº­å2mï¼" style="margin-top:6px"></div>
-    <div class="f"><label>è¶³å ´äºå®ä½ç½®</label><input type="text" id="scaffold" placeholder="ä¾ï¼åé¢ã»æ±é¢ã»åé¢ï¼å·ä½çã«è¨è¼ï¼">
-      <div class="hint">å·ä½çã«è¨è¼ã»åå3é¢ä»¥ä¸ï¼â»3é¢ä»¥ä¸ã«ã¼ã«ã¯ç¾ç¶ãªã±ã³ã®ã¿ï¼ãä½ç½®ã®åçã¯â¨ã§æ®å½±ã</div></div>
-    <div class="f"><label>å·¥äºå½æ¥ã®æµãèª¬æ</label>
-      <div class="opts" data-radio="flow"><label><input type="radio" name="flow" value="æ¸">æ¸</label><label><input type="radio" name="flow" value="æª">æª</label></div></div>
+      <input type="text" id="shakuchiArea" class="hidden" placeholder="借地する部分（例：北側隣地〇〇様の庭先2m）" style="margin-top:6px"></div>
+    <div class="f"><label>足場予定位置</label><input type="text" id="scaffold" placeholder="例：南面・東面・北面（具体的に記載）">
+      <div class="hint">具体的に記載・原則3面以上（※3面以上ルールは現状リケンのみ）。位置の写真は⑨で撮影。</div></div>
+    <div class="f"><label>工事当日の流れ説明</label>
+      <div class="opts" data-radio="flow"><label><input type="radio" name="flow" value="済">済</label><label><input type="radio" name="flow" value="未">未</label></div></div>
   </div>
 
-  <!-- â§ å·¥ç¨ã»å¸ææ¥ç¨ï¼ã¹ãããå¼ï¼ -->
+  <!-- ⑧ 工程・希望日程（ステップ式） -->
   <div class="sec">
-    <h2><span class="n">8</span>å·¥ç¨ã»å¸ææ¥ç¨</h2>
-    <div class="note">ä½æ¥­ãã¿ã³ãæ¼ãã¨å·¥ç¨ã®æ«å°¾ã«è¿½å ããã¾ããåã¹ãããã«æ¥æ°ãå¥ãã¦ãã ããï¼åè¨ã¯èªåï¼ãè¶³å ´ã®è¨­ç½®ã»è§£ä½ãå·¥ç¨ã«æãã¾ãã1æ¥æ¡ä»¶ã¯PT1ã¹ãããã§OKã</div>
+    <h2><span class="n">8</span>工程・希望日程</h2>
+    <div class="note">作業ボタンを押すと工程の末尾に追加されます。各ステップに日数を入れてください（合計は自動）。足場の設置・解体も工程に挟めます。1日案件はPT1ステップでOK。</div>
     <div class="stepbtns">
-      <button type="button" onclick="addStep('PTï¼ããã«ï¼èé»æ± ï¼')">PT</button>
-      <button type="button" onclick="addStep('PTEï¼ããã«ï¼èé»æ± ï¼EQï¼')">PTE</button>
-      <button type="button" onclick="addStep('BTï¼èé»æ± ï¼')">BT</button>
-      <button type="button" onclick="addStep('TEï¼èé»æ± ï¼EQï¼')">TE</button>
-      <button type="button" onclick="addStep('PVï¼å¤ªé½åã¯ã¯ã¿ï¼')">PV</button>
-      <button type="button" onclick="addStep('PV+PCSï¼å¤ªé½åï¼')">PV+PCS</button>
+      <button type="button" onclick="addStep('PT（パネル＋蓄電池）')">PT</button>
+      <button type="button" onclick="addStep('PTE（パネル＋蓄電池＋EQ）')">PTE</button>
+      <button type="button" onclick="addStep('BT（蓄電池）')">BT</button>
+      <button type="button" onclick="addStep('TE（蓄電池＋EQ）')">TE</button>
+      <button type="button" onclick="addStep('PV（太陽光ははみ）')">PV</button>
+      <button type="button" onclick="addStep('PV+PCS（太陽光）')">PV+PCS</button>
       <button type="button" onclick="addStep('EQ')">EQ</button>
-      <button type="button" onclick="addStep('è¶³å ´è¨­ç½®')">è¶³å ´è¨­ç½®</button>
-      <button type="button" onclick="addStep('è¶³å ´è§£ä½')">è¶³å ´è§£ä½</button>
-      <button type="button" onclick="addStep('',true)">ãã®ä»</button>
+      <button type="button" onclick="addStep('足場設置')">足場設置</button>
+      <button type="button" onclick="addStep('足場解体')">足場解体</button>
+      <button type="button" onclick="addStep('',true)">その他</button>
     </div>
     <div id="stepList"></div>
-    <div class="total">åè¨æ¥æ°ï¼<span id="totalDays">0</span>æ¥</div>
-    <div class="f"><label>ãå®¢æ§å¸ææ¥ç¨</label><input type="text" id="hopeDate" placeholder="ä¾ï¼12/4ã»12/6ï¼æªå®å¯ï¼"></div>
-    <div class="f"><label>NGæ¥ã»å¶ç´</label><input type="text" id="ngDate" placeholder="ä¾ï¼åæ¥ä¸å¯ã»12/10ã¯ä¸å¨"></div>
-    <div class="f"><label>æéå¸¯å¸æ</label>
+    <div class="total">合計日数：<span id="totalDays">0</span>日</div>
+    <div class="f"><label>お客様希望日程</label><input type="text" id="hopeDate" placeholder="例：12/4・12/6（未定可）"></div>
+    <div class="f"><label>NG日・制約</label><input type="text" id="ngDate" placeholder="例：土日不可・12/10は不在"></div>
+    <div class="f"><label>時間帯希望</label>
       <div class="opts" data-radio="timeSlot">
-        <label><input type="radio" name="timeSlot" value="ç¹ã«ãªã">ç¹ã«ãªã</label>
-        <label><input type="radio" name="timeSlot" value="åå">åå</label>
-        <label><input type="radio" name="timeSlot" value="é¨é³éæ®">é¨é³éæ®</label>
+        <label><input type="radio" name="timeSlot" value="特になし">特になし</label>
+        <label><input type="radio" name="timeSlot" value="午前">午前</label>
+        <label><input type="radio" name="timeSlot" value="騒音配慮">騒音配慮</label>
       </div></div>
   </div>
 
-  <!-- â¨ åçã»å³é¢ã»ä¼éäºé  -->
+  <!-- ⑨ 写真・図面・伝達事項 -->
   <div class="sec">
-    <h2><span class="n">9</span>åçã»å³é¢ã»ä¼éäºé </h2>
-    <div class="note">åçã¯ãã®å ´ã§ã¢ãããéä¿¡ããã¨ä¸ã®<b>Driveãã©ã«ãã¸èªåä¿å­</b>ããã¾ãï¼ç¾å ´ã®ã­ã°ã¤ã³ä¸è¦ã»LINEã«éãæéããªããªãã¾ãï¼ã</div>
+    <h2><span class="n">9</span>写真・図面・伝達事項</h2>
+    <div class="note">写真はこの場でアップ。送信すると下の<b>Driveフォルダへ自動保存</b>されます（現場のログイン不要・LINEに送る手間がなくなります）。</div>
 
     <div class="pathbox">
-      <div class="pathlabel">ð ä¿å­åï¼èªåã»ãå®¢æ§åã¨ä¼ç¤¾åããä½æï¼</div>
-      <div id="drivePath" class="pathval">ãå®¢æ§åã»ä¼ç¤¾åãå¥ããã¨è¡¨ç¤ºããã¾ã</div>
+      <div class="pathlabel">📁 保存先（自動・お客様名と会社名から作成）</div>
+      <div id="drivePath" class="pathval">お客様名・会社名を入れると表示されます</div>
     </div>
 
     <details class="guide">
-      <summary>ð æ®å½±ã¬ã¤ãï¼ãªã±ã³æ¨æºã»æ®ãå¿ãé²æ­¢ï¼</summary>
+      <summary>📋 撮影ガイド（リケン標準・撮り忘れ防止）</summary>
       <div class="guidegrid">
-        <span>ä½å®å¨æ¯</span><span>å±æ ¹</span><span>éå°æ¿</span><span>åé»ç¤</span>
-        <span>å®åå·¥äºäºå®</span><span>å±å¤å·¥äºäºå®</span><span>é»æ°æç´°</span><span>ã¡ã¼ã¿ã¼</span><span>å¨è¾º(é§è»å¤æ­)</span>
+        <span>住宅全景</span><span>屋根</span><span>野地板</span><span>分電盤</span>
+        <span>宅内工事予定</span><span>屋外工事予定</span><span>電気明細</span><span>メーター</span><span>周辺(駐車判断)</span>
       </div>
     </details>
 
     <label class="bigadd">
-      ð· åçãæ®ãï¼é¸ã¶ï¼è¤æ°OKï¼
+      📷 写真を撮る／選ぶ（複数OK）
       <input type="file" accept="image/*" multiple onchange="addPhotos(event)" hidden>
     </label>
-    <div id="photoGrid" class="pgrid"><div class="pempty">ã¾ã åçã¯ããã¾ãã</div></div>
+    <div id="photoGrid" class="pgrid"><div class="pempty">まだ写真はありません</div></div>
 
-    <button type="button" class="bigadd alt" onclick="openDraw(null)">â ææ¸ãå³é¢ãæãï¼ç½ç´ï¼</button>
-    <div class="hint" style="margin-top:6px;text-align:center">åçã¯ â ãã¿ã³ã§ãè¨­ç½®äºå®ãªã©æãè¾¼ã¿ã§ãã¾ãï¼å¿è¦ãªåçã ãã§OKï¼ã</div>
+    <button type="button" class="bigadd alt" onclick="openDraw(null)">✏ 手書き図面を描く（白紙）</button>
+    <div class="hint" style="margin-top:6px;text-align:center">写真は ✏ ボタンで、設置予定など描き込みできます（必要な写真だけでOK）。</div>
 
-    <div class="grp" style="margin-top:16px">ä¼éäºé </div>
-    <div class="f"><label>ä¼éäºé ã»ç³ãéãï¼èªç±è¨å¥ï¼</label><textarea id="memo" style="min-height:100px" placeholder="å¶æ¥­ã¸äºåé£çµ¡ããããã¨ã»ç¾å ´ã®ç³ãéããè¨å¥"></textarea></div>
-    <div class="hint">Wi-Fiãªãï¼åä½æªç¢ºèªã»å±æ ¹å»¶æã»é§è»å ´ä¼éãæªããªã©ã¯éä¿¡æã«èªåã§ç³ãéãã«è¿½è¨ããã¾ãã</div>
+    <div class="grp" style="margin-top:16px">伝達事項</div>
+    <div class="f"><label>伝達事項・申し送り（自由記入）</label><textarea id="memo" style="min-height:100px" placeholder="営業へ事前連絡したいこと・現場の申し送りを記入"></textarea></div>
+    <div class="hint">Wi-Fiなし／動作未確認・屋根延期・駐車場伝達「未」などは送信時に自動で申し送りに追記されます。</div>
     <div class="f"><div class="opts">
-      <label><input type="checkbox" id="salesContact">å¶æ¥­ã¸è¦é£çµ¡ï¼éè¦ï¼</label>
+      <label><input type="checkbox" id="salesContact">営業へ要連絡（重要）</label>
     </div></div>
   </div>
 
   <div id="msg" class="msg"></div>
 </div>
 
-<!-- æç»ã¢ã¼ãã« -->
+<!-- 描画モーダル -->
 <div id="drawModal" class="modal hidden">
   <div class="mbar">
-    <button class="cancel" onclick="closeDraw()">â</button>
+    <button class="cancel" onclick="closeDraw()">✕</button>
     <div class="tools">
       <button class="pen sel" style="background:#e11d48" data-color="#e11d48" onclick="pickPen(this)"></button>
       <button class="pen" style="background:#2563eb" data-color="#2563eb" onclick="pickPen(this)"></button>
       <button class="pen" style="background:#111827" data-color="#111827" onclick="pickPen(this)"></button>
     </div>
     <div class="draw-tools">
-      <button id="dtPen" class="dtool active" onclick="setDrawMode('pen')" title="èªç±æã">â</button>
-      <button id="dtLine" class="dtool" onclick="setDrawMode('line')" title="ç´ç·">â±</button>
-      <button id="dtStamp" class="dtool" onclick="setDrawMode('stamp')" title="ã¹ã¿ã³ã">â¬</button>
+      <button id="dtPen" class="dtool active" onclick="setDrawMode('pen')" title="自由描き">✏</button>
+      <button id="dtLine" class="dtool" onclick="setDrawMode('line')" title="直線">╱</button>
+      <button id="dtStamp" class="dtool" onclick="setDrawMode('stamp')" title="スタンプ">⬛</button>
     </div>
-    <button onclick="undoDraw()" style="margin-left:4px">æ»ã</button>
-    <button class="save" onclick="saveDraw()">ä¿å­</button>
+    <button onclick="undoDraw()" style="margin-left:4px">戻す</button>
+    <button class="save" onclick="saveDraw()">保存</button>
   </div>
   <div id="stampBar" class="stamp-bar hidden">
     <button onclick="setStamp(this,'PCS')">PCS</button>
-    <button onclick="setStamp(this,'èé»æ± ')">èé»æ± </button>
-    <button onclick="setStamp(this,'ãã¯ã³ã³')">ãã¯ã³ã³</button>
-    <button onclick="setStamp(this,'åé»ç¤')">åé»ç¤</button>
+    <button onclick="setStamp(this,'蓄電池')">蓄電池</button>
+    <button onclick="setStamp(this,'パワコン')">パワコン</button>
+    <button onclick="setStamp(this,'分電盤')">分電盤</button>
     <button onclick="setStamp(this,'EQ')">EQ</button>
     <button onclick="setStamp(this,'V2H')">V2H</button>
-    <button onclick="setStamp(this,'åâ')" style="background:#dc2626;color:#fff;border-color:#dc2626">åâ</button>
+    <button onclick="setStamp(this,'北↑')" style="background:#dc2626;color:#fff;border-color:#dc2626">北↑</button>
   </div>
   <div class="preset-bar">
-    <span>ããªã»ãã:</span>
-    <button id="prstStd" class="psel" onclick="setPreset('std')">æ¨æº(4:3)</button>
-    <button id="prstSq" onclick="setPreset('sq')">çåè§</button>
+    <span>プリセット:</span>
+    <button id="prstStd" class="psel" onclick="setPreset('std')">標準(4:3)</button>
+    <button id="prstSq" onclick="setPreset('sq')">真四角</button>
   </div>
   <div class="canvaswrap"><canvas id="drawCanvas"></canvas></div>
 </div>
 
 <div class="bar">
-  <button class="btn ghost" onclick="clearForm()">ã¯ãªã¢</button>
+  <button class="btn ghost" onclick="clearForm()">クリア</button>
   <div id="driveGuide" style="display:none;margin-top:12px;background:#fff7ed;border:2px solid #f97316;border-radius:12px;padding:16px;text-align:center;">
-      <div style="font-size:28px;margin-bottom:6px;">ð</div>
-      <div style="font-weight:bold;font-size:15px;margin-bottom:6px;color:#ea580c;">åçã»å ±åæ¸ã¯Driveããç¢ºèªãã ãã</div>
-      <div style="font-size:12px;color:#666;margin-bottom:10px;">éä¿¡å®äºå¾ãç¾èª¿åçãã©ã«ãã«ãã¼ã¿ãèªåä¿å­ããã¾ã</div>
-      <a href="https://drive.google.com/drive/folders/1OkP8EnYw0EKCf5kODQAtY-iz3ftB5HFQ" target="_blank" style="display:inline-block;background:#f97316;color:#fff;border-radius:8px;padding:8px 20px;font-size:13px;font-weight:bold;text-decoration:none;">ð ç¾èª¿åçãã©ã«ããéã</a>
+      <div style="font-size:28px;margin-bottom:6px;">📁</div>
+      <div style="font-weight:bold;font-size:15px;margin-bottom:6px;color:#ea580c;">写真・報告書はDriveをご確認ください</div>
+      <div style="font-size:12px;color:#666;margin-bottom:10px;">送信完了後、現調写真フォルダにデータが自動保存されます</div>
+      <a href="https://drive.google.com/drive/folders/1OkP8EnYw0EKCf5kODQAtY-iz3ftB5HFQ" target="_blank" style="display:inline-block;background:#f97316;color:#fff;border-radius:8px;padding:8px 20px;font-size:13px;font-weight:bold;text-decoration:none;">📂 現調写真フォルダを開く</a>
     </div>
-    <button class="btn" id="submitBtn" onclick="submitForm()">éä¿¡</button>
+    <button class="btn" id="submitBtn" onclick="submitForm()">送信</button>
 </div>
 
 <script>
-  // ===== éä¿¡åGAS =====
+  // ===== 送信先GAS =====
   const GAS_URL = "https://script.google.com/macros/s/AKfycbxGxkCOnavWfL737UX_pFrQl2t7idJxbNkcU9QCVZ3gjQWVkajscGdLhtQ77jNqK1Cdaw/exec";
-  const PROTO = false; // æ¬çªã¢ã¼ã
+  const PROTO = false; // 本番モード
 
   const BATT = {
-    "ããã³ã³":{"ãã©ã¤ããªããT5/T6":[7.4,9.9,14.9,19.9],"ãã©ã¤ããªããT3":[4.9,7.4,9.9,14.9],"åæ©è½U5(å¨è² è·)":[7.7,9.7],"åæ©è½U4(å¨è² è·)":[11.1,16.6],"åæ©è½U2ç³»(æ§ã»è²©å£²çµäº)":[11.1,12.0,16.6],"ãã®ä»":[]},
-    "äº¬ã»ã©":{"ã¨ãã¬ããã¡":[5.0,10.0,15.0],"ã¨ãã¬ããã¡ ãã©ã¹(å¨è² è·)":[5.5,11.0,16.5],"ãã®ä»":[]},
-    "ãªã ã­ã³":{"ãã«ãèé»ãã©ãããã©ã¼ã ":[6.5,9.8,12.7,16.4],"ãã®ä»":[]},
-    "é·å·ç£æ¥­":{"Smart PV multi":[6.5,9.8,12.7,16.4],"ãã®ä»":[]},
-    "ã«ããã£ã¢ã³(EP CUBE)":{"EP CUBE":[6.6,9.9,13.3],"ãã®ä»":[]},
-    "ãã¤ã¤ã¼ãã©(ç°æ·µ)/DMM":{"EIBS7":[7.04,14.08],"ãã®ä»":[]},
-    "ããã½ããã¯":{"åµèé£æºS+":[3.5,5.6,6.3,9.1,11.2],"ãã®ä»":[]},
-    "ã·ã£ã¼ã":{"ã¯ã©ã¦ãèé»æ± ":[6.5,7.7,8.4,9.5,13.0,15.4],"ãã®ä»":[]},
-    "ãã¡ã¼ã¦ã§ã¤":{"LUNA2000":[5,7,10,14,15,21],"ãã®ä»":[]},
-    "ãã®ä»":{"ãã®ä»":[]},"ä¸æã»è¤æ°æ³å®":{"æªå®":[]}
+    "ニチコン":{"トライブリッドT5/T6":[7.4,9.9,14.9,19.9],"トライブリッドT3":[4.9,7.4,9.9,14.9],"単機能U5(全負荷)":[7.7,9.7],"単機能U4(全負荷)":[11.1,16.6],"単機能U2系(旧・販売終了)":[11.1,12.0,16.6],"その他":[]},
+    "京セラ":{"エネレッツァ":[5.0,10.0,15.0],"エネレッツァ プラス(全負荷)":[5.5,11.0,16.5],"その他":[]},
+    "オムロン":{"マルチ蓄電プラットフォーム":[6.5,9.8,12.7,16.4],"その他":[]},
+    "長州産業":{"Smart PV multi":[6.5,9.8,12.7,16.4],"その他":[]},
+    "カナディアン(EP CUBE)":{"EP CUBE":[6.6,9.9,13.3],"その他":[]},
+    "ダイヤゼブラ(田淵)/DMM":{"EIBS7":[7.04,14.08],"その他":[]},
+    "パナソニック":{"創蓄連携S+":[3.5,5.6,6.3,9.1,11.2],"その他":[]},
+    "シャープ":{"クラウド蓄電池":[6.5,7.7,8.4,9.5,13.0,15.4],"その他":[]},
+    "ファーウェイ":{"LUNA2000":[5,7,10,14,15,21],"その他":[]},
+    "その他":{"その他":[]},"不明・複数想定":{"未定":[]}
   };
   const V2H = {
-    "ããã³ã³":["EVãã¯ã¹ã ã¹ã¿ã³ãã¼ã(VCG-663)","EVãã¯ã¹ã ãã¬ãã¢ã (VCG-666)","EVãã¯ã¹ã ææ°(VSG3-666)","ãã©ã¤ããªããV2H","ãã®ä»"],
-    "ãã³ã½ã¼":["DNEVC-D6075","ãã®ä»"],"æ±åé«å²³":["CFD1-B-V2H1","ãã®ä»"],"ãã®ä»":["ãã®ä»"],"ä¸æã»è¤æ°æ³å®":["æªå®"]
+    "ニチコン":["EVパワステ スタンダード(VCG-663)","EVパワステ プレミアム(VCG-666)","EVパワステ 最新(VSG3-666)","トライブリッドV2H","その他"],
+    "デンソー":["DNEVC-D6075","その他"],"東光高岳":["CFD1-B-V2H1","その他"],"その他":["その他"],"不明・複数想定":["未定"]
   };
   const EXISTING_REMINDER = {};
-    const FUTAI_GROUPS = [["jin","äººå·¥ã»å±æ ¹"],["hai","éç·ã»ãã¯ã"],["kik","æ©å¨ã»åé»ç¤"],["tek","æ¤å»ã»å¦å"],["oth","äº¤éã»ç³è«ã»ãã®ä»"]];
-  const FUTAI_GRP_OVR = {"ãªã±ã³ã¨ãã¸ã¼":{"jin":"è¿½å ä½æ¥­è²»"}};
+    const FUTAI_GROUPS = [["jin","人工・屋根"],["hai","配線・ダクト"],["kik","機器・分電盤"],["tek","撤去・処分"],["oth","交通・申請・その他"]];
+  const FUTAI_GRP_OVR = {"リケンエナジー":{"jin":"追加作業費"}};
   const FUTAI = {
-    "ãªã±ã³ã¨ãã¸ã¼":[
-      {n:"ç¦å±æ ¹æ½å·¥ä½æ¥­è²»",u:"å¼",g:"jin"},{n:"å±æ ¹æ¥å¾éã»ç°å¾éï¼6å¯¸ä»¥ä¸ï¼",u:"å¼",g:"jin"},{n:"é£å·¥äº",u:"å¼",g:"jin"},
-      {n:"ããã«æä¸ãä½æ¥­è²»",u:"äºº",g:"jin"},{n:"æ¬å¥å°é£ä½æ¥­è²»",u:"äºº",g:"jin"},{n:"3Fæ½å·¥ï¼å±éºä½æ¥­è²»ï¼",u:"å¼",g:"jin"},
-      {n:"èé»æ± 2æ®µã©ãã¯æ½å·¥",u:"å¼",g:"jin"},{n:"é»æ°å·¥äºé£å·¥äºä¸å¼",u:"å¼",g:"jin"},{n:"ç©´ããå°é£ï¼ã³ã¢ã»ã¿ã¤ã«ç­ï¼",u:"ç®æ",g:"jin"},
-      {n:"ãã­ãã¯åµ©ä¸ã('¯å²ã«ãã)",u:"å¼",g:"jin"},{n:"åéæã¡",u:"ç®æ",g:"jin"},
-      {n:"å±å¤ç¨ãã¯ã(LD)å»¶é·",u:"m",g:"hai"},{n:"å®åç¨ãã¯ãæ½å·¥(MD)",u:"m",g:"hai"},
-      {n:"PFD16å»¶é·",u:"m",g:"hai"},{n:"PFD22å»¶é·",u:"m",g:"hai"},{n:"PFD28å»¶é·",u:"m",g:"hai"},{n:"PFD36å»¶é·",u:"m",g:"hai"},
-      {n:"ç¹æ®å½¹ç©ä½¿ç¨(ã¸ã£ãã©ãç«é¢ç­)",u:"å¼",g:"hai"},{n:"å½¹ç©å¤æ°ä½¿ç¨(MD/LD)",u:"å¼",g:"hai"},
-      {n:"CV-5.5 å»¶é·",u:"m",g:"hai"},{n:"CV-8 å»¶é·",u:"m",g:"hai"},{n:"CV-14 å»¶é·",u:"m",g:"hai"},
-      {n:"å±æ ¹ç·å»¶é·(DC)",u:"m/ç³»çµ±",g:"hai"},{n:"VVFå»¶é·",u:"m",g:"hai"},{n:"FCPVç·",u:"m",g:"hai"},{n:"åºä¸éç·",u:"å¼",g:"hai"},
-      {n:"ãªã¬ã¼ããã¯ã¹è¨­ç½®",u:"å¼",g:"kik"},{n:"MCBè¿½å ï¼60Aä»¥ä¸ï¼60Aä»¥ä¸ï¼",u:"å¼",g:"kik"},
-      {n:"äº¬ã»ã© Enerezza è¿½å ææè²»",u:"å¼",g:"kik"},{n:"äº¬ã»ã©Enerezzaä½æ¥­è²»",u:"å¼",g:"kik"},
-      {n:"ããã³ã³19.9 ä½æ¥­è²»",u:"å¼",g:"kik"},{n:"è¿½å PCSè¨­ç½®",u:"å°",g:"kik"},
-      {n:"AiSEGè¨­ç½®",u:"å¼",g:"kik"},{n:"DRå¯¾è±¡æ½å·¥",u:"å¼",g:"kik"},{n:"EVã³ã³ã»ã³ãè¨­ç½®",u:"å°",g:"kik"},
-      {n:"æ©å¨è¨­åã¡ã¯ã©å¦ç",u:"å¼",g:"kik"},{n:"é²ç¯ã«ã¡ã©é»æºç§»æ¤ï¼ç°¡æï¼",u:"å¼",g:"kik"},
-      {n:"PCSé¡æ¤å»ã»å¦å(1å°ã«ã¤ã)",u:"å°",g:"tek"},{n:"èé»æ± æ¤å»ã»å¦åè²»ï¼1å°ã«ã¤ãï¼",u:"å°",g:"tek"},
-      {n:"PVæ¤å»ã»å¦å(1æã«ã¤ã)",u:"æ",g:"tek"},{n:"ãã®ä»æ¢è¨­æ©å¨æ¤å»ã»å¦å",u:"å¼",g:"tek"},
-      {n:"é æ¹äº¤éè²»ï¼100kmï¼",u:"å¼",g:"oth"},{n:"è¿½å å·¥ç¨åäº¤éè²»",u:"å°",g:"oth"},{n:"è¿½å è¡ç¨å(ç¶æ³ã«ãã)",u:"å¼",g:"oth"}
+    "リケンエナジー":[
+      {n:"瓦屋根施工作業費",u:"式",g:"jin"},{n:"屋根急勾配・異勾配（6寸以上）",u:"式",g:"jin"},{n:"難工事",u:"式",g:"jin"},
+      {n:"パネル手上げ作業費",u:"人",g:"jin"},{n:"搬入困難作業費",u:"人",g:"jin"},{n:"3F施工（危険作業費）",u:"式",g:"jin"},
+      {n:"蓄電池2段ラック施工",u:"式",g:"jin"},{n:"電気工事難工事一式",u:"式",g:"jin"},{n:"穴あけ困難（コア・タイル等）",u:"箇所",g:"jin"},
+      {n:"ブロック嵩上げ('��囲により)",u:"式",g:"jin"},{n:"土間打ち",u:"箇所",g:"jin"},
+      {n:"屋外用ダクト(LD)延長",u:"m",g:"hai"},{n:"宅内用ダクト施工(MD)",u:"m",g:"hai"},
+      {n:"PFD16延長",u:"m",g:"hai"},{n:"PFD22延長",u:"m",g:"hai"},{n:"PFD28延長",u:"m",g:"hai"},{n:"PFD36延長",u:"m",g:"hai"},
+      {n:"特殊役物使用(ジャバラ、立面等)",u:"式",g:"hai"},{n:"役物多数使用(MD/LD)",u:"式",g:"hai"},
+      {n:"CV-5.5 延長",u:"m",g:"hai"},{n:"CV-8 延長",u:"m",g:"hai"},{n:"CV-14 延長",u:"m",g:"hai"},
+      {n:"屋根線延長(DC)",u:"m/系統",g:"hai"},{n:"VVF延長",u:"m",g:"hai"},{n:"FCPV線",u:"m",g:"hai"},{n:"床下配線",u:"式",g:"hai"},
+      {n:"リレーボックス設置",u:"式",g:"kik"},{n:"MCB追加（60A以下／60A以上）",u:"式",g:"kik"},
+      {n:"京セラ Enerezza 追加材料費",u:"式",g:"kik"},{n:"京セラEnerezza作業費",u:"式",g:"kik"},
+      {n:"ニチコン19.9 作業費",u:"式",g:"kik"},{n:"追加PCS設置",u:"台",g:"kik"},
+      {n:"AiSEG設置",u:"式",g:"kik"},{n:"DR対象施工",u:"式",g:"kik"},{n:"EVコンセント設置",u:"台",g:"kik"},
+      {n:"機器設備メクラ処理",u:"式",g:"kik"},{n:"防犯カメラ電源移植（簡易）",u:"式",g:"kik"},
+      {n:"PCS類撤去・処分(1台につき)",u:"台",g:"tek"},{n:"蓄電池撤去・処分費（1台につき）",u:"台",g:"tek"},
+      {n:"PV撤去・処分(1枚につき)",u:"枚",g:"tek"},{n:"その他既設機器撤去・処分",u:"式",g:"tek"},
+      {n:"遠方交通費（100km）",u:"式",g:"oth"},{n:"追加工程分交通費",u:"台",g:"oth"},{n:"追加行程分(状況により)",u:"式",g:"oth"}
     ],
-    "ã¢ã«ãã¡ã¨ã¬ã¯ãã­":[
-      {n:"ç¦å±æ ¹",u:"å¼",g:"jin"},{n:"æ¥ããé 6å¯¸",u:"å¼",g:"jin"},{n:"ããã«æä¸ã",u:"å¼",g:"jin"},
-      {n:"æ¬å¥å°é£",u:"å¼",g:"jin"},{n:"PVï¼é¢ä»¥é",u:"é¢",g:"jin"},{n:"èé»æ± åºç¤ï¼1å°å½ã£",u:"å",g:"jin"},
-      {n:"PFDå»¶é·",u:"m",g:"hai"},{n:"ã¹ãªã ãã¯ãå»¶é·",u:"m",g:"hai"},{n:"å±æ ¹ç·å»¶é·ï¼DCï¼1ç³»çµ±ãã¨",u:"m",g:"hai"},
-      {n:"CV5.5 å»¶é·",u:"m",g:"hai"},{n:"CV8 å»¶é·",u:"m",g:"hai"},{n:"CV14",u:"m",g:"hai"},{n:"MDã¢ã¼ã«ï¼éå¸¸å©ç¨åï¼",u:"å¼",g:"hai"},
-      {n:"MCBã»ELBè¨­ç½® 50Aã¾ã§",u:"å",g:"kik"},{n:"MCBã»ELBè¨­ç½® 75Aã¾ã§",u:"å",g:"kik"},
-      {n:"ããªã¼ããã¯ã¹W",u:"å",g:"kik"},{n:"ç¹æ¤å£è¨­ç½®",u:"å¼",g:"kik"}
+    "アルファエレクトロ":[
+      {n:"瓦屋根",u:"式",g:"jin"},{n:"急こう配 6寸",u:"式",g:"jin"},{n:"パネル手上げ",u:"式",g:"jin"},
+      {n:"搬入困難",u:"式",g:"jin"},{n:"PV３面以降",u:"面",g:"jin"},{n:"蓄電池基礎（1台当た���",u:"個",g:"jin"},
+      {n:"PFD延長",u:"m",g:"hai"},{n:"スリムダクト延長",u:"m",g:"hai"},{n:"屋根線延長（DC）1系統ごと",u:"m",g:"hai"},
+      {n:"CV5.5 延長",u:"m",g:"hai"},{n:"CV8 延長",u:"m",g:"hai"},{n:"CV14",u:"m",g:"hai"},{n:"MDモール（通常利用分）",u:"式",g:"hai"},
+      {n:"MCB・ELB設置 50Aまで",u:"個",g:"kik"},{n:"MCB・ELB設置 75Aまで",u:"個",g:"kik"},
+      {n:"フリーボックスW",u:"個",g:"kik"},{n:"点検口設置",u:"式",g:"kik"}
     ],
     "ATEL":[
-      {n:"ç¦æ½å·¥",u:"å¼",g:"jin"},{n:"3éè¶³å ´ç¡",u:"å¼",g:"jin"},{n:"æ¥å¾éï¼6.5å¯¸ä»¥ä¸ï¼",u:"å¼",g:"jin"},
-      {n:"ããã«è¶éï¼éå¸¸ã»21æç®ä»¥éï¼",u:"æ",g:"jin"},{n:"ããã«è¶éï¼å°å½¢ã»ãã¼ãã»21æç®ä»¥éï¼",u:"æ",g:"jin"},
-      {n:"ããã«æä¸ã",u:"å¼",g:"jin"},{n:"ããã«æ¬å¥å°é£",u:"å¼",g:"jin"},{n:"3é¢ä»¥éã®è¿½å é¢",u:"é¢",g:"jin"},
-      {n:"ééèé»æ± ",u:"å¼",g:"jin"},{n:"èé»æ± éæ®µæ¬å¥",u:"å¼",g:"jin"},{n:"èé»æ± æ¬å¥å°é£",u:"å¼",g:"jin"},
-      {n:"2æ®µã©ãã¯",u:"å¼",g:"jin"},{n:"ã¨ã³ãã¼ã¹ã»ã¡ã³ã",u:"å¼",g:"jin"},
-      {n:"å¹¹ç·å¼µãæ¿ã",u:"å¼",g:"hai"},{n:"ãã¼ã¿ã¼ãã³ãæ½å·¥è²»",u:"m",g:"hai"},{n:"åºä¸éç·",u:"å¼",g:"hai"},
+      {n:"瓦施工",u:"式",g:"jin"},{n:"3階足場無",u:"式",g:"jin"},{n:"急勾配（6.5寸以上）",u:"式",g:"jin"},
+      {n:"パネル超過（通常・21枚目以降）",u:"枚",g:"jin"},{n:"パネル超過（台形・ハーフ・21枚目以降）",u:"枚",g:"jin"},
+      {n:"パネル手上げ",u:"式",g:"jin"},{n:"パネル搬入困難",u:"式",g:"jin"},{n:"3面以降の追加面",u:"面",g:"jin"},
+      {n:"重量蓄電池",u:"式",g:"jin"},{n:"蓄電池階段搬入",u:"式",g:"jin"},{n:"蓄電池搬入困難",u:"式",g:"jin"},
+      {n:"2段ラック",u:"式",g:"jin"},{n:"エコベースセメント",u:"式",g:"jin"},
+      {n:"幹線張り替え",u:"式",g:"hai"},{n:"ヒーターバンド施工費",u:"m",g:"hai"},{n:"床下配線",u:"式",g:"hai"},
       {n:"CV-5.5",u:"m",g:"hai"},{n:"CV-8",u:"m",g:"hai"},{n:"CV-14",u:"m",g:"hai"},
       {n:"PFD16",u:"m",g:"hai"},{n:"PFD28",u:"m",g:"hai"},{n:"PFD36",u:"m",g:"hai"},
-      {n:"ã¹ãªã ãã¯ã",u:"m",g:"hai"},{n:"MDãã¯ã",u:"m",g:"hai"},{n:"MDå½¹ç©",u:"å",g:"hai"},
-      {n:"DCç·å»¶é·",u:"ç³»çµ±m",g:"hai"},{n:"VVFã±ã¼ãã«",u:"m",g:"hai"},{n:"éç·å°é£è²»",u:"å¼",g:"hai"},
-      {n:"PCSãBTéPFDåè¨­",u:"å¼",g:"hai"},{n:"ã¸ã£ãã©",u:"å¼",g:"hai"},
-      {n:"PCSè¿½å ",u:"å¼",g:"kik"},{n:"è¿½å PCS1å°(ELBè¾¼ã¿)",u:"å¼",g:"kik"},{n:"ãªã¬ã¼ããã¯ã¹",u:"å¼",g:"kik"},
-      {n:"MCB15A",u:"å",g:"kik"},{n:"MCB40A",u:"å",g:"kik"},{n:"MCB50A",u:"å",g:"kik"},{n:"MCB60A",u:"å",g:"kik"},
-      {n:"ELB40A",u:"å¼",g:"kik"},{n:"ELB50A",u:"å¼",g:"kik"},{n:"ELBäº¤æï¼75Aã¾ã§ï¼",u:"å¼",g:"kik"},
-      {n:"ã¹ãªã ãã¬ã¼ã«ã¼30A",u:"å¼",g:"kik"},{n:"æ±èã¹ãªã ãã¬ã¼ã«ã¼20A(EQç¨)",u:"å¼",g:"kik"},
-      {n:"ç«¯å­å°",u:"å",g:"kik"},{n:"ã¡ã¼ã¿ã¼çµ±ä¸",u:"å¼",g:"kik"},{n:"EQ1æ¬¡â2æ¬¡å¤æ´",u:"å¼",g:"kik"},{n:"éä¿¡ã¦ããã",u:"å¼",g:"kik"},
-      {n:"é æ¹äº¤éè²»(50km)",u:"å°",g:"oth"}
+      {n:"スリムダクト",u:"m",g:"hai"},{n:"MDダクト",u:"m",g:"hai"},{n:"MD役物",u:"個",g:"hai"},
+      {n:"DC線延長",u:"系統m",g:"hai"},{n:"VVFケーブル",u:"m",g:"hai"},{n:"配線困難費",u:"式",g:"hai"},
+      {n:"PCS〜BT間PFD埋設",u:"式",g:"hai"},{n:"ジャバラ",u:"式",g:"hai"},
+      {n:"PCS追加",u:"式",g:"kik"},{n:"追加PCS1台(ELB込み)",u:"式",g:"kik"},{n:"リレーボックス",u:"式",g:"kik"},
+      {n:"MCB15A",u:"個",g:"kik"},{n:"MCB40A",u:"個",g:"kik"},{n:"MCB50A",u:"個",g:"kik"},{n:"MCB60A",u:"個",g:"kik"},
+      {n:"ELB40A",u:"式",g:"kik"},{n:"ELB50A",u:"式",g:"kik"},{n:"ELB交換（75Aまで）",u:"式",g:"kik"},
+      {n:"スリムブレーカー30A",u:"式",g:"kik"},{n:"東芝スリムブレーカー20A(EQ用)",u:"式",g:"kik"},
+      {n:"端子台",u:"個",g:"kik"},{n:"メーター統一",u:"式",g:"kik"},{n:"EQ1次→2次変更",u:"式",g:"kik"},{n:"送信ユニット",u:"式",g:"kik"},
+      {n:"遠方交通費(50km)",u:"台",g:"oth"}
     ],
-    "ã­ã§ã¦ã¨ã¤":[
-      {n:"PVå¤é¢è¨­ç½®ï¼4é¢ç®ãã1é¢ï¼",u:"é¢",g:"jin"},{n:"æ¥å¾éå·¥äºï¼6å¯¸ï¼",u:"å¼",g:"jin"},
-      {n:"éå°æ¿è£è£å¼·å·¥äºï¼5kWã¾ã§ï¼",u:"å¼",g:"jin"},{n:"ãã¯ã³ã³æ°è¦2å°è¨­ç½®åæè¨­ç½®",u:"å¼",g:"jin"},
-      {n:"ç¹æ®å·¥äºï¼è¶³å ´è¨­ç½®ä¸å¯ã»é£å·¥äºç­ï¼",u:"å¼",g:"jin"},{n:"æ¬å¥å°é£ï¼å·¥å¡å¢å¡ï¼",u:"å¼",g:"jin"},
-      {n:"ãªã ã­ã³èé»æ±  åºè¨­ç½®åä»",u:"å¼",g:"jin"},
-      {n:"é»æ°éç·å»¶é·ï¼10mä»¥ä¸ï¼",u:"m",g:"hai"},{n:"ãªã¢ã³ã³ç·å»¶é·",u:"m",g:"hai"},
-      {n:"å¹¹ç·å¼µæ¿å·¥äºï¼CV14ã¾ã§ï¼",u:"å¼",g:"hai"},{n:"å¹¹ç·å¼µæ¿å»¶é·ï¼CV14 10mä»¥ä¸ï¼",u:"m",g:"hai"},
-      {n:"ã±ã¼ãã«åè¨­å·¥äº",u:"å¼",g:"hai"},{n:"ã±ã¼ãã«é£ã°ã",u:"å¼",g:"hai"},
-      {n:"LANã±ã¼ãã«ï¼10mã¾ã§ï¼",u:"m",g:"hai"},{n:"éç®¡å»¶é·ï¼4mä»¥ä¸ï¼",u:"m",g:"hai"},
-      {n:"éç®¡ãã¯ãä½¿ç¨ï¼å¤ªé½åã»EQï¼",u:"m",g:"hai"},{n:"ã¨ã³ã­ã¥ã¼ãç¨ãã¼ã¿ã¼ãã³ã",u:"m",g:"hai"},
-      {n:"æ°ç¯åè¡éç·ã»éç®¡",u:"å",g:"hai"},
-      {n:"MCCBäº¤æï¼60Aã¾ã§ï¼",u:"å°",g:"kik"},{n:"ELBã®äº¤æï¼75Aã¾ã§ï¼",u:"å°",g:"kik"},
-      {n:"å°ç¨ã³ã³ã»ã³ãå¢è¨­å·¥äº",u:"ç®æ",g:"kik"},{n:"åé»ç¤äº¤æï¼æ©å¨ä»£å¥éï¼",u:"å°",g:"kik"},
-      {n:"ã¡ã¼ã¿ã¼BOX",u:"å°",g:"kik"},{n:"ã³ã³ã¯ãªã¼ãåºç¤ã³ã¢æã",u:"ç®æ",g:"kik"},
-      {n:"å2âå3åæ¿å·¥äº",u:"å¼",g:"kik"},{n:"ç¹æ¤å£",u:"å¼",g:"kik"},
-      {n:"ãã¤ããªããèé»æ±  ç³»çµ±çµæãï¼PVæ¢è¨­ï¼",u:"å¼",g:"kik"},{n:"æ©å¨ä»£éï¼åé»ç¤ã»ã¢ã³ããç­ï¼",u:"å¼",g:"kik"},
-      {n:"ã¢ã³ããç§»è¨­ã»æ¤å»",u:"å¼",g:"tek"},{n:"æ¸©æ°´ã½ã¼ã©ã¼æ¤å»è²»ç¨",u:"å¼",g:"tek"},
-      {n:"é æ¹äº¤éè²»ï¼50kmä»¥ä¸çéï¼",u:"è»ä¸¡",g:"oth"},{n:"äºååè¡åºç¤å·¥äºï¼èé»æ± ã»EQï¼",u:"å¼",g:"oth"},
-      {n:"é¢¨åå¾ªç°å£äº¤æ",u:"ç®æ",g:"oth"},{n:"é¢¨åå¾ªç°å£æ°è¨­",u:"ç®æ",g:"oth"},
-      {n:"ãªã¢ã³ã³è¿½å ã»ç§»è¨­",u:"å°",g:"oth"},{n:"ãã¼ããã³ã2æ®µç½®ãæ¶å°è¨­ç½®",u:"å°",g:"oth"},
-      {n:"å å§ãã³ãè¨­ç½®ã®ã¿",u:"å¼",g:"oth"},{n:"ç ããå¨è¨­ç½®ã®ã¿",u:"å¼",g:"oth"},
-      {n:"ã¨ã¢ã³ã³å®¤å¤æ©ç§»è¨­",u:"å°",g:"oth"},{n:"ã¬ã³ã¸ãã¼ãäº¤æ",u:"å°",g:"oth"},
-      {n:"é»æ°å¼ãªã¼ãã³è¨­ç½®",u:"å°",g:"oth"}
+    "キョウエイ":[
+      {n:"PV多面設置（4面目から1面）",u:"面",g:"jin"},{n:"急勾配工事（6寸）",u:"式",g:"jin"},
+      {n:"野地板裏補強工事（5kWまで）",u:"式",g:"jin"},{n:"パワコン新規2台設置同時設置",u:"式",g:"jin"},
+      {n:"特殊工事（足場設置不可・難工事等）",u:"式",g:"jin"},{n:"搬入困難（工員増員）",u:"式",g:"jin"},
+      {n:"オムロン蓄電池 庇設置取付",u:"式",g:"jin"},
+      {n:"電気配線延長（10m以上）",u:"m",g:"hai"},{n:"リモコン線延長",u:"m",g:"hai"},
+      {n:"幹線張替工事（CV14まで）",u:"式",g:"hai"},{n:"幹線張替延長（CV14 10m以上）",u:"m",g:"hai"},
+      {n:"ケーブル埋設工事",u:"式",g:"hai"},{n:"ケーブル飛ばし",u:"式",g:"hai"},
+      {n:"LANケーブル（10mまで）",u:"m",g:"hai"},{n:"配管延長（4m以上）",u:"m",g:"hai"},
+      {n:"配管ダクト使用（太陽光・EQ）",u:"m",g:"hai"},{n:"エコキュート用ヒーターバンド",u:"m",g:"hai"},
+      {n:"新築先行配線・配管",u:"回",g:"hai"},
+      {n:"MCCB交換（60Aまで）",u:"台",g:"kik"},{n:"ELBの交換（75Aまで）",u:"台",g:"kik"},
+      {n:"専用コンセント増設工事",u:"箇所",g:"kik"},{n:"分電盤交換（機器代別途）",u:"台",g:"kik"},
+      {n:"メーターBOX",u:"台",g:"kik"},{n:"コンクリート基礎コア抜き",u:"箇所",g:"kik"},
+      {n:"単2→単3切替工事",u:"式",g:"kik"},{n:"点検口",u:"式",g:"kik"},
+      {n:"ハイブリット蓄電池 系統組換え（PV既設）",u:"式",g:"kik"},{n:"機器代金（分電盤・アンテナ等）",u:"式",g:"kik"},
+      {n:"アンテナ移設・撤去",u:"式",g:"tek"},{n:"温水ソーラー撤去費用",u:"式",g:"tek"},
+      {n:"遠方交通費（50km以上片道）",u:"車両",g:"oth"},{n:"事前先行基礎工事（蓄電池・EQ）",u:"式",g:"oth"},
+      {n:"風呂循環口交換",u:"箇所",g:"oth"},{n:"風呂循環口新設",u:"箇所",g:"oth"},
+      {n:"リモコン追加・移設",u:"台",g:"oth"},{n:"ヒートポンプ2段置き架台設置",u:"台",g:"oth"},
+      {n:"加圧ポンプ設置のみ",u:"式",g:"oth"},{n:"砂こし器設置のみ",u:"式",g:"oth"},
+      {n:"エアコン室外機移設",u:"台",g:"oth"},{n:"レンジフード交換",u:"台",g:"oth"},
+      {n:"電気式オーブン設置",u:"台",g:"oth"}
     ],
-    "æ±ç¨":[
-      {n:"ç¦å±æ ¹æ½å·¥ è¿½å äººå·¥",u:"äºº",g:"jin"},{n:"æ¥å¾éï¼6å¯¸ä»¥ä¸ï¼è¿½å äººå·¥",u:"äºº",g:"jin"},
-      {n:"ããã«æä¸ã è¿½å äººå·¥",u:"äºº",g:"jin"},{n:"æ¬å¥å°é£ è¿½å äººå·¥",u:"äºº",g:"jin"},
-      {n:"èé»æ± å±åæ¬å¥ è¿½å äººå·¥",u:"äºº",g:"jin"},{n:"3Fæ½å·¥ã»é£å·¥äº è¿½å äººå·¥",u:"äºº",g:"jin"},
-      {n:"é»æ°å·¥äºé£å·¥äºä¸å¼",u:"å¼",g:"jin"},{n:"PVå¤é¢è¨­ç½®ï¼3é¢ç®ä»¥éï¼",u:"é¢",g:"jin"},
-      {n:"ãã¯ãå»¶é·",u:"m",g:"hai"},{n:"å±æ ¹ç·å»¶é·ï¼DCï¼",u:"m",g:"hai"},
-      {n:"CV5.5 å»¶é·",u:"m",g:"hai"},{n:"CV8 å»¶é·",u:"m",g:"hai"},{n:"CV14 å»¶é·",u:"m",g:"hai"},
-      {n:"VVFå»¶é·",u:"m",g:"hai"},{n:"MDã¢ã¼ã«ï¼éå¸¸å©ç¨åï¼",u:"å¼",g:"hai"},
-      {n:"MCB/ELBï¼60Aä»¥ä¸ï¼",u:"å¼",g:"kik"},{n:"MCB/ELBï¼75Aä»¥ä¸ï¼",u:"å¼",g:"kik"},
-      {n:"ã³ã¢æã",u:"ç®æ",g:"kik"},{n:"ç¹æ¤å£è¨­ç½®",u:"å¼",g:"kik"},{n:"è¿½å PCSè¨­ç½®",u:"å°",g:"kik"},
-      {n:"å®åPCSæ¤å»ã»å¦å",u:"å°",g:"tek"},{n:"èé»æ± æ¤å»å¦åè²»ï¼2äººå·¥è¾¼ï¼",u:"å¼",g:"tek"},
-      {n:"PVæ¤å»è²»ï¼å¦åè²»å«ãï¼",u:"å¼",g:"tek"},{n:"å¦åè²»",u:"å¼",g:"tek"},
-      {n:"é æ¹äº¤éè²»ï¼50kmä»¥ä¸ï¼",u:"å¼",g:"oth"},{n:"å¥æ¥äº¤éè²»",u:"å¼",g:"oth"},
-      {n:"å¥å·¥ç¨æ¥è²»ç¨",u:"å¼",g:"oth"},{n:"æ±é»ç³è«",u:"å¼",g:"oth"}
+    "汎用":[
+      {n:"瓦屋根施工 追加人工",u:"人",g:"jin"},{n:"急勾配（6寸以上）追加人工",u:"人",g:"jin"},
+      {n:"パネル手上げ 追加人工",u:"人",g:"jin"},{n:"搬入困難 追加人工",u:"人",g:"jin"},
+      {n:"蓄電池屋内搬入 追加人工",u:"人",g:"jin"},{n:"3F施工・難工事 追加人工",u:"人",g:"jin"},
+      {n:"電気工事難工事一式",u:"式",g:"jin"},{n:"PV多面設置（3面目以降）",u:"面",g:"jin"},
+      {n:"ダクト延長",u:"m",g:"hai"},{n:"屋根線延長（DC）",u:"m",g:"hai"},
+      {n:"CV5.5 延長",u:"m",g:"hai"},{n:"CV8 延長",u:"m",g:"hai"},{n:"CV14 延長",u:"m",g:"hai"},
+      {n:"VVF延長",u:"m",g:"hai"},{n:"MDモール（通常利用分）",u:"式",g:"hai"},
+      {n:"MCB/ELB（60A以下）",u:"式",g:"kik"},{n:"MCB/ELB（75A以下）",u:"式",g:"kik"},
+      {n:"コア抜き",u:"箇所",g:"kik"},{n:"点検口設置",u:"式",g:"kik"},{n:"追加PCS設置",u:"台",g:"kik"},
+      {n:"宅内PCS撤去・処分",u:"台",g:"tek"},{n:"蓄電池撤去処分費（2人工込）",u:"式",g:"tek"},
+      {n:"PV撤去費（処分費含む）",u:"式",g:"tek"},{n:"処分費",u:"式",g:"tek"},
+      {n:"遠方交通費（50km以上）",u:"式",g:"oth"},{n:"別日交通費",u:"式",g:"oth"},
+      {n:"別工程日費用",u:"式",g:"oth"},{n:"東電申請",u:"式",g:"oth"}
     ]
   };
-  FUTAI["ã©ã¤ãº"] = [
-    ...FUTAI["ã­ã§ã¦ã¨ã¤"].filter(x=>x.g==="jin"),
-    {n:"é»æ°éç·å»¶é·",u:"m",g:"hai"},{n:"ãªã¢ã³ã³ç·å»¶é·",u:"m",g:"hai"},
-    {n:"å¹¹ç·å¼µæ¿å·¥äºï¼CV14ã¾ã§ï¼",u:"å¼",g:"hai"},{n:"å¹¹ç·å¼µæ¿å»¶é·ï¼CV14ï¼",u:"m",g:"hai"},
-    {n:"ã±ã¼ãã«åè¨­å·¥äº",u:"å¼",g:"hai"},{n:"ã±ã¼ãã«é£ã°ã",u:"å¼",g:"hai"},
-    {n:"LANã±ã¼ãã«ï¼10mã¾ã§ï¼",u:"m",g:"hai"},{n:"éç®¡å»¶é·ï¼4mä»¥ä¸ï¼",u:"m",g:"hai"},
-    {n:"éç®¡ãã¯ãä½¿ç¨ï¼å¤ªé½åã»EQï¼",u:"m",g:"hai"},{n:"ã¨ã³ã­ã¥ã¼ãç¨ãã¼ã¿ã¼ãã³ã",u:"m",g:"hai"},
-    {n:"æ°ç¯åè¡éç·ã»éç®¡",u:"å",g:"hai"},
-    ...FUTAI["ã­ã§ã¦ã¨ã¤"].filter(x=>x.g==="kik"),
-    ...FUTAI["ã­ã§ã¦ã¨ã¤"].filter(x=>x.g==="tek"),
-    ...FUTAI["ã­ã§ã¦ã¨ã¤"].filter(x=>x.g==="oth")
+  FUTAI["ライズ"] = [
+    ...FUTAI["キョウエイ"].filter(x=>x.g==="jin"),
+    {n:"電気配線延長",u:"m",g:"hai"},{n:"リモコン線延長",u:"m",g:"hai"},
+    {n:"幹線張替工事（CV14まで）",u:"式",g:"hai"},{n:"幹線張替延長（CV14）",u:"m",g:"hai"},
+    {n:"ケーブル埋設工事",u:"式",g:"hai"},{n:"ケーブル飛ばし",u:"式",g:"hai"},
+    {n:"LANケーブル（10mまで）",u:"m",g:"hai"},{n:"配管延長（4m以上）",u:"m",g:"hai"},
+    {n:"配管ダクト使用（太陽光・EQ）",u:"m",g:"hai"},{n:"エコキュート用ヒーターバンド",u:"m",g:"hai"},
+    {n:"新築先行配線・配管",u:"回",g:"hai"},
+    ...FUTAI["キョウエイ"].filter(x=>x.g==="kik"),
+    ...FUTAI["キョウエイ"].filter(x=>x.g==="tek"),
+    ...FUTAI["キョウエイ"].filter(x=>x.g==="oth")
   ];
 
   function show(id,on){ const e=document.getElementById(id); if(e) e.classList.toggle('hidden',!on); }
-  function toggleReporterOther(){ show('reporterOther', radio('reporter')==='ãã®ä»'); }
-  function toggleSurveyTypeOther(){ const c=document.querySelector('input[name="surveyType"][value="ãã®ä»"]'); show('surveyTypeOther', c&&c.checked); }
-  function toggleCompanyOther(){ show('companyOther', val('company')==='ãã®ä»'); }
-  function toggleKeiyakuOther(){ const c=document.querySelector('input[name="keiyaku"][value="ãã®ä»"]'); show('keiyakuOther', c&&c.checked); }
-  function toggleExistingOther(){ const c=document.querySelector('input[name="existing"][value="ãã®ä»"]'); show('existingOther', c&&c.checked); }
+  function toggleReporterOther(){ show('reporterOther', radio('reporter')==='その他'); }
+  function toggleSurveyTypeOther(){ const c=document.querySelector('input[name="surveyType"][value="その他"]'); show('surveyTypeOther', c&&c.checked); }
+  function toggleCompanyOther(){ show('companyOther', val('company')==='その他'); }
+  function toggleKeiyakuOther(){ const c=document.querySelector('input[name="keiyaku"][value="その他"]'); show('keiyakuOther', c&&c.checked); }
+  function toggleExistingOther(){ const c=document.querySelector('input[name="existing"][value="その他"]'); show('existingOther', c&&c.checked); }
   function toggleWifi(){
     const w=radio('wifiStatus');
-    show('wifiId', w==='ããï¼åä½ç¢ºèªæ¸ã¿ï¼'||w==='ãããåä½æªç¢ºèª');
-    show('wifiPass', w==='ããï¼åä½ç¢ºèªæ¸ã¿ï¼'||w==='ãããåä½æªç¢ºèª');
-    show('wifiNote', w==='ãããåä½æªç¢ºèª');
+    show('wifiId', w==='あり（動作確認済み）'||w==='あるが動作未確認');
+    show('wifiPass', w==='あり（動作確認済み）'||w==='あるが動作未確認');
+    show('wifiNote', w==='あるが動作未確認');
   }
-  function togglePark(){ show('parkInformedBox', radio('park')==='å¿è¦'); }
-  function toggleShakuchi(){ const s=radio('shakuchi'); show('shakuchiArea', s==='å¿è¦ã»è¨±å¯æ¸'||s==='å¿è¦ã»æªåå¾'); }
+  function togglePark(){ show('parkInformedBox', radio('park')==='必要'); }
+  function toggleShakuchi(){ const s=radio('shakuchi'); show('shakuchiArea', s==='必要・許可済'||s==='必要・未取得'); }
   function updateExistingReminder(){
     const box=document.getElementById('existingReminder'); let msgs=[];
     document.querySelectorAll('input[name="existing"]:checked').forEach(c=>{ if(EXISTING_REMINDER[c.value]) msgs.push(EXISTING_REMINDER[c.value]); });
@@ -596,16 +596,16 @@
   function toggleMakerBlocks(){ show('battBlock', document.getElementById('typeBatt').checked); show('v2hBlock', document.getElementById('typeV2h').checked); }
   function fillSelect(sel, items, ph){ sel.innerHTML='<option value="">'+ph+'</option>'+items.map(x=>'<option>'+x+'</option>').join(''); }
   function fillBattSeries(){ const m=document.getElementById('battMaker').value; const s=document.getElementById('battSeries');
-    fillSelect(s, m&&BATT[m]?Object.keys(BATT[m]):[], 'ã·ãªã¼ãº'); fillSelect(document.getElementById('battCap'),[], 'å®¹é(kWh)'); }
+    fillSelect(s, m&&BATT[m]?Object.keys(BATT[m]):[], 'シリーズ'); fillSelect(document.getElementById('battCap'),[], '容量(kWh)'); }
   function fillBattCap(){ const m=document.getElementById('battMaker').value, se=document.getElementById('battSeries').value;
-    const caps=(m&&se&&BATT[m]&&BATT[m][se])?BATT[m][se]:[]; fillSelect(document.getElementById('battCap'), caps, 'å®¹é(kWh)'); }
-  function fillV2hModel(){ const m=document.getElementById('v2hMaker').value; fillSelect(document.getElementById('v2hModel'), m&&V2H[m]?V2H[m]:[], 'æ©ç¨®'); }
+    const caps=(m&&se&&BATT[m]&&BATT[m][se])?BATT[m][se]:[]; fillSelect(document.getElementById('battCap'), caps, '容量(kWh)'); }
+  function fillV2hModel(){ const m=document.getElementById('v2hMaker').value; fillSelect(document.getElementById('v2hModel'), m&&V2H[m]?V2H[m]:[], '機種'); }
 
   function addCblRow(){
     const row=document.createElement('div'); row.className='cbl-row row2'; row.style.marginTop='6px';
-    const nm=document.createElement('input'); nm.type='text'; nm.className='cbl-name'; nm.placeholder='åç§°ï¼ä¾ï¼ãªã¢ã³ã³ç·ï¼';
+    const nm=document.createElement('input'); nm.type='text'; nm.className='cbl-name'; nm.placeholder='名称（例：リモコン線）';
     const m=document.createElement('input'); m.type='number'; m.className='cbl-m'; m.placeholder='m'; m.style.flex='0 0 90px';
-    const del=document.createElement('button'); del.type='button'; del.className='delbtn'; del.textContent='â'; del.onclick=()=>row.remove();
+    const del=document.createElement('button'); del.type='button'; del.className='delbtn'; del.textContent='✕'; del.onclick=()=>row.remove();
     row.appendChild(nm); row.appendChild(m); row.appendChild(del);
     document.getElementById('cblOtherList').appendChild(row);
   }
@@ -621,11 +621,11 @@
   function addBaseRow(){
     const row=document.createElement('div'); row.className='base-row row2'; row.style.marginTop='6px';
     const t=document.createElement('select'); t.className='base-type';
-    t.innerHTML='<option value="">ã¿ã¤ã</option><option>ã¿ã¤ã¬ã¼ãã¼ã¹</option><option>ã¨ã³ãã¼ã¹</option><option>ãã®ä»</option>';
+    t.innerHTML='<option value="">タイプ</option><option>タイガーベース</option><option>エコベース</option><option>その他</option>';
     const s=document.createElement('select'); s.className='base-size';
-    s.innerHTML='<option value="">ãµã¤ãº</option><option>300</option><option>350</option><option>400</option><option>450</option><option>500</option><option>700</option><option>ãã®ä»</option>';
-    const q=document.createElement('input'); q.type='number'; q.className='base-qty'; q.placeholder='ã»ããæ°'; q.style.flex='0 0 90px';
-    const del=document.createElement('button'); del.type='button'; del.className='delbtn'; del.textContent='â'; del.onclick=()=>row.remove();
+    s.innerHTML='<option value="">サイズ</option><option>300</option><option>350</option><option>400</option><option>450</option><option>500</option><option>700</option><option>その他</option>';
+    const q=document.createElement('input'); q.type='number'; q.className='base-qty'; q.placeholder='セット数'; q.style.flex='0 0 90px';
+    const del=document.createElement('button'); del.type='button'; del.className='delbtn'; del.textContent='✕'; del.onclick=()=>row.remove();
     row.appendChild(t); row.appendChild(s); row.appendChild(q); row.appendChild(del);
     document.getElementById('baseList').appendChild(row);
   }
@@ -633,7 +633,7 @@
     const a=[];
     document.querySelectorAll('#baseList .base-row').forEach(r=>{
       const t=r.querySelector('.base-type').value, s=r.querySelector('.base-size').value, q=r.querySelector('.base-qty').value.trim();
-      if(t||s||q) a.push(t+s+(q?(' '+q+'ã»ãã'):''));
+      if(t||s||q) a.push(t+s+(q?(' '+q+'セット'):''));
     });
     return a.join(' / ');
   }
@@ -641,9 +641,9 @@
   function addLanRow(){
     const row=document.createElement('div'); row.className='lan-row row2'; row.style.marginTop='6px';
     const l=document.createElement('select'); l.className='lan-len';
-    l.innerHTML='<option value="">é·ã</option><option>5ï½</option><option>10ï½</option><option>15ï½</option><option>20ï½</option><option>ãã®ä»</option>';
-    const q=document.createElement('input'); q.type='number'; q.className='lan-qty'; q.placeholder='æ¬æ°'; q.style.flex='0 0 90px';
-    const del=document.createElement('button'); del.type='button'; del.className='delbtn'; del.textContent='â'; del.onclick=()=>row.remove();
+    l.innerHTML='<option value="">長さ</option><option>5ｍ</option><option>10ｍ</option><option>15ｍ</option><option>20ｍ</option><option>その他</option>';
+    const q=document.createElement('input'); q.type='number'; q.className='lan-qty'; q.placeholder='本数'; q.style.flex='0 0 90px';
+    const del=document.createElement('button'); del.type='button'; del.className='delbtn'; del.textContent='✕'; del.onclick=()=>row.remove();
     row.appendChild(l); row.appendChild(q); row.appendChild(del);
     document.getElementById('lanList').appendChild(row);
   }
@@ -651,28 +651,28 @@
     const a=[];
     document.querySelectorAll('#lanList .lan-row').forEach(r=>{
       const l=r.querySelector('.lan-len').value, q=r.querySelector('.lan-qty').value.trim();
-      if(l||q) a.push(l+(q?(' '+q+'æ¬'):''));
+      if(l||q) a.push(l+(q?(' '+q+'本'):''));
     });
     return a.join(' / ');
   }
 
   function futaiList(){ const c=val('company'); if(FUTAI[c]) return FUTAI[c];
-    if(c.indexOf('ãªã±ã³')===0) return FUTAI['ãªã±ã³ã¨ãã¸ã¼'];
-    if(c.indexOf('ã¢ã«ãã¡')===0) return FUTAI['ã¢ã«ãã¡ã¨ã¬ã¯ãã­'];
-    return FUTAI['æ±ç¨']; }
+    if(c.indexOf('リケン')===0) return FUTAI['リケンエナジー'];
+    if(c.indexOf('アルファ')===0) return FUTAI['アルファエレクトロ'];
+    return FUTAI['汎用']; }
   function fillFutaiSelect(sel){
     const items=futaiList(); const cur=sel.value;
-    let html='<option value="">ä»å¸¯ãé¸æ</option>';
+    let html='<option value="">付帯を選択</option>';
     FUTAI_GROUPS.forEach(gr=>{
       const sub=items.filter(it=>it.g===gr[0]);
       if(!sub.length) return;
-      html+='<optgroup label="ã'+((FUTAI_GRP_OVR[val('company')]||{})[gr[0]]||gr[1])+'ã">'+sub.map(it=>'<option value="'+it.n+'" data-u="'+it.u+'" data-g="'+gr[0]+'">'+it.n+'ï¼'+it.u+'ï¼</option>').join('')+'</optgroup>';
+      html+='<optgroup label="【'+((FUTAI_GRP_OVR[val('company')]||{})[gr[0]]||gr[1])+'】">'+sub.map(it=>'<option value="'+it.n+'" data-u="'+it.u+'" data-g="'+gr[0]+'">'+it.n+'（'+it.u+'）</option>').join('')+'</optgroup>';
     });
     sel.innerHTML=html; sel.value=cur;
   }
   function refreshFutai(){
     const c=val('company'); const h=document.getElementById('futaiHint');
-    if(h) h.textContent=c?('ã'+(FUTAI[c]?c:(c==='ãã®ä»'?'æ±ç¨':c))+'ãã®ä»å¸¯é ç®ï¼5åºåï¼ããé¸ã¹ã¾ãã'):'â»åã«â ã§ä¼ç¤¾ãé¸ãã§ãã ããã';
+    if(h) h.textContent=c?('「'+(FUTAI[c]?c:(c==='その他'?'汎用':c))+'」の付帯項目（5区分）から選べます。'):'※先に①で会社を選んでください。';
     document.querySelectorAll('#futaiList select.futai-item').forEach(fillFutaiSelect);
   }
   function addFutaiRow(){
@@ -680,11 +680,11 @@
     const inner=document.createElement('div'); inner.className='row2'; inner.style.alignItems='center';
     const sel=document.createElement('select'); sel.className='futai-item'; fillFutaiSelect(sel);
     const qwrap=document.createElement('div'); qwrap.style.cssText='display:flex;align-items:center;gap:4px;flex:0 0 auto';
-    const qty=document.createElement('input'); qty.type='number'; qty.className='futai-qty'; qty.placeholder='æ°é'; qty.style.cssText='width:72px;flex:none'; qty.inputMode='decimal';
+    const qty=document.createElement('input'); qty.type='number'; qty.className='futai-qty'; qty.placeholder='数量'; qty.style.cssText='width:72px;flex:none'; qty.inputMode='decimal';
     const uspan=document.createElement('span'); uspan.className='futai-unit'; uspan.style.cssText='font-size:13px;color:var(--sub);min-width:18px;font-weight:600';
     qwrap.appendChild(qty); qwrap.appendChild(uspan);
     sel.onchange=()=>{ const opt=sel.options[sel.selectedIndex]; uspan.textContent=opt?(opt.getAttribute('data-u')||''):''; };
-    const del=document.createElement('button'); del.type='button'; del.className='delbtn'; del.textContent='â'; del.onclick=()=>row.remove();
+    const del=document.createElement('button'); del.type='button'; del.className='delbtn'; del.textContent='✕'; del.onclick=()=>row.remove();
     inner.appendChild(sel); inner.appendChild(qwrap); inner.appendChild(del); row.appendChild(inner);
     document.getElementById('futaiList').appendChild(row);
   }
@@ -703,11 +703,11 @@
     const row=document.createElement('div'); row.className='steprow';
     const no=document.createElement('span'); no.className='no';
     let nmEl;
-    if(custom){ nmEl=document.createElement('input'); nmEl.type='text'; nmEl.className='nm step-name'; nmEl.placeholder='ä½æ¥­åãè¨å¥'; }
+    if(custom){ nmEl=document.createElement('input'); nmEl.type='text'; nmEl.className='nm step-name'; nmEl.placeholder='作業名を記入'; }
     else{ nmEl=document.createElement('span'); nmEl.className='nm step-name'; nmEl.textContent=name; nmEl.dataset.name=name; }
     const d=document.createElement('input'); d.type='number'; d.className='step-days'; d.min='0.5'; d.step='0.5'; d.value='1'; d.oninput=updateTotal;
-    const unit=document.createElement('span'); unit.className='unit'; unit.textContent='æ¥';
-    const del=document.createElement('button'); del.type='button'; del.className='delbtn'; del.textContent='â';
+    const unit=document.createElement('span'); unit.className='unit'; unit.textContent='日';
+    const del=document.createElement('button'); del.type='button'; del.className='delbtn'; del.textContent='✕';
     del.onclick=()=>{ row.remove(); renumberSteps(); updateTotal(); };
     row.appendChild(no); row.appendChild(nmEl); row.appendChild(d); row.appendChild(unit); row.appendChild(del);
     document.getElementById('stepList').appendChild(row);
@@ -723,14 +723,14 @@
     const a=[];
     document.querySelectorAll('#stepList .steprow').forEach((r,i)=>{
       const nmEl=r.querySelector('.step-name');
-      const nm=(nmEl.tagName==='INPUT'?nmEl.value.trim():nmEl.dataset.name)||'ï¼æªè¨å¥ï¼';
+      const nm=(nmEl.tagName==='INPUT'?nmEl.value.trim():nmEl.dataset.name)||'（未記入）';
       const d=r.querySelector('.step-days').value||'?';
-      a.push((i+1)+'.'+nm+'('+d+'æ¥)');
+      a.push((i+1)+'.'+nm+'('+d+'日)');
     });
-    return a.join('â');
+    return a.join('→');
   }
 
-  // ===== â¨ åçã»å³é¢ =====
+  // ===== ⑨ 写真・図面 =====
   let photos = [];   // {id, dataURL, annotated}
   let pid = 0;
   function addPhotos(ev){
@@ -744,19 +744,19 @@
   }
   function renderPhotos(){
     const grid = document.getElementById('photoGrid');
-    if(!photos.length){ grid.innerHTML='<div class="pempty">ã¾ã åçã¯ããã¾ãã</div>'; return; }
+    if(!photos.length){ grid.innerHTML='<div class="pempty">まだ写真はありません</div>'; return; }
     grid.innerHTML = photos.map(p=>(
       '<div class="pcell">'+
-        (p.annotated?'<div class="ann">â æè¾¼</div>':'')+
+        (p.annotated?'<div class="ann">✏ 描込</div>':'')+
         '<img src="'+p.dataURL+'">'+
-        '<button class="del" onclick="delPhoto('+p.id+')">â</button>'+
-        '<button class="edit" onclick="openDraw('+p.id+')">â</button>'+
+        '<button class="del" onclick="delPhoto('+p.id+')">✕</button>'+
+        '<button class="edit" onclick="openDraw('+p.id+')">✏</button>'+
       '</div>'
     )).join('');
   }
   function delPhoto(id){ photos = photos.filter(p=>p.id!==id); renderPhotos(); }
 
-  // ----- æç»ï¼åçã¸ã®æ³¨é / ç½ç´å³é¢ï¼ -----
+  // ----- 描画（写真への注釈 / 白紙図面） -----
   let drawCtx, drawing=false, lastX=0, lastY=0, penColor='#e11d48';
   let curDrawId=null, strokes=[], curStroke=null;
   let drawMode='pen', stampText='PCS', lineStartPt=null, snapImg=null, originalImg=null;
@@ -784,7 +784,7 @@
     canvasPreset=p;
     document.getElementById('prstStd').classList.toggle('psel',p==='std');
     document.getElementById('prstSq').classList.toggle('psel',p==='sq');
-    openDraw(curDrawId); // ã­ã£ã³ãã¹ãååæå
+    openDraw(curDrawId); // キャンバスを再初期化
   }
   function openDraw(id){
     curDrawId=id; strokes=[]; curStroke=null; originalImg=null; lineStartPt=null; snapImg=null;
@@ -831,11 +831,11 @@
   }
 
   function drawStampShape(text, x, y){
-    if(text==='åâ'){
+    if(text==='北↑'){
       drawCtx.save(); drawCtx.fillStyle='#dc2626';
       drawCtx.beginPath(); drawCtx.arc(x,y,20,0,Math.PI*2); drawCtx.fill();
       drawCtx.fillStyle='#fff'; drawCtx.font='bold 13px sans-serif'; drawCtx.textAlign='center'; drawCtx.textBaseline='middle';
-      drawCtx.fillText('åâ',x,y); drawCtx.restore(); return;
+      drawCtx.fillText('北↑',x,y); drawCtx.restore(); return;
     }
     drawCtx.save(); drawCtx.font='bold 13px sans-serif';
     const tw=drawCtx.measureText(text).width; const pad=7; const bw=tw+pad*2; const bh=24;
@@ -900,50 +900,50 @@
     renderPhotos(); closeDraw();
   }
 
-  // ----- ä¿å­åãã¹ã®èªåçæ -----
+  // ----- 保存先パスの自動生成 -----
   function gyo(kana){
     if(!kana) return '';
     let c = kana.trim().charAt(0);
-    const map={'ã':'ã','ã':'ã','ã':'ã','ã':'ã','ã':'ã','ã':'ã','ã':'ã','ã':'ã','ã':'ã','ã':'ã','ã ':'ã','ã¢':'ã¡','ã¥':'ã¤','ã§':'ã¦','ã©':'ã¨','ã°':'ã¯','ã³':'ã²','ã¶':'ãµ','ã¹':'ã¸','ã¼':'ã»','ã±':'ã¯','ã´':'ã²','ã·':'ãµ','ãº':'ã¸','ã½':'ã»'};
-    if(m>='ã¡'&&c<='ã³') c=String.fromCharCode(c.charCodeAt(0)-0x60);
+    const map={'が':'か','ぎ':'き','ぐ':'く','げ':'け','ご':'こ','ざ':'さ','じ':'し','ず':'す','ぜ':'せ','ぞ':'そ','だ':'た','ぢ':'ち','づ':'つ','で':'て','ど':'と','ば':'は','び':'ひ','ぶ':'ふ','べ':'へ','ぼ':'ほ','ぱ':'は','ぴ':'ひ','ぷ':'ふ','ぺ':'へ','ぽ':'ほ'};
+    if(m>='ァ'&&c<='ン') c=String.fromCharCode(c.charCodeAt(0)-0x60);
     if(map[c]) c=map[c];
-    const rows=[['ã','ããããã'],['ã','ããããã'],['ã','ããããã'],['ã','ãã¡ã¤ã¦ã¨'],['ãª','ãªã«ã¬ã­ã®'],['ã¯','ã¯ã²ãµã¸ã»'],['ã¾','ã¾ã¿ããã'],['ã','ããã'],['ã','ããããã'],['ã','ããã']];
-    for(const [g,set] of rows){ if(set.indexOf(c)>=0) return g+'è¡'; }
+    const rows=[['あ','あいうえお'],['か','かきくけこ'],['さ','さしすせそ'],['た','たちつてと'],['な','なにぬねの'],['は','はひふへほ'],['ま','まみむめも'],['や','やゆよ'],['ら','らりるれろ'],['わ','わをん']];
+    for(const [g,set] of rows){ if(set.indexOf(c)>=0) return g+'行'; }
     return '';
   }
   function shiku(addr){
     if(!addr) return '';
-    let a=addr.replace(/^.+?[é½éåºç]/,'');
-    const m=a.match(/^.+?[å¸åºçºæ]/);
+    let a=addr.replace(/^.+?[都道府県]/,'');
+    const m=a.match(/^.+?[市区町村]/);
     return m?m[0]:'';
   }
   function updateDrivePath(){
-    const company = val('company')==='ãã®ä»'? val('companyOther') : val('company');
+    const company = val('company')==='その他'? val('companyOther') : val('company');
     const name = val('custName'); const kana = val('custKana'); const addr=val('addr');
     const el = document.getElementById('drivePath');
-    if(!company && !name){ el.textContent='ãå®¢æ§åã»ä¼ç¤¾åãå¥ããã¨è¡¨ç¤ºããã¾ã'; return; }
-    const g = gyo(kana) || 'ï¼è¡ï¼';
-    const head = name? name.charAt(0) : 'ï¼é ­ï¼';
-    const sk = shiku(addr) || 'ï¼å¸åºï¼';
+    if(!company && !name){ el.textContent='お客様名・会社名を入れると表示されます'; return; }
+    const g = gyo(kana) || '（行）';
+    const head = name? name.charAt(0) : '（頭）';
+    const sk = shiku(addr) || '（市区）';
     el.innerHTML =
-      '<span class="seg">ç¾å ´åç</span> / '+
-      '<span class="seg">'+(company||'ï¼ä¼ç¤¾åï¼')+'</span> / '+
-      '<span class="seg">'+g+'âãå®¢æ§åâç¾å ´ä½æ</span> / '+
-      '<span class="accent">'+head+'_'+(name||'ï¼ãå®¢æ§åï¼')+'_'+sk+'</span> / '+
-      '<span class="seg">ç¾èª¿åç</span>';
+      '<span class="seg">現場写真</span> / '+
+      '<span class="seg">'+(company||'（会社名）')+'</span> / '+
+      '<span class="seg">'+g+'₋お客様名⊋現場住所</span> / '+
+      '<span class="accent">'+head+'_'+(name||'（お客様名）')+'_'+sk+'</span> / '+
+      '<span class="seg">現調写真</span>';
   }
 
   function val(id){ const e=document.getElementById(id); return e?e.value.trim():""; }
   function radio(name){ const e=document.querySelector('input[name="'+name+'"]:checked'); return e?e.value:""; }
-  function multi(name){ return Array.from(document.querySelectorAll('input[name="'+name+'"]:checked')).map(x=>x.value).join("ã»"); }
+  function multi(name){ return Array.from(document.querySelectorAll('input[name="'+name+'"]:checked')).map(x=>x.value).join("・"); }
   function caseKey(){ const d=new Date(); const p=n=>String(n).padStart(2,'0');
     return "G"+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+"-"+p(d.getHours())+p(d.getMinutes())+p(d.getSeconds()); }
-  function reporterVal(){ const r=radio('reporter'); return r==='ãã®ä»'?('ãã®ä»ï¼'+val('reporterOther')):r; }
-  function companyVal(){ const c=val('company'); return c==='ãã®ä»'?('ãã®ä»ï¼'+val('companyOther')):c; }
-  function surveyTypeVal(){ let a=multi('surveyType'); const o=val('surveyTypeOther'); if(o) a=a.replace('ãã®ä»','ãã®ä»ï¼'+o); return a; }
-  function keiyakuVal(){ let a=multi('keiyaku'); const o=val('keiyakuOther'); if(o) a=a.replace('ãã®ä»','ãã®ä»ï¼'+o); return a; }
-  function existingVal(){ let a=multi('existing'); const o=val('existingOther'); if(o) a=a.replace('ãã®ä»','ãã®ä»ï¼'+o); return a; }
-  function wifiStatusVal(){ const w=radio('wifiStatus'); if(w==='ãããåä½æªç¢ºèª'){ const r=val('wifiNote'); return w+(r?('ï¼çç±ï¼'+r+'ï¼'):''); } return w; }
+  function reporterVal(){ const r=radio('reporter'); return r==='その他'?('その他：'+val('reporterOther')):r; }
+  function companyVal(){ const c=val('company'); return c==='その他'?('その他：'+val('companyOther')):c; }
+  function surveyTypeVal(){ let a=multi('surveyType'); const o=val('surveyTypeOther'); if(o) a=a.replace('その他','その他：'+o); return a; }
+  function keiyakuVal(){ let a=multi('keiyaku'); const o=val('keiyakuOther'); if(o) a=a.replace('その他','その他：'+o); return a; }
+  function existingVal(){ let a=multi('existing'); const o=val('existingOther'); if(o) a=a.replace('その他','その他：'+o); return a; }
+  function wifiStatusVal(){ const w=radio('wifiStatus'); if(w==='あるが動作未確認'){ const r=val('wifiNote'); return w+(r?('（理由：'+r+'）'):''); } return w; }
   function battVal(){ if(!document.getElementById('typeBatt').checked) return '';
     return [val('battMaker'),val('battSeries'),val('battCap')?val('battCap')+'kWh':''].filter(Boolean).join(' '); }
   function v2hVal(){ if(!document.getElementById('typeV2h').checked) return '';
@@ -952,12 +952,12 @@
   function buildMemo(){
     const base=val('memo'); const auto=[];
     const w=radio('wifiStatus');
-    if(w==='ãªã') auto.push('ãWi-Fiãªãâé éã¢ãã¿ãªã³ã°ä¸å¯ããå®¢æ§ã¸ä¼éã»å¶æ¥­ç¢ºèªè¦ã');
-    if(w==='ãããåä½æªç¢ºèª') auto.push('ãWi-Fiåä½æªç¢ºèªï¼'+(val('wifiNote')||'çç±æªè¨å¥')+'ï¼âå¶æ¥­ã¸ã');
-    const ru=multi('roofUnconf'); const rm=val('roofUnconfMemo'); if(ru||rm) auto.push('ãå±æ ¹ç­ç¾èª¿å»¶æï¼'+[ru,rm].filter(Boolean).join('ï¼')+'ã');
-    if(radio('park')==='å¿è¦'&&radio('parkInformed')==='æª') auto.push('ãé§è»å ´ç§»å å¿è¦ã»ä¼éæªâå¶æ¥­ã¸'+(val('parkMemo')?('ï¼'+val('parkMemo')+'ï¼'):'')+'ã');
-    if(radio('shakuchi')==='å¿è¦ã»æªåå¾') auto.push('ãåå°è¨±å¯ æªåå¾âè¦å¯¾å¿'+(val('shakuchiArea')?('ï¼'+val('shakuchiArea')+'ï¼'):'')+'ã');
-    if(document.getElementById('salesContact').checked) auto.push('ãâå¶æ¥­ã¸è¦é£çµ¡ã');
+    if(w==='なし') auto.push('【Wi-Fiなし→遠隔モニタリング不可をお客様へ伝達・営業確認要】');
+    if(w==='あるが動作未確認') auto.push('【Wi-Fi動作未確認（'+(val('wifiNote')||'理由未記入')+'）→営業へ】');
+    const ru=multi('roofUnconf'); const rm=val('roofUnconfMemo'); if(ru||rm) auto.push('【屋根等現調延期：'+[ru,rm].filter(Boolean).join('／')+'】');
+    if(radio('park')==='必要'&&radio('parkInformed')==='未') auto.push('【駐車場移動 必要・伝達未→営業へ'+(val('parkMemo')?('（'+val('parkMemo')+'）'):'')+'】');
+    if(radio('shakuchi')==='必要・未取得') auto.push('【借地許可 未取得→要対応'+(val('shakuchiArea')?('（'+val('shakuchiArea')+'）'):'')+'】');
+    if(document.getElementById('salesContact').checked) auto.push('【★営業へ要連絡】');
     return [auto.join(' '), base].filter(Boolean).join('\n');
   }
 
@@ -966,7 +966,7 @@
     return {
       caseKey: caseKey(), registeredAt: new Date().toISOString(),
       surveyDate: val('surveyDate'), reporter: reporterVal(), surveyType: surveyTypeVal(),
-      roofUnconf: [multi('roofUnconf'),val('roofUnconfMemo')].filter(Boolean).join('ï¼'),
+      roofUnconf: [multi('roofUnconf'),val('roofUnconfMemo')].filter(Boolean).join('／'),
       company: companyVal(),
       custName: val('custName'), custKana: val('custKana'), addr: val('addr'),
       keiyaku: keiyakuVal(), meter: val('meter'), panel: val('panel'),
@@ -976,12 +976,12 @@
       wifiStatus: wifiStatusVal(), wifiId: val('wifiId'), wifiPass: val('wifiPass'),
       cblPv: val('cblPv'), cblMain: val('cblMain'), cblBatt: val('cblBatt'), cblCt: val('cblCt'),
       cblOther: collectCblOther(),
-      battType: (document.getElementById('typeBatt').checked?'èé»æ± ':'')+(document.getElementById('typeV2h').checked?(document.getElementById('typeBatt').checked?'ã»':'')+'V2H':''),
+      battType: (document.getElementById('typeBatt').checked?'蓄電池':'')+(document.getElementById('typeV2h').checked?(document.getElementById('typeBatt').checked?'・':'')+'V2H':''),
       battery: battVal(), v2h: v2hVal(),
       block: collectBase(), lan: collectLan(),
       futaiJin: FT.jin, futaiHai: FT.hai, futaiKik: FT.kik, futaiTek: FT.tek, futaiOth: FT.oth,
       addMemo: val('addMemo'),
-      park: radio('park'), parkInformed: (radio('park')==='å¿è¦'?radio('parkInformed'):''), parkMemo: val('parkMemo'),
+      park: radio('park'), parkInformed: (radio('park')==='必要'?radio('parkInformed'):''), parkMemo: val('parkMemo'),
       shakuchi: radio('shakuchi'), shakuchiArea: val('shakuchiArea'),
       scaffold: val('scaffold'), flow: radio('flow'),
       steps: collectSteps(), totalDays: document.getElementById('totalDays').textContent,
@@ -994,18 +994,18 @@
 
   function showMsg(text, ok){ const m=document.getElementById('msg'); m.textContent=text; m.className="msg "+(ok?"ok":"err"); }
   function validate(d){
-    if(!d.surveyDate) return "ç¾å°èª¿æ»æ¥ãå¥åãã¦ãã ãã";
-    if(!d.reporter) return "å ±åèãé¸æãã¦ãã ãã";
-    if(!d.surveyType) return "ç¾å°èª¿æ»åå®¹ãé¸æãã¦ãã ãã";
-    if(!d.company) return "ä¼ç¤¾åãé¸æãã¦ãã ãã";
-    if(!d.custName) return "ãå®¢æ§åãå¥åãã¦ãã ãã";
-    if(!d.addr) return "ç¾å ´ä½æãå¥åãã¦ãã ãã";
-    if(!d.keiyaku) return "å¥ç´ç¨®å¥ã»å®¹éãé¸æãã¦ãã ãã";
-    if(!d.wifiStatus) return "Wi-Fiçµæ³ãé¸æãã¦ãã ãã";
+    if(!d.surveyDate) return "現地調査日を入力してください";
+    if(!d.reporter) return "報告者を選択してください";
+    if(!d.surveyType) return "現地調査内容を選択してください";
+    if(!d.company) return "会社名を選択してください";
+    if(!d.custName) return "お客様名を入力してください";
+    if(!d.addr) return "現場住所を入力してください";
+    if(!d.keiyaku) return "契約種別・容量を選択してください";
+    if(!d.wifiStatus) return "Wi-Fi犵況を選択してください";
     return "";
   }
 
-  // åçããªãµã¤ãºã»JPEGå§ç¸®ããï¼é·è¾º1000px / åè³ª70%ï¼
+  // 写真をリサイズ・JPEG圧縮する（長辺1000px / 品質70%）
   function compressPhoto(dataURL, maxPx, quality) {
     return new Promise(function(resolve) {
       const img = new Image();
@@ -1027,29 +1027,29 @@
     const d = collect(); const err = validate(d);
     if(err){ showMsg(err, false); window.scrollTo({top:0,behavior:'smooth'}); return; }
     if(PROTO){
-      showMsg("ãè©¦ä½ãéä¿¡OKï¼æ¡ä»¶ã­ã¼ï¼"+d.caseKey+" / åç"+d.photoCount+"æï¼ãæ¬çªã§ã¯åçãDriveã®ä¿å­åãã©ã«ãã¸èªåæ ¼ç´ããã¾ãã", true);
+      showMsg("【試作】送信OK（案件キー："+d.caseKey+" / 写真"+d.photoCount+"枚）。本番では写真がDriveの保存先フォルダへ自動格納されます。", true);
       window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}); return;
     }
     const btn=document.getElementById('submitBtn'); btn.disabled=true;
-    // åçãå§ç¸®
+    // 写真を圧縮
     if(d.photos && d.photos.length > 0){
-      btn.textContent="åçãå§ç¸®ä¸­â¦("+d.photos.length+"æ)";
+      btn.textContent="写真を圧縮中…("+d.photos.length+"枚)";
       d.photos = await Promise.all(d.photos.map(async function(p){
         if(!p || !p.dataURL) return p;
         const compressed = await compressPhoto(p.dataURL, 1000, 0.7);
         return Object.assign({}, p, { dataURL: compressed });
       }));
     }
-    btn.textContent="éä¿¡ä¸­â¦";
+    btn.textContent="送信中…";
     fetch(GAS_URL, { method:"POST", mode:"no-cors",
       headers:{"Content-Type":"text/plain;charset=utf-8"}, body: JSON.stringify(d) })
-      .then(function(){ showMsg("éä¿¡ãã¾ããï¼æ¡ä»¶ã­ã¼ï¼"+d.caseKey+"ï¼", true); btn.textContent="éä¿¡å®äº"; var dg=document.getElementById('driveGuide'); if(dg){dg.style.display='block';} })
-      .catch(function(){ showMsg("éä¿¡ã«å¤±æãã¾ãããé»æ³¢ãç¢ºèªãã¦ããä¸åº¦ãè©¦ããã ããã", false);
-        btn.disabled=false; btn.textContent="éä¿¡"; });
+      .then(function(){ showMsg("送信しました（案件キー："+d.caseKey+"）", true); btn.textContent="送信完了"; var dg=document.getElementById('driveGuide'); if(dg){dg.style.display='block';} })
+      .catch(function(){ showMsg("送信に失敗しました。電波を確認してもう一度お試しください。", false);
+        btn.disabled=false; btn.textContent="送信"; });
   }
 
   function clearForm(){
-    if(!confirm("å¥ååå®¹ãã¯ãªã¢ãã¾ããããããã§ããï¼")) return;
+    if(!confirm("入力内容をクリアします。よろしいですか？")) return;
     document.querySelectorAll('input,textarea,select').forEach(e=>{
       if(e.type==='checkbox'||e.type==='radio') e.checked=false; else e.value="";
     });
@@ -1061,10 +1061,10 @@
     document.getElementById('surveyDate').valueAsDate=new Date();
   }
 
-  // åæå
+  // 初期化
   document.getElementById('surveyDate').valueAsDate = new Date();
-  fillSelect(document.getElementById('battMaker'), Object.keys(BATT), 'ã¡ã¼ã«ã¼');
-  fillSelect(document.getElementById('v2hMaker'), Object.keys(V2H), 'ã¡ã¼ã«ã¼');
+  fillSelect(document.getElementById('battMaker'), Object.keys(BATT), 'メーカー');
+  fillSelect(document.getElementById('v2hMaker'), Object.keys(V2H), 'メーカー');
   renderPhotos(); updateDrivePath();
   (function(){ const c=cv();
     c.addEventListener('mousedown',startDraw); c.addEventListener('mousemove',moveDraw);
