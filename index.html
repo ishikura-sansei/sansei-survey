@@ -1045,55 +1045,52 @@
   }
 
   function generateReport(d){
-    function v(x){return(x===undefined||x===null||x===''||x==='undefined')?'−':x;}
-    function row(lbl,val,full){var vv=v(val);return '<div class="field'+(full?' full':'')+'">'+'<span class="lbl">'+lbl+'</span><span class="val'+(vv==='−'?' empty':'')+'">'+(vv==='−'?'<em>−</em>':vv)+'</span></div>';}
-    function sec(icon,title,body){return '<div class="sec"><div class="sec-head"><span>'+icon+'</span>'+title+'</div><div class="sec-body"><div class="grid">'+body+'</div></div></div>';}
-    var stHtml='';
-    if(d.steps){var arr=String(d.steps).split('→');stHtml=arr.map(function(s,i){return'<div class="step-row"><div class="step-no">'+(i+1)+'</div><div>'+s.replace(/^\d+\./, '')+'</div></div>';}).join('');}
-    var html='<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>現調報告書 '+v(d.custName)+' '+v(d.surveyDate)+'</title><style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:\'Hiragino Sans\',\'Meiryo\',sans-serif;background:#fff7ed;color:#222;font-size:14px;}header{background:linear-gradient(135deg,#ea580c,#f97316);color:#fff;padding:20px;display:flex;align-items:center;gap:14px;}.logo{font-size:32px;}h1{font-size:18px;font-weight:bold;letter-spacing:1px;}header p{font-size:11px;opacity:0.85;margin-top:2px;}.meta-bar{background:#c2410c;color:#fff;display:flex;flex-wrap:wrap;font-size:12px;}.meta-item{padding:8px 16px;border-right:1px solid rgba(255,255,255,0.2);display:flex;flex-direction:column;gap:2px;}.meta-item .lbl{opacity:0.75;font-size:10px;}.meta-item .val{font-weight:bold;}.content{max-width:860px;margin:0 auto;padding:16px;}.sec{background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-bottom:14px;overflow:hidden;}.sec-head{background:#f97316;color:#fff;padding:10px 16px;font-size:13px;font-weight:bold;display:flex;align-items:center;gap:8px;}.sec-body{padding:14px 16px;}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;}.field{display:flex;flex-direction:column;gap:3px;}.field.full{grid-column:1/-1;}.lbl{font-size:10px;color:#9a3412;font-weight:bold;letter-spacing:0.3px;}.val{font-size:14px;color:#222;padding:4px 0;border-bottom:1px solid #fed7aa;min-height:24px;word-break:break-all;}.val.empty{color:#bbb;font-style:italic;}em{color:#ccc;font-style:normal;}.step-row{display:flex;align-items:center;gap:10px;background:#fff7ed;border-radius:8px;padding:8px 12px;margin-bottom:6px;font-size:13px;}.step-no{min-width:24px;height:24px;background:#f97316;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;flex-shrink:0;}.memo-box{background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:12px;font-size:13px;line-height:1.8;white-space:pre-wrap;min-height:40px;}.key-box{text-align:center;background:#fff7ed;border-radius:8px;padding:10px;font-size:11px;color:#9a3412;margin-top:10px;}footer{text-align:center;padding:20px;font-size:11px;color:#aaa;}@media print{body{background:#fff;}.sec{box-shadow:none;border:1px solid #fed7aa;page-break-inside:avoid;}}</style></head><body>'
-    +'<header><div class="logo">📋</div><div><h1>現地調査 報告書</h1><p>株式会社SANSEI</p></div></header>'
-    +'<div class="meta-bar"><div class="meta-item"><span class="lbl">調査日</span><span class="val">'+v(d.surveyDate)+'</span></div><div class="meta-item"><span class="lbl">報告者</span><span class="val">'+v(d.reporter)+'</span></div><div class="meta-item"><span class="lbl">お客様</span><span class="val">'+v(d.custName)+'</span></div><div class="meta-item"><span class="lbl">元請け</span><span class="val">'+v(d.company)+'</span></div></div>'
-    +'<div class="content">'
-    +sec('📌','基本情報', row('現地調査日',d.surveyDate)+row('報告者',d.reporter)+row('会社名（元請け）',d.company)+row('現地調査内容',d.surveyType)+row('屋根状況',d.roofUnconf,true))
-    +sec('👤','お客様情報', row('お客様名',d.custName)+row('ふりがな',d.custKana)+row('現場住所',d.addr,true)+row('契約種別・容量',d.keiyaku))
-    +sec('⚡','電気設備', row('電力量計',d.meter)+row('分電盤',d.panel)+row('既設',d.existing,true)+row('回路数',d.circuits)+row('空き回路',d.emptyCircuits)+row('幹線',d.kansen)+row('アース',d.earth)+row('Wi-Fi',d.wifiStatus)+row('Wi-Fi SSID',d.wifiId)+row('Wi-Fi PW',d.wifiPass))
-    +sec('🔌','ケーブル', row('PVケーブル',d.cblPv)+row('メインケーブル',d.cblMain)+row('蓄電池ケーブル',d.cblBatt)+row('CTケーブル',d.cblCt)+row('その他',d.cblOther,true))
-    +sec('🔋','機器・部材', row('機器種別',d.battType)+row('蓄電池',d.battery)+row('V2H',d.v2h)+row('基礎',d.block)+row('LAN',d.lan))
-    +sec('🔧','⑥付帯工事', row('基本工事（セット/単体）',d.futaiJin)+row('配線・電線類',d.futaiHai)+row('部材追加等',d.futaiKik)+row('追加作業費等',d.futaiTek)+row('その他',d.futaiOth)+row('備考',d.addMemo,true))
-    +sec('🚗','施工条件', row('駐車場',d.park)+row('駐車場周知',d.parkInformed)+row('駐車場備考',d.parkMemo)+row('借地',d.shakuchi)+row('借地面積',d.shakuchiArea)+row('足場位置',d.scaffold)+row('施工フロー',d.flow))
-    +'<div class="sec"><div class="sec-head"><span>📋</span>施工ステップ（合計: '+v(d.totalDays)+'日）</div><div class="sec-body">'+(stHtml||'<em style="color:#ccc">−</em>')+'</div></div>'
-    +sec('📅','スケジュール', row('希望日',d.hopeDate)+row('NG日',d.ngDate)+row('時間帯',d.timeSlot))
-    +'<div class="sec"><div class="sec-head"><span>📝</span>特記事項</div><div class="sec-body"><div class="memo-box">'+(d.memo||'<em style="color:#ccc">−</em>')+'</div></div></div>'
-    +'<div class="key-box">案件キー: '+v(d.caseKey)+' ／ 送信: '+v(d.registeredAt)+'</div>'
-    +'</div><footer>株式会社SANSEI 現地調査報告書</footer></body></html>';
+    function v(x){return(x===undefined||x===null||x==='')?'−':String(x);}
+    function row(l,x,f){var vv=v(x);return '<div class="field'+(f?' full':'')+'"><span class="lbl">'+l+'</span><span class="val'+(vv==='−'?' empty':'')+'">'+vv+'</span></div>';}
+    function sec(ic,t,b){return '<div class="sec"><div class="sh"><span>'+ic+'</span>'+t+'</div><div class="sb"><div class="gr">'+b+'</div></div></div>';}
+    var st='';
+    if(d.steps){var arr=String(d.steps).split('→');st=arr.map(function(s,i){return'<div class="sr"><div class="sn">'+(i+1)+'</div><div>'+s.replace(/^\d+\./,'')+'</div></div>';}).join('');}
+    var html='<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">'
+      +'<title>現調報告書 '+v(d.custName)+' '+v(d.surveyDate)+'</title>'
+      +'<style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:sans-serif;background:#fff7ed;color:#222;font-size:14px;}'
+      +'header{background:linear-gradient(135deg,#ea580c,#f97316);color:#fff;padding:20px;display:flex;align-items:center;gap:14px;}'
+      +'.logo{font-size:32px;}h1{font-size:18px;font-weight:bold;}header p{font-size:11px;opacity:.85;margin-top:2px;}'
+      +'.mb{background:#c2410c;color:#fff;display:flex;flex-wrap:wrap;font-size:12px;}'
+      +'.mi{padding:8px 16px;border-right:1px solid rgba(255,255,255,.2);display:flex;flex-direction:column;gap:2px;}'
+      +'.mi .ml{opacity:.75;font-size:10px;}.mi .mv{font-weight:bold;}'
+      +'.ct{max-width:860px;margin:0 auto;padding:16px;}'
+      +'.sec{background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:14px;overflow:hidden;}'
+      +'.sh{background:#f97316;color:#fff;padding:10px 16px;font-size:13px;font-weight:bold;display:flex;align-items:center;gap:8px;}'
+      +'.sb{padding:14px 16px;}.gr{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;}'
+      +'.field{display:flex;flex-direction:column;gap:3px;}.field.full{grid-column:1/-1;}'
+      +'.lbl{font-size:10px;color:#9a3412;font-weight:bold;}.val{font-size:14px;padding:4px 0;border-bottom:1px solid #fed7aa;min-height:24px;word-break:break-all;}'
+      +'.val.empty{color:#bbb;font-style:italic;}'
+      +'.sr{display:flex;align-items:center;gap:10px;background:#fff7ed;border-radius:8px;padding:8px 12px;margin-bottom:6px;font-size:13px;}'
+      +'.sn{min-width:24px;height:24px;background:#f97316;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;flex-shrink:0;}'
+      +'.mo{background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:12px;font-size:13px;line-height:1.8;white-space:pre-wrap;min-height:40px;}'
+      +'.kb{text-align:center;padding:10px;font-size:11px;color:#9a3412;background:#fff7ed;border-radius:8px;margin-top:10px;}'
+      +'footer{text-align:center;padding:20px;font-size:11px;color:#aaa;}'
+      +'@media print{body{background:#fff;}.sec{box-shadow:none;border:1px solid #fed7aa;}}</style></head><body>'
+      +'<header><div class="logo">📋</div><div><h1>現地調査 報告書</h1><p>株式会示SANSEI</p></div></header>'
+      +'<div class="mb">'
+      +'<div class="mi"><span class="ml">調査日</span><span class="mv">'+v(d.surveyDate)+'</span></div>'
+      +'<div class="mi"><span class="ml">報告者</span><span class="mv">'+v(d.reporter)+'</span></div>'
+      +'<div class="mi"><span class="ml">お客様</span><span class="mv">'+v(d.custName)+'</span></div>'
+      +'<div class="mi"><span class="ml">元請け</span><span class="mv">'+v(d.company)+'</span></div>'
+      +'</div><div class="ct">'
+      +sec('📌','基本情報',row('現地調査日',d.surveyDate)+row('報告者',d.reporter)+row('会示名（元請け）',d.company)+row('現地調査内容',d.surveyType)+row('屋根状況',d.roofUnconf,true))
+      +sec('👤','お客様情報',row('お客様名',d.custName)+row('ふりがな',d.custKana)+row('現場住所',d.addr,true)+row('契約種別・容量',d.keiyaku))
+      +sec('⚡','電気設備',row('電力量計',d.meter)+row('分電盤',d.panel)+row('既設',d.existing,true)+row('回路数',d.circuits)+row('空き回路',d.emptyCircuits)+row('幹線',d.kansen)+row('アース',d.earth)+row('Wi-Fi',d.wifiStatus)+row('Wi-Fi SSID',d.wifiId)+row('Wi-Fi PW',d.wifiPass))
+      +sec('🔌','ケーブル',row('PVケーブル',d.cblPv)+row('メインケーブル',d.cblMain)+row('蓄電池ケーブル',d.cblBatt)+row('CTケーブル',d.cblCt)+row('その他',d.cblOther,true))
+      +sec('🔋','機器・部材',row('機器種別',d.battType)+row('蓄電池',d.battery)+row('V2H',d.v2h)+row('基礎',d.block)+row('LAN',d.lan))
+      +sec('🔧','⑥付帯工事',row('基本工事（セット／単体）',d.futaiJin)+row('配線・電線類',d.futaiHai)+row('部材追加等',d.futaiKik)+row('追加作業費等',d.futaiTek)+row('その他',d.futaiOth)+row('備考',d.addMemo,true))
+      +sec('🚗','施工条件',row('駐車場',d.park)+row('駐車場周知',d.parkInformed)+row('駐車場備考',d.parkMemo)+row('借地',d.shakuchi)+row('借地面積',d.shakuchiArea)+row('足場位置',d.scaffold)+row('施工フロー',d.flow))
+      +'<div class="sec"><div class="sh"><span>📋</span>施工ステップ（合計：'+v(d.totalDays)+'日）</div><div class="sb">'+(st||'<em style="color:#ccc">-</em>')+'</div></div>'
+      +sec('📅','スケジュール',row('希望日',d.hopeDate)+row('NG日',d.ngDate)+row('時間帯',d.timeSlot))
+      +'<div class="sec"><div class="sh"><span>📝</span>特記事項</div><div class="sb"><div class="mo">'+(d.memo||'<em style="color:#ccc">-</em>')+'</div></div></div>'
+      +'<div class="kb">案件キー: '+v(d.caseKey)+' / 送信: '+v(d.registeredAt)+'</div>'
+      +'</div><footer>株式会示SANSEI 現地調査報告書</footer></body></html>';
     var blob=new Blob([html],{type:'text/html;charset=utf-8'});
     var url=URL.createObjectURL(blob);
     window.open(url,'_blank');
   }
-    function clearForm(){
-    if(!confirm("å¥ååå®¹ãã¯ãªã¢ãã¾ããããããã§ããï¼")) return;
-    document.querySelectorAll('input,textarea,select').forEach(e=>{
-      if(e.type==='checkbox'||e.type==='radio') e.checked=false; else e.value="";
-    });
-    ['cblOtherList','baseList','lanList','futaiList','stepList'].forEach(id=>{ document.getElementById(id).innerHTML=''; });
-    photos=[]; renderPhotos(); updateTotal(); updateDrivePath();
-    ['reporterOther','surveyTypeOther','companyOther','keiyakuOther','existingOther','wifiId','wifiPass','wifiNote','battBlock','v2hBlock','parkInformedBox','shakuchiArea'].forEach(id=>show(id,false));
-    document.getElementById('existingReminder').classList.add('hidden');
-    showMsg("", true); document.getElementById('msg').className="msg";
-    document.getElementById('surveyDate').valueAsDate=new Date();
-  }
-
-  // åæå
-  document.getElementById('surveyDate').valueAsDate = new Date();
-  fillSelect(document.getElementById('battMaker'), Object.keys(BATT), 'ã¡ã¼ã«ã¼');
-  fillSelect(document.getElementById('v2hMaker'), Object.keys(V2H), 'ã¡ã¼ã«ã¼');
-  renderPhotos(); updateDrivePath();
-  (function(){ const c=cv();
-    c.addEventListener('mousedown',startDraw); c.addEventListener('mousemove',moveDraw);
-    window.addEventListener('mouseup',endDraw);
-    c.addEventListener('touchstart',startDraw,{passive:false}); c.addEventListener('touchmove',moveDraw,{passive:false});
-    c.addEventListener('touchend',endDraw);
-  })();
-</script>
-</body>
-</html>
