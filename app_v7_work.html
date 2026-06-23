@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SANSEI 現地調査シート</title>
+<style>
+  /* ===== v6 本番（2026-06-15）SANSEI配色（白基調＋オレンジ＋ブルー）。金額は一切表示しない ===== */
+  :root{
+    --bg:#f4f5f7; --panel:#ffffff; --line:#e7e9ee; --ink:#111827; --sub:#6b7280;
+    --accent:#f97316; --accent-soft:#fff1e6; --accent-deep:#c2410c;
+    --blue:#2563eb; --blue-soft:#e9f0ff; --blue-deep:#1e40af;
+    --ok:#2e7d32; --warn:#c08a00; --chip:#f3f5f7; --radius:16px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Meiryo",sans-serif;
+    font-size:16px;line-height:1.5;padding-bottom:96px}
+  header{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);
+    padding:10px 16px 11px;z-index:20;box-shadow:0 1px 0 rgba(17,24,39,.02)}
+  header::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;
+    background:linear-gradient(90deg,var(--accent),#fbbf24)}
+  .brand{font-weight:800;letter-spacing:.16em;font-size:15px;text-align:center;color:var(--ink)}
+  .brand span{color:var(--accent)}
+  header h1{font-size:16px;margin:2px 0 0;font-weight:700;text-align:center}
+  header .sub{font-size:11px;color:var(--sub);margin-top:1px;text-align:center}
+  .wrap{max-width:640px;margin:0 auto;padding:12px 14px}
+  .note{background:var(--blue-soft);border:1px solid #d4e0fb;border-radius:12px;
+    padding:9px 11px;font-size:12px;color:var(--blue-deep);margin:10px 0}
+  .alert{background:#fff7e6;border:1px solid #f0d28a;border-radius:12px;
+    padding:9px 11px;font-size:12px;color:#8a6400;margin:8px 0}
+
+  .sec{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:16px 15px;margin:13px 0;box-shadow:0 1px 3px rgba(17,24,39,.05)}
+  .sec h2{font-size:15px;margin:0 0 12px;display:flex;align-items:center;gap:9px;font-weight:800;color:var(--ink)}
+  .sec h2 .n{width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;
+    font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:800}
+  .grp{font-size:13px;font-weight:800;color:var(--accent-deep);margin:14px 0 5px;
+    display:flex;align-items:center;gap:6px}
+  .grp::before{content:"";width:4px;height:13px;background:var(--accent);border-radius:2px}
+  .f{margin:10px 0}
+  .f label{display:block;font-size:12.5px;color:var(--sub);margin-bottom:5px;font-weight:600}
+  .f .req{color:#dc2626;margin-left:4px}
+  input[type=text],input[type=date],input[type=number],textarea,select{
+    width:100%;padding:11px;border:1.5px solid var(--line);border-radius:11px;
+    font-size:16px;background:#fff;color:var(--ink);transition:border-color .15s}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-soft)}
+  textarea{min-height:64px;resize:vertical}
+  .hint{font-size:11.5px;color:var(--sub);margin-top:4px;line-height:1.45}
+  .opts{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+  .opts label{display:inline-flex;align-items:center;gap:6px;background:var(--chip);
+    border:1.5px solid var(--line);border-radius:999px;padding:8px 13px;font-size:14px;color:var(--ink);cursor:pointer}
+  .opts input{accent-color:var(--accent);width:16px;height:16px}
+  .row2{display:flex;gap:8px}
+  .row2>*{flex:1}
+  .hidden{display:none !important}
+  .delbtn{flex:0 0 auto;border:1.5px solid var(--line);border-radius:11px;background:#fff;color:#dc2626;width:46px;font-size:15px}
+  .addbtn{border:1.5px solid var(--accent);border-radius:11px;background:var(--accent-soft);color:var(--accent-deep);
+    padding:10px 14px;font-size:14px;font-weight:800;width:100%}
+  .stepbtns{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0}
+  .stepbtns button{border:1.5px solid var(--accent);border-radius:999px;background:#fff;color:var(--accent-deep);
+    padding:9px 15px;font-size:14px;font-weight:800}
+  .steprow{display:flex;gap:8px;align-items:center;margin:7px 0}
+  .steprow .no{flex:0 0 26px;text-align:center;font-weight:800;color:var(--accent)}
+  .steprow .nm{flex:1;font-size:14px}
+  .steprow input[type=number]{flex:0 0 84px}
+  .steprow .unit{flex:0 0 auto;font-size:12px;color:var(--sub)}
+  .total{font-size:14px;font-weight:800;color:var(--accent-deep);margin-top:8px;
+    background:var(--accent-soft);border-radius:10px;padding:8px 11px;display:inline-block}
+
+  /* ===== ⑨ 写真・図面 ===== */
+  .pathbox{background:var(--blue-soft);border:1.5px solid #cfe;border-color:#cdd;border-radius:12px;padding:10px 12px;margin:6px 0 12px;border-color:#d4e0fb}
+  .pathbox .pathlabel{font-size:11px;color:var(--blue-deep);font-weight:800;margin-bottom:3px;letter-spacing:.03em}
+  .pathval{font-size:12px;color:#243;line-height:1.7;word-break:break-all;font-weight:600}
+  .pathval .seg{color:var(--blue-deep)}
+  .pathval .accent{color:var(--accent-deep);background:var(--accent-soft);border-radius:5px;padding:1px 5px}
+  details.guide{border:1.5px solid var(--line);border-radius:12px;margin:6px 0 12px;overflow:hidden}
+  details.guide summary{cursor:pointer;list-style:none;padding:11px 13px;font-size:13px;font-weight:800;
+    background:var(--chip);color:var(--ink)}
+  details.guide summary::-webkit-details-marker{display:none}
+  details.guide[open] summary{border-bottom:1px solid var(--line)}
+  .guidegrid{display:flex;flex-wrap:wrap;gap:6px;padding:12px}
+  .guidegrid span{font-size:12px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 11px;color:var(--sub)}
+  .bigadd{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+    border:2px dashed var(--accent);border-radius:14px;background:var(--accent-soft);
+    color:var(--accent-deep);font-weight:800;font-size:15px;padding:18px;margin-top:6px;cursor:pointer}
+  .bigadd.alt{border-color:var(--blue);background:var(--blue-soft);color:var(--blue-deep);margin-top:14px}
+  .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+  .pcell{position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;border:1.5px solid var(--line);background:#fafafa}
+  .pcell img{width:100%;height:100%;object-fit:cover;display:block}
+  .pcell .ann{position:absolute;left:5px;top:5px;background:var(--accent);color:#fff;font-size:10px;
+    font-weight:800;border-radius:999px;padding:2px 7px}
+  .pcell .edit,.pcell .del{position:absolute;width:30px;height:30px;border-radius:9px;border:none;
+    font-size:14px;display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer}
+  .pcell .edit{right:5px;bottom:5px;background:rgba(37,99,235,.92)}
+  .pcell .del{right:5px;top:5px;background:rgba(17,24,39,.6)}
+  .pempty{grid-column:1/-1;text-align:center;color:var(--sub);font-size:12px;padding:6px 0}
+
+  /* 描画モーダル */
+  .modal{position:fixed;inset:0;background:#1f2430;z-index:100;display:flex;flex-direction:column}
+  .modal .mbar{display:flex;align-items:center;gap:8px;padding:10px 12px;background:#11151c}
+  .modal .mbar button{border:none;border-radius:9px;padding:9px 12px;font-size:13px;font-weight:800;background:#2b313c;color:#fff}
+  .modal .mbar .save{background:var(--accent);margin-left:auto}
+  .modal .mbar .cancel{background:#3a3f4a}
+  .modal .tools{display:flex;gap:6px;margin-left:6px}
+  .modal .tools .pen{width:30px;height:30px;border-radius:50%;padding:0;border:2px solid #fff6}
+  .modal .tools .pen.sel{border-color:#fff;box-shadow:0 0 0 2px #fff4}
+  
+  /* === スケッチ強化 === */
+  .draw-tools{display:flex;gap:4px;margin-left:4px}
+  .dtool{border:1.5px solid #fff3;border-radius:8px;background:#2b313c;color:#ccc;padding:5px 9px;font-size:15px;font-weight:700;cursor:pointer}
+  .dtool.active{background:var(--accent);color:#fff;border-color:var(--accent-deep)}
+  .stamp-bar{display:flex;flex-wrap:wrap;gap:5px;padding:7px 12px;background:#151920;border-bottom:1px solid #2a2f3a}
+  .stamp-bar button{background:#2b313c;color:#e0e0e0;border:1.5px solid #fff2;border-radius:8px;padding:5px 9px;font-size:12px;font-weight:800;cursor:pointer}
+  .stamp-bar button.ssel{background:var(--blue);border-color:var(--blue-deep);color:#fff}
+  .preset-bar{display:flex;gap:6px;padding:4px 12px;background:#11151c;border-bottom:1px solid #1e2330;align-items:center}
+  .preset-bar span{font-size:11px;color:#666}
+  .preset-bar button{background:#2b313c;color:#999;border:1px solid #fff2;border-radius:7px;padding:3px 10px;font-size:12px;cursor:pointer}
+  .preset-bar button.psel{background:#3a4050;color:#fff;border-color:#fff4}
+  .canvaswrap{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:4px}
+  #drawCanvas{background:#fff;border-radius:10px;touch-action:none;max-width:100%;max-height:100%;box-shadow:0 6px 24px rgba(0,0,0,.4)}
+
+  .bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);
+    padding:11px 16px;display:flex;gap:10px;justify-content:center;box-shadow:0 -2px 10px rgba(17,24,39,.04)}
+  .btn{flex:1;max-width:300px;border:0;border-radius:13px;padding:15px;font-size:16px;font-weight:800;
+    background:linear-gradient(180deg,#fb8a2e,var(--accent));color:#fff;box-shadow:0 2px 8px rgba(249,115,22,.35)}
+  .btn.ghost{background:#fff;color:var(--accent-deep);border:1.5px solid var(--accent);max-width:120px;flex:0 0 auto;box-shadow:none}
+  .msg{padding:11px 14px;border-radius:11px;margin:10px 0;font-size:14px;display:none}
+  .msg.ok{background:#eaf6ea;color:var(--ok);border:1px solid #cfe8cf;display:block}
+  .msg.err{background:#fdecea;color:#c0392b;border:1px solid #f5c6c0;display:block}
+
+  /* ===== 現地調査日 モバイル対応 ===== */
+  input[type=date]{-webkit-appearance:none;appearance:none;min-height:46px}
+
+  /* ===== 送信完了 Drive報告書ガイド ===== */
+  .drive-guide{position:fixed;left:0;right:0;bottom:72px;z-index:19;background:linear-gradient(135deg,#fff7ed 0%,#fef3c7 100%);border-top:3px solid var(--accent);box-shadow:0 -4px 20px rgba(249,115,22,.18);padding:14px 16px 12px;display:none}
+  .drive-guide-inner{max-width:560px;margin:0 auto;display:flex;align-items:center;gap:12px}
+  .drive-guide-icon{width:44px;height:44px;border-radius:12px;flex-shrink:0;background:linear-gradient(135deg,var(--accent),#c2410c);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 2px 8px rgba(249,115,22,.35)}
+  .drive-guide-body{flex:1;min-width:0}
+  .drive-guide-title{font-size:13px;font-weight:800;color:#92400e;line-height:1.3;margin-bottom:2px}
+  .drive-guide-sub{font-size:11px;color:#b45309}
+  .drive-guide-btn{flex-shrink:0;background:linear-gradient(180deg,#fb923c,var(--accent));color:#fff;border:none;border-radius:10px;padding:10px 14px;font-size:12px;font-weight:800;box-shadow:0 2px 8px rgba(249,115,22,.4);white-space:nowrap;text-decoration:none;display:inline-block}
+  </style>
+</head>
+<body>
+<header>
+  <div class="brand">SAN<span>SEI</span></div>
+  <h1>現地調査シート</h1>
+  <div class="sub">工事に必要な情報を記録します（金額は扱いません）</div>
+</header>
+
+<div class="wrap">
+  <div class="note">※ このシートは「工事情報」の記録です。付帯（請求）の金額は事務側で単価表から算定します。現調者は見たまま・必要なものを入力してください。</div>
+
+  <!-- ① 現地調査 -->
+  <div class="sec">
+    <h2><span class="n">1</span>現地調査</h2>
+    <div class="f"><label>現地調査日<span class="req">*</span></label><input type="date" id="surveyDate"></div>
+    <div class="f"><label>報告者<span class="req">*</span></label>
+      <div class="opts" data-radio="reporter">
+        <label><input type="radio" name="reporter" value="山中" onclick="toggleReporterOther()">山中</label>
+        <label><input type="radio" name="reporter" value="吉岡" onclick="toggleReporterOther()">吉岡</label>
+        <label><input type="radio" name="reporter" value="その他" onclick="toggleReporterOther()">その他</label>
+      </div>
+      <input type="text" id="reporterOther" class="hidden" placeholder="氏名を記入" style="margin-top:6px">
+    </div>
+    <div class="f"><label>会社名（元請け）<span class="req">*</span></label>
+      <select id="company" onchange="toggleCompanyOther();refreshFutai();updateDrivePath()">
+        <option value="">選択してください</option>
+        <option>リケンエナジー</option><option>アルファエレクトロ</option>
+        <option>キョウエイ</option><option>ライズ</option><option>ATEL</option><option>その他</option>
+      </select>
+      <input type="text" id="companyOther" class="hidden" placeholder="会社名を記入" style="margin-top:6px" oninput="updateDrivePath()">
+      <div class="hint">記録用。「その他」を選ぶと付帯は汎用単価の項目になります。</div>
+    </div>
+    <div class="f"><label>現地調査内容<span class="req">*</span>（複数選択可）</label>
+      <div class="opts">
+        <label><input type="checkbox" name="surveyType" value="PV">PV</label>
+        <label><input type="checkbox" name="surveyType" value="BT">BT</label>
+        <label><input type="checkbox" name="surveyType" value="EQ">EQ</label>
+        <label><input type="checkbox" name="surveyType" value="V2H">V2H</label>
+        <label><input type="checkbox" name="surveyType" value="IH">IH</label>
+        <label><input type="checkbox" name="surveyType" value="その他" onclick="toggleSurveyTypeOther()">その他</label>
+      </div>
+      <input type="text" id="surveyTypeOther" class="hidden" placeholder="その他の内容" style="margin-top:6px">
+      <div class="hint">PV=太陽光 / BT=蓄電池 / EQ=エコキュート / V2H / IH</div>
+    </div>
+    <div class="f"><label>悪天候等で屋根等の現調が延期になった場合のみ記入</label>
+      <div class="opts">
+        <label><input type="checkbox" name="roofUnconf" value="日程調整した">日程調整した</label>
+        <label><input type="checkbox" name="roofUnconf" value="お客様に説明した">お客様に説明した</label>
+      </div>
+      <input type="text" id="roofUnconfMemo" placeholder="やり取りの記録（例：雨天で屋根は次回、〇/〇再訪を説明済み）" style="margin-top:6px">
+    </div>
+  </div>
+
+  <!-- ② お客様情報 -->
+  <div class="sec">
+    <h2><span class="n">2</span>お客様情報</h2>
+    <div class="alert">⚠ お客様名は<b>漢字を正確に・フルネーム</b>で入力してください（後で検索できなくなるため誤字厳禁）。</div>
+    <div class="f"><label>お客様名（フルネーム）<span class="req">*</span></label><input type="text" id="custName" oninput="updateDrivePath()"></div>
+    <div class="f"><label>フリガナ<span class="req">*</span></label><input type="text" id="custKana" oninput="updateDrivePath()"></div>
+    <div class="f"><label>現場住所<span class="req">*</span></label><input type="text" id="addr" oninput="updateDrivePath()"></div>
+  </div>
+
+  <!-- ③ 既設状況 -->
+  <div class="sec">
+    <h2><span class="n">3</span>既設状況</h2>
+    <div class="f"><label>契約種別・容量<span class="req">*</span>（種別＋容量を両方チェック）</label>
+      <div class="opts">
+        <label><input type="checkbox" name="keiyaku" value="単相2線">単相2線</label>
+        <label><input type="checkbox" name="keiyaku" value="単相3線">単相3線</label>
+        <label><input type="checkbox" name="keiyaku" value="20A">20A</label>
+        <label><input type="checkbox" name="keiyaku" value="30A">30A</label>
+        <label><input type="checkbox" name="keiyaku" value="40A">40A</label>
+        <label><input type="checkbox" name="keiyaku" value="50A">50A</label>
+        <label><input type="checkbox" name="keiyaku" value="60A">60A</label>
+        <label><input type="checkbox" name="keiyaku" value="70A">70A</label>
+        <label><input type="checkbox" name="keiyaku" value="その他" onclick="toggleKeiyakuOther()">その他</label>
+      </div>
+      <input type="text" id="keiyakuOther" class="hidden" placeholder="その他（例：12kVA契約 等）" style="margin-top:6px">
+    </div>
+    <div class="f"><label>メーター番号</label><input type="text" id="meter"></div>
+    <div class="f"><label>分電盤メーカー・型式</label><input type="text" id="panel"></div>
+    <div class="row2">
+      <div class="f"><label>回路数（全回路）</label><input type="number" id="circuits" inputmode="numeric" placeholder="例：20"><div class="hint">単位：回路</div></div>
+      <div class="f"><label>空き回路数</label><input type="number" id="emptyCircuits" inputmode="numeric" placeholder="例：2"><div class="hint">単位：回路</div></div>
+    </div>
+    <div class="f"><label>幹線種別（既設・電線手配の記録）</label>
+      <div class="row2">
+        <select id="kansenType">
+          <option value="">種別</option><option>CV</option><option>CVT</option><option>SV</option><option>その他</option>
+        </select>
+        <select id="kansenSize">
+          <option value="">サイズ</option><option>8</option><option>14</option><option>その他</option>
+        </select>
+      </div>
+    </div>
+    <div class="f"><label>アース目視確認</label>
+      <div class="opts" data-radio="earth"><label><input type="radio" name="earth" value="有">有</label><label><input type="radio" name="earth" value="無">無</label></div></div>
+    <div class="f"><label>既設機器（見える物だけチェック＝有／未チェック＝無）</label>
+      <div class="opts">
+        <label><input type="checkbox" name="existing" value="エネファーム">エネファーム</label>
+        <label><input type="checkbox" name="existing" value="エコキュート" onclick="updateExistingReminder()">エコキュート</label>
+        <label><input type="checkbox" name="existing" value="給湯器">給湯器</label>
+        <label><input type="checkbox" name="existing" value="既設太陽光">既設太陽光</label>
+        <label><input type="checkbox" name="existing" value="既設蓄電池">既設蓄電池</label>
+        <label><input type="checkbox" name="existing" value="IH">IH</label>
+        <label><input type="checkbox" name="existing" value="テレビアンテナ">テレビアンテナ</label>
+        <label><input type="checkbox" name="existing" value="その他" onclick="toggleExistingOther()">その他</label>
+      </div>
+      <input type="text" id="existingOther" class="hidden" placeholder="その他の既設機器" style="margin-top:6px">
+      <div id="existingReminder" class="alert hidden"></div>
+    </div>
+    <div class="f"><label>Wi-Fi状況<span class="req">*</span></label>
+      <div class="opts" data-radio="wifi">
+        <label><input type="radio" name="wifiStatus" value="あり（動作確認済み）" onclick="toggleWifi()">あり（動作確認済み）</label>
+        <label><input type="radio" name="wifiStatus" value="なし" onclick="toggleWifi()">なし</label>
+        <label><input type="radio" name="wifiStatus" value="あるが動作未確認" onclick="toggleWifi()">あるが動作未確認</label>
+      </div>
+      <div class="hint">モニタリングに必須。「なし」→遠隔モニタリング不可をお客様へ伝達／「動作未確認」→理由を記入（営業へ自動で申し送りされます）。</div>
+      <input type="text" id="wifiId" class="hidden" placeholder="Wi-Fi ID（SSID）" style="margin-top:6px">
+      <input type="text" id="wifiPass" class="hidden" placeholder="Wi-Fi PASS" style="margin-top:6px">
+      <input type="text" id="wifiNote" class="hidden" placeholder="動作未確認の理由（例：お客様不在で確認できず）" style="margin-top:6px">
+    </div>
+  </div>
+
+  <!-- ④ 配線・ケーブル延長 -->
+  <div class="sec">
+    <h2><span class="n">4</span>配線・ケーブル延長</h2>
+    <div class="grp">ケーブル延長（機器系・メーカー付属品の手配）</div>
+    <div class="hint" style="margin-bottom:4px">いずれも商社発注の付属品です。必要な長さを選んでください。</div>
+    <div class="f">
+      <div class="row2" style="margin-bottom:6px">
+        <select id="cblPv"><option value="">PV〜PVユニット</option><option>5ｍ</option><option>20ｍ</option><option>30ｍ</option><option>40ｍ</option><option>その他</option></select>
+        <select id="cblMain"><option value="">主幹</option><option>5ｍ</option><option>20ｍ</option><option>30ｍ</option><option>40ｍ</option><option>その他</option></select>
+      </div>
+      <div class="row2">
+        <select id="cblBatt"><option value="">蓄電池通信</option><option>5ｍ</option><option>20ｍ</option><option>30ｍ</option><option>40ｍ</option><option>その他</option></select>
+        <select id="cblCt"><option value="">CTセンサー</option><option>5ｍ</option><option>20ｍ</option><option>30ｍ</option><option>40ｍ</option><option>その他</option></select>
+      </div>
+      <div id="cblOtherList"></div>
+      <button type="button" class="addbtn" style="margin-top:8px" onclick="addCblRow()">＋ その他のケーブル延長を追加（名称＋m）</button>
+    </div>
+    <div class="hint" style="margin-top:10px">※ CV・PFD等の幹線延長は <b>⑥付帯</b> で「総計m（多めに）」として記録してください（二重入力を避けるため④からは外しました）。</div>
+  </div>
+
+  <!-- ⑤ 蓄電池・V2H・部材 -->
+  <div class="sec">
+    <h2><span class="n">5</span>蓄電池・V2H・部材</h2>
+    <div class="hint">現調時にメーカー未定・複数想定の場合は「不明・複数想定」を選んでください（必須ではありません）。</div>
+    <div class="f"><label>種別（複数選択可）</label>
+      <div class="opts">
+        <label><input type="checkbox" id="typeBatt" onclick="toggleMakerBlocks()">蓄電池</label>
+        <label><input type="checkbox" id="typeV2h" onclick="toggleMakerBlocks()">V2H</label>
+      </div>
+    </div>
+    <div id="battBlock" class="hidden">
+      <div class="grp">蓄電池</div>
+      <div class="f"><label>メーカー</label><select id="battMaker" onchange="fillBattSeries()"></select></div>
+      <div class="f"><label>シリーズ</label><select id="battSeries" onchange="fillBattCap()"></select></div>
+      <div class="f"><label>容量(kWh)</label><select id="battCap"></select></div>
+    </div>
+    <div id="v2hBlock" class="hidden">
+      <div class="grp">V2H</div>
+      <div class="f"><label>メーカー</label><select id="v2hMaker" onchange="fillV2hModel()"></select></div>
+      <div class="f"><label>機種</label><select id="v2hModel"></select></div>
+    </div>
+    <div class="grp">ベース類（複数追加OK）</div>
+    <div class="hint">※2個で1セット</div>
+    <div id="baseList"></div>
+    <button type="button" class="addbtn" style="margin-top:6px" onclick="addBaseRow()">＋ ベースを追加</button>
+    <div class="grp">LANケーブル（複数追加OK）</div>
+    <div id="lanList"></div>
+    <button type="button" class="addbtn" style="margin-top:6px" onclick="addLanRow()">＋ LANを追加</button>
+  </div>
+
+  <!-- ⑥ 付帯（会社別・5区分） -->
+  <div class="sec">
+    <h2><span class="n">6</span>付帯（記録）</h2>
+    <div class="note">「工事に必要な物・人工」の記録です。金額は付けません（事務が単価表で算定）。①で選んだ会社の単価表の付帯項目を、5区分グループから選んで数量を入れてください（複数行OK）。CV・PFD等の延長は<b>総計mで多めに</b>記入。</div>
+    <div id="futaiHint" class="hint">※先に①で会社を選んでください。</div>
+    <div id="futaiList"></div>
+    <button type="button" class="addbtn" style="margin-top:8px" onclick="addFutaiRow()">＋ 付帯を追加</button>
+    <div class="f"><label>追加工事の補足（自由記入）</label><textarea id="addMemo" placeholder="無い場合は空欄でOK"></textarea></div>
+  </div>
+
+  <!-- ⑦ 確認事項・お約束 -->
+  <div class="sec">
+    <h2><span class="n">7</span>確認事項・お約束</h2>
+    <div class="f"><label>駐車場の移動</label>
+      <div class="opts" data-radio="park"><label><input type="radio" name="park" value="必要" onclick="togglePark()">必要</label><label><input type="radio" name="park" value="不要" onclick="togglePark()">不要</label></div>
+      <div id="parkInformedBox" class="hidden" style="margin-top:6px">
+        <label style="font-size:13px;color:var(--sub)">お客様/営業へ伝達済み？（未の場合は営業へ自動で申し送りされます）</label>
+        <div class="opts"><label><input type="radio" name="parkInformed" value="済">済</label><label><input type="radio" name="parkInformed" value="未">未</label></div>
+      </div>
+      <input type="text" id="parkMemo" placeholder="補足（任意）" style="margin-top:6px"></div>
+    <div class="f"><label>借地の許可（足場含む）</label>
+      <div class="opts" data-radio="shakuchi">
+        <label><input type="radio" name="shakuchi" value="不要" onclick="toggleShakuchi()">不要</label>
+        <label><input type="radio" name="shakuchi" value="必要・許可済" onclick="toggleShakuchi()">必要・許可済</label>
+        <label><input type="radio" name="shakuchi" value="必要・未取得" onclick="toggleShakuchi()">必要・未取得</label>
+      </div>
+      <input type="text" id="shakuchiArea" class="hidden" placeholder="借地する部分（例：北側隣地〇〇様の庭先2m）" style="margin-top:6px"></div>
+    <div class="f"><label>足場予定位置</label><input type="text" id="scaffold" placeholder="例：南面・東面・北面（具体的に記載）">
+      <div class="hint">具体的に記載・原則3面以上（※3面以上ルールは現状リケンのみ）。位置の写真は⑨で撮影。</div></div>
+    <div class="f"><label>工事当日の流れ説明</label>
+      <div class="opts" data-radio="flow"><label><input type="radio" name="flow" value="済">済</label><label><input type="radio" name="flow" value="未">未</label></div></div>
+  </div>
+
+  <!-- ⑧ 工程・希望日程（ステップ式） -->
+  <div class="sec">
+    <h2><span class="n">8</span>工程・希望日程</h2>
+    <div class="note">作業ボタンを押すと工程の末尾に追加されます。各ステップに日数を入れてください（合計は自動）。足場の設置・解体も工程に挟めます。1日案件はPT1ステップでOK。</div>
+    <div class="stepbtns">
+      <button type="button" onclick="addStep('PT（パネル＋蓄電池）')">PT</button>
+      <button type="button" onclick="addStep('PTE（パネル＋蓄電池＋EQ）')">PTE</button>
+      <button type="button" onclick="addStep('BT（蓄電池）')">BT</button>
+      <button type="button" onclick="addStep('TE（蓄電池＋EQ）')">TE</button>
+      <button type="button" onclick="addStep('PV（太陽光のみ）')">PV</button>
+      <button type="button" onclick="addStep('PV+PCS（太陽光）')">PV+PCS</button>
+      <button type="button" onclick="addStep('EQ')">EQ</button>
+      <button type="button" onclick="addStep('足場設置')">足場設置</button>
+      <button type="button" onclick="addStep('足場解体')">足場解体</button>
+      <button type="button" onclick="addStep('',true)">その他</button>
+    </div>
+    <div id="stepList"></div>
+    <div class="total">合計日数：<span id="totalDays">0</span>日</div>
+    <div class="f"><label>お客様希望日程</label><input type="text" id="hopeDate" placeholder="例：12/4・12/6（未定可）"></div>
+    <div class="f"><label>NG日・制約</label><input type="text" id="ngDate" placeholder="例：土日不可・12/10は不在"></div>
+    <div class="f"><label>時間帯希望</label>
+      <div class="opts" data-radio="timeSlot">
+        <label><input type="radio" name="timeSlot" value="特になし">特になし</label>
+        <label><input type="radio" name="timeSlot" value="午前">午前</label>
+        <label><input type="radio" name="timeSlot" value="騒音配慮">騒音配慮</label>
+      </div></div>
+  </div>
+
+  <!-- ⑨ 写真・図面・伝達事項 -->
+  <div class="sec">
+    <h2><span class="n">9</span>写真・図面・伝達事項</h2>
+    <div class="note">写真はこの場でアップ。送信すると下の<b>Driveフォルダへ自動保存</b>されます（現場のログイン不要・LINEに送る手間がなくなります）。枚数の上限はありません。</div>
+
+    <div class="pathbox">
+      <div class="pathlabel">📁 保存先（自動・お客様名と会社名から作成）</div>
+      <div id="drivePath" class="pathval">お客様名・会社名を入れると表示されます</div>
+    </div>
+
+    <details class="guide">
+      <summary>📋 撮影ガイド（リケン標準・撮り忘れ防止）</summary>
+      <div class="guidegrid">
+        <span>住宅全景</span><span>屋根</span><span>野地板</span><span>分電盤</span>
+        <span>宅内工事予定</span><span>屋外工事予定</span><span>電気明細</span><span>メーター</span><span>周辺(駐車判断)</span>
+      </div>
+    </details>
+
+    <label class="bigadd">
+      📷 写真を撮る／選ぶ（複数OK）
+      <input type="file" accept="image/*" multiple onchange="addPhotos(event)" hidden>
+    </label>
+    <div id="photoGrid" class="pgrid"><div class="pempty">まだ写真はありません</div></div>
+
+    <button type="button" class="bigadd alt" onclick="openDraw(null)">✏ 手書き図面を描く（白紙）</button>
+    <div class="hint" style="margin-top:6px;text-align:center">写真は ✏ ボタンで、設置予定など描き込みできます（必要な写真だけでOK）。</div>
+
+    <div class="grp" style="margin-top:16px">伝達事項</div>
+    <div class="f"><label>伝達事項・申し送り（自由記入）</label><textarea id="memo" style="min-height:100px" placeholder="営業へ事前連絡したいこと・現場の申し送りを記入"></textarea></div>
+    <div class="hint">Wi-Fiなし／動作未確認・屋根延期・駐車場伝達「未」などは送信時に自動で申し送りに追記されます。</div>
+    <div class="f"><div class="opts">
+      <label><input type="checkbox" id="salesContact">営業へ要連絡（重要）</label>
+    </div></div>
+  </div>
+
+  <div id="msg" class="msg"></div>
+</div>
+
+<!-- 描画モーダル -->
+<div id="drawModal" class="modal hidden">
+  <div class="mbar">
+    <button class="cancel" onclick="closeDraw()">✕</button>
+    <div class="tools">
+      <button class="pen sel" style="background:#e11d48" data-color="#e11d48" onclick="pickPen(this)"></button>
+      <button class="pen" style="background:#2563eb" data-color="#2563eb" onclick="pickPen(this)"></button>
+      <button class="pen" style="background:#111827" data-color="#111827" onclick="pickPen(this)"></button>
+    </div>
+    <div class="draw-tools">
+      <button id="dtPen" class="dtool active" onclick="setDrawMode('pen')" title="自由描き">✏</button>
+      <button id="dtLine" class="dtool" onclick="setDrawMode('line')" title="直線">╱</button>
+      <button id="dtStamp" class="dtool" onclick="setDrawMode('stamp')" title="スタンプ">⬛</button>
+    </div>
+    <button onclick="undoDraw()" style="margin-left:4px">戻す</button>
+    <button class="save" onclick="saveDraw()">保存</button>
+  </div>
+  <div id="stampBar" class="stamp-bar hidden">
+    <button onclick="setStamp(this,'PCS')">PCS</button>
+    <button onclick="setStamp(this,'蓄電池')">蓄電池</button>
+    <button onclick="setStamp(this,'パワコン')">パワコン</button>
+    <button onclick="setStamp(this,'分電盤')">分電盤</button>
+    <button onclick="setStamp(this,'EQ')">EQ</button>
+    <button onclick="setStamp(this,'V2H')">V2H</button>
+    <button onclick="setStamp(this,'北↑')" style="background:#dc2626;color:#fff;border-color:#dc2626">北↑</button>
+  </div>
+  <div class="preset-bar">
+    <span>プリセット:</span>
+    <button id="prstStd" class="psel" onclick="setPreset('std')">標準(4:3)</button>
+    <button id="prstSq" onclick="setPreset('sq')">真四角</button>
+  </div>
+  <div class="canvaswrap"><canvas id="drawCanvas"></canvas></div>
+</div>
+
+<div id="driveGuide" class="drive-guide">
+  <div class="drive-guide-inner">
+    <div class="drive-guide-icon">📋</div>
+    <div class="drive-guide-body">
+      <div class="drive-guide-title">報告書・写真をDriveに保存しました ✓</div>
+      <div class="drive-guide-sub">現調写真フォルダ → 会社名 → お客様フォルダ に自動格納済み</div>
+    </div>
+    <a id="driveGuideLink" href="https://drive.google.com/drive/folders/1OkP8EnYw0EKCf5kODQAtY-iz3ftB5HFQ" target="_blank" class="drive-guide-btn">📂 開く</a>
+  </div>
+</div>
+<div class="bar">
+  <button class="btn ghost" onclick="clearForm()">クリア</button>
+  <button class="btn" id="submitBtn" onclick="submitForm()">送信</button>
+</div>
+
+<script>
+  // ===== 送信先GAS =====
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbxGxkCOnavWfL737UX_pFrQl2t7idJxbNkcU9QCVZ3gjQWVkajscGdLhtQ77jNqK1Cdaw/exec";
+  const PROTO = false; // 本番モード
+
+  const BATT = {
+    "ニチコン":{"トライブリッドT5/T6":[7.4,9.9,14.9,19.9],"トライブリッドT3":[4.9,7.4,9.9,14.9],"単機能U5(全負荷)":[7.7,9.7],"単機能U4(全負荷)":[11.1,16.6],"単機能U2系(旧・販売終了)":[11.1,12.0,16.6],"その他":[]},
+    "京セラ":{"エネレッツァ":[5.0,10.0,15.0],"エネレッツァ プラス(全負荷)":[5.5,11.0,16.5],"その他":[]},
+    "オムロン":{"マルチ蓄電プラットフォーム":[6.5,9.8,12.7,16.4],"その他":[]},
+    "長州産業":{"Smart PV multi":[6.5,9.8,12.7,16.4],"その他":[]},
+    "カナディアン(EP CUBE)":{"EP CUBE":[6.6,9.9,13.3],"その他":[]},
+    "ダイヤゼブラ(田淵)/DMM":{"EIBS7":[7.04,14.08],"その他":[]},
+    "パナソニック":{"創蓄連携S+":[3.5,5.6,6.3,9.1,11.2],"その他":[]},
+    "シャープ":{"クラウド蓄電池":[6.5,7.7,8.4,9.5,13.0,15.4],"その他":[]},
+    "ファーウェイ":{"LUNA2000":[5,7,10,14,15,21],"その他":[]},
+    "その他":{"その他":[]},"不明・複数想定":{"未定":[]}
+  };
+  const V2H = {
+    "ニチコン":["EVパワステ スタンダード(VCG-663)","EVパワステ プレミアム(VCG-666)","EVパワステ 最新(VSG3-666)","トライブリッドV2H","その他"],
+    "デンソー":["DNEVC-D6075","その他"],"東光高岳":["CFD1-B-V2H1","その他"],"その他":["その他"],"不明・複数想定":["未定"]
+  };
+  const EXISTING_REMINDER = {};
+    const FUTAI_GROUPS = [["jin","人工・屋根"],["hai","配線・ダクト"],["kik","機器・分電盤"],["tek","撤去・処分"],["oth","交通・申請・その他"]];
+  const FUTAI_GRP_OVR = {"リケンエナジー":{"jin":"追加作業費"}};
+  const FUTAI = {
+    "リケンエナジー":[
+      {n:"瓦屋根施工作業費",u:"式",g:"jin"},{n:"屋根急勾配・異勾配（6寸以上）",u:"式",g:"jin"},{n:"難工事",u:"式",g:"jin"},
+      {n:"パネル手上げ作業費",u:"人",g:"jin"},{n:"搬入困難作業費",u:"人",g:"jin"},{n:"3F施工（危険作業費）",u:"式",g:"jin"},
+      {n:"蓄電池2段ラック施工",u:"式",g:"jin"},{n:"電気工事難工事一式",u:"式",g:"jin"},{n:"穴あけ困難（コア・タイル等）",u:"箇所",g:"jin"},
+      {n:"ブロック嵩上げ(範囲により)",u:"式",g:"jin"},{n:"土間打ち",u:"箇所",g:"jin"},
+      {n:"屋外用ダクト(LD)延長",u:"m",g:"hai"},{n:"宅内用ダクト施工(MD)",u:"m",g:"hai"},
+      {n:"PFD16延長",u:"m",g:"hai"},{n:"PFD22延長",u:"m",g:"hai"},{n:"PFD28延長",u:"m",g:"hai"},{n:"PFD36延長",u:"m",g:"hai"},
+      {n:"特殊役物使用(ジャバラ、立面等)",u:"式",g:"hai"},{n:"役物多数使用(MD/LD)",u:"式",g:"hai"},
+      {n:"CV-5.5 延長",u:"m",g:"hai"},{n:"CV-8 延長",u:"m",g:"hai"},{n:"CV-14 延長",u:"m",g:"hai"},
+      {n:"屋根線延長(DC)",u:"m/系統",g:"hai"},{n:"VVF延長",u:"m",g:"hai"},{n:"FCPV線",u:"m",g:"hai"},{n:"床下配線",u:"式",g:"hai"},
+      {n:"リレーボックス設置",u:"式",g:"kik"},{n:"MCB追加（60A以下／60A以上）",u:"式",g:"kik"},
+      {n:"京セラ Enerezza 追加材料費",u:"式",g:"kik"},{n:"京セラEnerezza作業費",u:"式",g:"kik"},
+      {n:"ニチコン19.9 作業費",u:"式",g:"kik"},{n:"追加PCS設置",u:"台",g:"kik"},
+      {n:"AiSEG設置",u:"式",g:"kik"},{n:"DR対象施工",u:"式",g:"kik"},{n:"EVコンセント設置",u:"台",g:"kik"},
+      {n:"機器設備メクラ処理",u:"式",g:"kik"},{n:"防犯カメラ電源移植（簡易）",u:"式",g:"kik"},
+      {n:"PCS類撤去・処分(1台につき)",u:"台",g:"tek"},{n:"蓄電池撤去・処分費（1台につき）",u:"台",g:"tek"},
+      {n:"PV撤去・処分(1枚につき)",u:"枚",g:"tek"},{n:"その他既設機器撤去・処分",u:"式",g:"tek"},
+      {n:"遠方交通費（100km）",u:"式",g:"oth"},{n:"追加工程分交通費",u:"台",g:"oth"},{n:"追加行程分(状況により)",u:"式",g:"oth"}
+    ],
+    "アルファエレクトロ":[
+      {n:"瓦屋根",u:"式",g:"jin"},{n:"急こう配 6寸",u:"式",g:"jin"},{n:"パネル手上げ",u:"式",g:"jin"},
+      {n:"搬入困難",u:"式",g:"jin"},{n:"PV３面以降",u:"面",g:"jin"},{n:"蓄電池基礎（1台当たり）",u:"個",g:"jin"},
+      {n:"PFD延長",u:"m",g:"hai"},{n:"スリムダクト延長",u:"m",g:"hai"},{n:"屋根線延長（DC）1系統ごと",u:"m",g:"hai"},
+      {n:"CV5.5 延長",u:"m",g:"hai"},{n:"CV8 延長",u:"m",g:"hai"},{n:"CV14",u:"m",g:"hai"},{n:"MDモール（通常利用分）",u:"式",g:"hai"},
+      {n:"MCB・ELB設置 50Aまで",u:"個",g:"kik"},{n:"MCB・ELB設置 75Aまで",u:"個",g:"kik"},
+      {n:"フリーボックスW",u:"個",g:"kik"},{n:"点検口設置",u:"式",g:"kik"}
+    ],
+    "ATEL":[
+      {n:"瓦施工",u:"式",g:"jin"},{n:"3階足場無",u:"式",g:"jin"},{n:"急勾配（6.5寸以上）",u:"式",g:"jin"},
+      {n:"パネル超過（通常・21枚目以降）",u:"枚",g:"jin"},{n:"パネル超過（台形・ハーフ・21枚目以降）",u:"枚",g:"jin"},
+      {n:"パネル手上げ",u:"式",g:"jin"},{n:"パネル搬入困難",u:"式",g:"jin"},{n:"3面以降の追加面",u:"面",g:"jin"},
+      {n:"重量蓄電池",u:"式",g:"jin"},{n:"蓄電池階段搬入",u:"式",g:"jin"},{n:"蓄電池搬入困難",u:"式",g:"jin"},
+      {n:"2段ラック",u:"式",g:"jin"},{n:"エコベースセメント",u:"式",g:"jin"},
+      {n:"幹線張り替え",u:"式",g:"hai"},{n:"ヒーターバンド施工費",u:"m",g:"hai"},{n:"床下配線",u:"式",g:"hai"},
+      {n:"CV-5.5",u:"m",g:"hai"},{n:"CV-8",u:"m",g:"hai"},{n:"CV-14",u:"m",g:"hai"},
+      {n:"PFD16",u:"m",g:"hai"},{n:"PFD28",u:"m",g:"hai"},{n:"PFD36",u:"m",g:"hai"},
+      {n:"スリムダクト",u:"m",g:"hai"},{n:"MDダクト",u:"m",g:"hai"},{n:"MD役物",u:"個",g:"hai"},
+      {n:"DC線延長",u:"系統m",g:"hai"},{n:"VVFケーブル",u:"m",g:"hai"},{n:"配線困難費",u:"式",g:"hai"},
+      {n:"PCS〜BT間PFD埋設",u:"式",g:"hai"},{n:"ジャバラ",u:"式",g:"hai"},
+      {n:"PCS追加",u:"式",g:"kik"},{n:"追加PCS1台(ELB込み)",u:"式",g:"kik"},{n:"リレーボックス",u:"式",g:"kik"},
+      {n:"MCB15A",u:"個",g:"kik"},{n:"MCB40A",u:"個",g:"kik"},{n:"MCB50A",u:"個",g:"kik"},{n:"MCB60A",u:"個",g:"kik"},
+      {n:"ELB40A",u:"式",g:"kik"},{n:"ELB50A",u:"式",g:"kik"},{n:"ELB交換（75Aまで）",u:"式",g:"kik"},
+      {n:"スリムブレーカー30A",u:"式",g:"kik"},{n:"東芝スリムブレーカー20A(EQ用)",u:"式",g:"kik"},
+      {n:"端子台",u:"個",g:"kik"},{n:"メーター統一",u:"式",g:"kik"},{n:"EQ1次→2次変更",u:"式",g:"kik"},{n:"送信ユニット",u:"式",g:"kik"},
+      {n:"遠方交通費(50km)",u:"台",g:"oth"}
+    ],
+    "キョウエイ":[
+      {n:"PV多面設置（4面目から1面）",u:"面",g:"jin"},{n:"急勾配工事（6寸）",u:"式",g:"jin"},
+      {n:"野地板裏補強工事（5kWまで）",u:"式",g:"jin"},{n:"パワコン新規2台設置同時設置",u:"式",g:"jin"},
+      {n:"特殊工事（足場設置不可・難工事等）",u:"式",g:"jin"},{n:"搬入困難（工員増員）",u:"式",g:"jin"},
+      {n:"オムロン蓄電池 庇設置取付",u:"式",g:"jin"},
+      {n:"電気配線延長（10m以上）",u:"m",g:"hai"},{n:"リモコン線延長",u:"m",g:"hai"},
+      {n:"幹線張替工事（CV14まで）",u:"式",g:"hai"},{n:"幹線張替延長（CV14 10m以上）",u:"m",g:"hai"},
+      {n:"ケーブル埋設工事",u:"式",g:"hai"},{n:"ケーブル飛ばし",u:"式",g:"hai"},
+      {n:"LANケーブル（10mまで）",u:"m",g:"hai"},{n:"配管延長（4m以上）",u:"m",g:"hai"},
+      {n:"配管ダクト使用（太陽光・EQ）",u:"m",g:"hai"},{n:"エコキュート用ヒーターバンド",u:"m",g:"hai"},
+      {n:"新築先行配線・配管",u:"回",g:"hai"},
+      {n:"MCCB交換（60Aまで）",u:"台",g:"kik"},{n:"ELBの交換（75Aまで）",u:"台",g:"kik"},
+      {n:"専用コンセント増設工事",u:"箇所",g:"kik"},{n:"分電盤交換（機器代別途）",u:"台",g:"kik"},
+      {n:"メーターBOX",u:"台",g:"kik"},{n:"コンクリート基礎コア抜き",u:"箇所",g:"kik"},
+      {n:"単2→単3切替工事",u:"式",g:"kik"},{n:"点検口",u:"式",g:"kik"},
+      {n:"ハイブリット蓄電池 系統組換え（PV既設）",u:"式",g:"kik"},{n:"機器代金（分電盤・アンテナ等）",u:"式",g:"kik"},
+      {n:"アンテナ移設・撤去",u:"式",g:"tek"},{n:"温水ソーラー撤去費用",u:"式",g:"tek"},
+      {n:"遠方交通費（50km以上片道）",u:"車両",g:"oth"},{n:"事前先行基礎工事（蓄電池・EQ）",u:"式",g:"oth"},
+      {n:"風呂循環口交換",u:"箇所",g:"oth"},{n:"風呂循環口新設",u:"箇所",g:"oth"},
+      {n:"リモコン追加・移設",u:"台",g:"oth"},{n:"ヒートポンプ2段置き架台設置",u:"台",g:"oth"},
+      {n:"加圧ポンプ設置のみ",u:"式",g:"oth"},{n:"砂こし器設置のみ",u:"式",g:"oth"},
+      {n:"エアコン室外機移設",u:"台",g:"oth"},{n:"レンジフード交換",u:"台",g:"oth"},
+      {n:"電気式オーブン設置",u:"台",g:"oth"}
+    ],
+    "汎用":[
+      {n:"瓦屋根施工 追加人工",u:"人",g:"jin"},{n:"急勾配（6寸以上）追加人工",u:"人",g:"jin"},
+      {n:"パネル手上げ 追加人工",u:"人",g:"jin"},{n:"搬入困難 追加人工",u:"人",g:"jin"},
+      {n:"蓄電池屋内搬入 追加人工",u:"人",g:"jin"},{n:"3F施工・難工事 追加人工",u:"人",g:"jin"},
+      {n:"電気工事難工事一式",u:"式",g:"jin"},{n:"PV多面設置（3面目以降）",u:"面",g:"jin"},
+      {n:"ダクト延長",u:"m",g:"hai"},{n:"屋根線延長（DC）",u:"m",g:"hai"},
+      {n:"CV5.5 延長",u:"m",g:"hai"},{n:"CV8 延長",u:"m",g:"hai"},{n:"CV14 延長",u:"m",g:"hai"},
+      {n:"VVF延長",u:"m",g:"hai"},{n:"MDモール（通常利用分）",u:"式",g:"hai"},
+      {n:"MCB/ELB（60A以下）",u:"式",g:"kik"},{n:"MCB/ELB（75A以下）",u:"式",g:"kik"},
+      {n:"コア抜き",u:"箇所",g:"kik"},{n:"点検口設置",u:"式",g:"kik"},{n:"追加PCS設置",u:"台",g:"kik"},
+      {n:"宅内PCS撤去・処分",u:"台",g:"tek"},{n:"蓄電池撤去処分費（2人工込）",u:"式",g:"tek"},
+      {n:"PV撤去費（処分費含む）",u:"式",g:"tek"},{n:"処分費",u:"式",g:"tek"},
+      {n:"遠方交通費（50km以上）",u:"式",g:"oth"},{n:"別日交通費",u:"式",g:"oth"},
+      {n:"別工程日費用",u:"式",g:"oth"},{n:"東電申請",u:"式",g:"oth"}
+    ]
+  };
+  FUTAI["ライズ"] = [
+    ...FUTAI["キョウエイ"].filter(x=>x.g==="jin"),
+    {n:"電気配線延長",u:"m",g:"hai"},{n:"リモコン線延長",u:"m",g:"hai"},
+    {n:"幹線張替工事（CV14まで）",u:"式",g:"hai"},{n:"幹線張替延長（CV14）",u:"m",g:"hai"},
+    {n:"ケーブル埋設工事",u:"式",g:"hai"},{n:"ケーブル飛ばし",u:"式",g:"hai"},
+    {n:"LANケーブル（10mまで）",u:"m",g:"hai"},{n:"配管延長（4m以上）",u:"m",g:"hai"},
+    {n:"配管ダクト使用（太陽光・EQ）",u:"m",g:"hai"},{n:"エコキュート用ヒーターバンド",u:"m",g:"hai"},
+    {n:"新築先行配線・配管",u:"回",g:"hai"},
+    ...FUTAI["キョウエイ"].filter(x=>x.g==="kik"),
+    ...FUTAI["キョウエイ"].filter(x=>x.g==="tek"),
+    ...FUTAI["キョウエイ"].filter(x=>x.g==="oth")
+  ];
+
+  function show(id,on){ const e=document.getElementById(id); if(e) e.classList.toggle('hidden',!on); }
+  function toggleReporterOther(){ show('reporterOther', radio('reporter')==='その他'); }
+  function toggleSurveyTypeOther(){ const c=document.querySelector('input[name="surveyType"][value="その他"]'); show('surveyTypeOther', c&&c.checked); }
+  function toggleCompanyOther(){ show('companyOther', val('company')==='その他'); }
+  function toggleKeiyakuOther(){ const c=document.querySelector('input[name="keiyaku"][value="その他"]'); show('keiyakuOther', c&&c.checked); }
+  function toggleExistingOther(){ const c=document.querySelector('input[name="existing"][value="その他"]'); show('existingOther', c&&c.checked); }
+  function toggleWifi(){
+    const w=radio('wifiStatus');
+    show('wifiId', w==='あり（動作確認済み）'||w==='あるが動作未確認');
+    show('wifiPass', w==='あり（動作確認済み）'||w==='あるが動作未確認');
+    show('wifiNote', w==='あるが動作未確認');
+  }
+  function togglePark(){ show('parkInformedBox', radio('park')==='必要'); }
+  function toggleShakuchi(){ const s=radio('shakuchi'); show('shakuchiArea', s==='必要・許可済'||s==='必要・未取得'); }
+  function updateExistingReminder(){
+    const box=document.getElementById('existingReminder'); let msgs=[];
+    document.querySelectorAll('input[name="existing"]:checked').forEach(c=>{ if(EXISTING_REMINDER[c.value]) msgs.push(EXISTING_REMINDER[c.value]); });
+    if(msgs.length){ box.innerHTML=msgs.join('<br>'); box.classList.remove('hidden'); } else { box.classList.add('hidden'); box.innerHTML=''; }
+  }
+  function toggleMakerBlocks(){ show('battBlock', document.getElementById('typeBatt').checked); show('v2hBlock', document.getElementById('typeV2h').checked); }
+  function fillSelect(sel, items, ph){ sel.innerHTML='<option value="">'+ph+'</option>'+items.map(x=>'<option>'+x+'</option>').join(''); }
+  function fillBattSeries(){ const m=document.getElementById('battMaker').value; const s=document.getElementById('battSeries');
+    fillSelect(s, m&&BATT[m]?Object.keys(BATT[m]):[], 'シリーズ'); fillSelect(document.getElementById('battCap'),[], '容量(kWh)'); }
+  function fillBattCap(){ const m=document.getElementById('battMaker').value, se=document.getElementById('battSeries').value;
+    const caps=(m&&se&&BATT[m]&&BATT[m][se])?BATT[m][se]:[]; fillSelect(document.getElementById('battCap'), caps, '容量(kWh)'); }
+  function fillV2hModel(){ const m=document.getElementById('v2hMaker').value; fillSelect(document.getElementById('v2hModel'), m&&V2H[m]?V2H[m]:[], '機種'); }
+
+  function addCblRow(){
+    const row=document.createElement('div'); row.className='cbl-row row2'; row.style.marginTop='6px';
+    const nm=document.createElement('input'); nm.type='text'; nm.className='cbl-name'; nm.placeholder='名称（例：リモコン線）';
+    const m=document.createElement('input'); m.type='number'; m.className='cbl-m'; m.placeholder='m'; m.style.flex='0 0 90px';
+    const del=document.createElement('button'); del.type='button'; del.className='delbtn'; del.textContent='✕'; del.onclick=()=>row.remove();
+    row.appendChild(nm); row.appendChild(m); row.appendChild(del);
+    document.getElementById('cblOtherList').appendChild(row);
+  }
+  function collectCblOther(){
+    const a=[];
+    document.querySelectorAll('#cblOtherList .cbl-row').forEach(r=>{
+      const n=r.querySelector('.cbl-name').value.trim(), m=r.querySelector('.cbl-m').value.trim();
+      if(n||m) a.push(n+(m?(' '+m+'m'):''));
+    });
+    return a.join(' / ');
+  }
+
+  function addBaseRow(){
+    const row=document.createElement('div'); row.className='base-row row2'; row.style.marginTop='6px';
+    const t=document.createElement('select'); t.className='base-type';
+    t.innerHTML='<option value="">タイプ</option><option>タイガーベース</option><option>エコベース</option><option>その他</option>';
+    const s=document.createElement('select'); s.className='base-size';
+    s.innerHTML='<option value="">サイズ</option><option>300</option><option>350</option><option>400</option><option>450</option><option>500</option><option>700</option><option>その他</option>';
+    const q=document.createElement('input'); q.type='number'; q.className='base-qty'; q.placeholder='セット数'; q.style.flex='0 0 90px';
+    const del=document.createElement('button'); del.type='button'; del.className='delbtn'; del.textContent='✕'; del.onclick=()=>row.remove();
+    row.appendChild(t); row.appendChild(s); row.appendChild(q); row.appendChild(del);
+    document.getElementById('baseList').appendChild(row);
+  }
+  function collectBase(){
+    const a=[];
+    document.querySelectorAll('#baseList .base-row').forEach(r=>{
+      const t=r.querySelector('.base-type').value, s=r.querySelector('.base-size').value, q=r.querySelector('.base-qty').value.trim();
+      if(t||s||q) a.push(t+s+(q?(' '+q+'セット'):''));
+    });
+    return a.join(' / ');
+  }
+
+  function addLanRow(){
+    const row=document.createElement('div'); row.className='lan-row row2'; row.style.marginTop='6px';
+    const l=document.createElement('select'); l.className='lan-len';
+    l.innerHTML='<option value="">長さ</option><option>5ｍ</option><option>10ｍ</option><option>15ｍ</option><option>20ｍ</option><option>その他</option>';
+    const q=document.createElement('input'); q.type='number'; q.className='lan-qty'; q.placeholder='本数'; q.style.flex='0 0 90px';
+    const del=document.createElement('button'); del.type='button'; del.className='delbtn'; del.textContent='✕'; del.onclick=()=>row.remove();
+    row.appendChild(l); row.appendChild(q); row.appendChild(del);
+    document.getElementById('lanList').appendChild(row);
+  }
+  function collectLan(){
+    const a=[];
+    document.querySelectorAll('#lanList .lan-row').forEach(r=>{
+      const l=r.querySelector('.lan-len').value, q=r.querySelector('.lan-qty').value.trim();
+      if(l||q) a.push(l+(q?(' '+q+'本'):''));
+    });
+    return a.join(' / ');
+  }
+
+  function futaiList(){ const c=val('company'); if(FUTAI[c]) return FUTAI[c];
+    if(c.indexOf('リケン')===0) return FUTAI['リケンエナジー'];
+    if(c.indexOf('アルファ')===0) return FUTAI['アルファエレクトロ'];
+    return FUTAI['汎用']; }
+  function fillFutaiSelect(sel){
+    const items=futaiList(); const cur=sel.value;
+    let html='<option value="">付帯を選択</option>';
+    FUTAI_GROUPS.forEach(gr=>{
+      const sub=items.filter(it=>it.g===gr[0]);
+      if(!sub.length) return;
+      html+='<optgroup label="【'+((FUTAI_GRP_OVR[val('company')]||{})[gr[0]]||gr[1])+'】">'+sub.map(it=>'<option value="'+it.n+'" data-u="'+it.u+'" data-g="'+gr[0]+'">'+it.n+'（'+it.u+'）</option>').join('')+'</optgroup>';
+    });
+    sel.innerHTML=html; sel.value=cur;
+  }
+  function refreshFutai(){
+    const c=val('company'); const h=document.getElementById('futaiHint');
+    if(h) h.textContent=c?('「'+(FUTAI[c]?c:(c==='その他'?'汎用':c))+'」の付帯項目（5区分）から選べます。'):'※先に①で会社を選んでください。';
+    document.querySelectorAll('#futaiList select.futai-item').forEach(fillFutaiSelect);
+  }
+  function addFutaiRow(){
+    const row=document.createElement('div'); row.className='futai-row f'; row.style.marginTop='6px';
+    const inner=document.createElement('div'); inner.className='row2'; inner.style.alignItems='center';
+    const sel=document.createElement('select'); sel.className='futai-item'; fillFutaiSelect(sel);
+    const qwrap=document.createElement('div'); qwrap.style.cssText='display:flex;align-items:center;gap:4px;flex:0 0 auto';
+    const qty=document.createElement('input'); qty.type='number'; qty.className='futai-qty'; qty.placeholder='数量'; qty.style.cssText='width:72px;flex:none'; qty.inputMode='decimal';
+    const uspan=document.createElement('span'); uspan.className='futai-unit'; uspan.style.cssText='font-size:13px;color:var(--sub);min-width:18px;font-weight:600';
+    qwrap.appendChild(qty); qwrap.appendChild(uspan);
+    sel.onchange=()=>{ const opt=sel.options[sel.selectedIndex]; uspan.textContent=opt?(opt.getAttribute('data-u')||''):''; };
+    const del=document.createElement('button'); del.type='button'; del.className='delbtn'; del.textContent='✕'; del.onclick=()=>row.remove();
+    inner.appendChild(sel); inner.appendChild(qwrap); inner.appendChild(del); row.appendChild(inner);
+    const memo=document.createElement('textarea'); memo.className='futai-memo'; memo.placeholder='備考（例：狭所作業、搬入困難）'; memo.rows=1; memo.style.cssText='width:100%;margin-top:4px;font-size:13px;resize:vertical;border-radius:4px;border:1px solid var(--bdr);padding:4px 6px;box-sizing:border-box;color:var(--fg);background:var(--bg);';
+    row.appendChild(memo);
+    document.getElementById('futaiList').appendChild(row);
+  }
+  function collectFutai(){
+    const g={jin:[],hai:[],kik:[],tek:[],oth:[]};
+    document.querySelectorAll('#futaiList .futai-row').forEach(row=>{
+      const sel=row.querySelector('.futai-item'); const qel=row.querySelector('.futai-qty'); const qty=(qel?qel.value:'').trim();
+      const name=sel.value; if(!name) return;
+      const opt=sel.options[sel.selectedIndex]; const u=opt.getAttribute('data-u')||''; const grp=opt.getAttribute('data-g')||'oth';
+      const mel=row.querySelector('.futai-memo'); const mo=(mel?mel.value:'').trim();
+      g[grp].push(name+(qty?(' '+qty+u):'')+(mo?' [備考：'+mo+']':''));
+    });
+    return {jin:g.jin.join(' / '),hai:g.hai.join(' / '),kik:g.kik.join(' / '),tek:g.tek.join(' / '),oth:g.oth.join(' / ')};
+  }
+
+  function addStep(name, custom){
+    const row=document.createElement('div'); row.className='steprow';
+    const no=document.createElement('span'); no.className='no';
+    let nmEl;
+    if(custom){ nmEl=document.createElement('input'); nmEl.type='text'; nmEl.className='nm step-name'; nmEl.placeholder='作業名を記入'; }
+    else{ nmEl=document.createElement('span'); nmEl.className='nm step-name'; nmEl.textContent=name; nmEl.dataset.name=name; }
+    const d=document.createElement('input'); d.type='number'; d.className='step-days'; d.min='0.5'; d.step='0.5'; d.value='1'; d.oninput=updateTotal;
+    const unit=document.createElement('span'); unit.className='unit'; unit.textContent='日';
+    const del=document.createElement('button'); del.type='button'; del.className='delbtn'; del.textContent='✕';
+    del.onclick=()=>{ row.remove(); renumberSteps(); updateTotal(); };
+    row.appendChild(no); row.appendChild(nmEl); row.appendChild(d); row.appendChild(unit); row.appendChild(del);
+    document.getElementById('stepList').appendChild(row);
+    renumberSteps(); updateTotal();
+  }
+  function renumberSteps(){ document.querySelectorAll('#stepList .steprow').forEach((r,i)=>{ r.querySelector('.no').textContent=(i+1)+'.'; }); }
+  function updateTotal(){
+    let t=0;
+    document.querySelectorAll('#stepList .step-days').forEach(d=>{ const v=parseFloat(d.value); if(!isNaN(v)) t+=v; });
+    document.getElementById('totalDays').textContent=(Math.round(t*10)/10);
+  }
+  function collectSteps(){
+    const a=[];
+    document.querySelectorAll('#stepList .steprow').forEach((r,i)=>{
+      const nmEl=r.querySelector('.step-name');
+      const nm=(nmEl.tagName==='INPUT'?nmEl.value.trim():nmEl.dataset.name)||'（未記入）';
+      const d=r.querySelector('.step-days').value||'?';
+      a.push((i+1)+'.'+nm+'('+d+'日)');
+    });
+    return a.join('→');
+  }
+
+  // ===== ⑨ 写真・図面 =====
+  let photos = [];   // {id, dataURL, annotated}
+  let pid = 0;
+  function addPhotos(ev){
+    const files = Array.from(ev.target.files||[]);
+    files.forEach(f=>{
+      const r = new FileReader();
+      r.onload = e=>{ photos.push({id:++pid, dataURL:e.target.result, annotated:false}); renderPhotos(); };
+      r.readAsDataURL(f);
+    });
+    ev.target.value='';
+  }
+  function renderPhotos(){
+    const grid = document.getElementById('photoGrid');
+    if(!photos.length){ grid.innerHTML='<div class="pempty">まだ写真はありません</div>'; return; }
+    grid.innerHTML = photos.map(p=>(
+      '<div class="pcell">'+
+        (p.annotated?'<div class="ann">✏ 描込</div>':'')+
+        '<img src="'+p.dataURL+'">'+
+        '<button class="del" onclick="delPhoto('+p.id+')">✕</button>'+
+        '<button class="edit" onclick="openDraw('+p.id+')">✏</button>'+
+      '</div>'
+    )).join('');
+  }
+  function delPhoto(id){ photos = photos.filter(p=>p.id!==id); renderPhotos(); }
+
+  // ----- 描画（写真への注釈 / 白紙図面） -----
+  let drawCtx, drawing=false, lastX=0, lastY=0, penColor='#e11d48';
+  let curDrawId=null, strokes=[], curStroke=null;
+  let drawMode='pen', stampText='PCS', lineStartPt=null, snapImg=null, originalImg=null;
+  let canvasPreset='std';
+  const cv = ()=>document.getElementById('drawCanvas');
+
+  function pickPen(btn){
+    penColor=btn.dataset.color;
+    document.querySelectorAll('.modal .pen').forEach(b=>b.classList.remove('sel'));
+    btn.classList.add('sel');
+  }
+  function setDrawMode(mode){
+    drawMode=mode;
+    document.getElementById('dtPen').classList.toggle('active',mode==='pen');
+    document.getElementById('dtLine').classList.toggle('active',mode==='line');
+    document.getElementById('dtStamp').classList.toggle('active',mode==='stamp');
+    document.getElementById('stampBar').classList.toggle('hidden',mode!=='stamp');
+  }
+  function setStamp(btn, text){
+    stampText=text;
+    document.querySelectorAll('#stampBar button').forEach(b=>b.classList.remove('ssel'));
+    btn.classList.add('ssel');
+  }
+  function setPreset(p){
+    canvasPreset=p;
+    document.getElementById('prstStd').classList.toggle('psel',p==='std');
+    document.getElementById('prstSq').classList.toggle('psel',p==='sq');
+    openDraw(curDrawId); // キャンバスを再初期化
+  }
+  function openDraw(id){
+    curDrawId=id; strokes=[]; curStroke=null; originalImg=null; lineStartPt=null; snapImg=null;
+    const modal=document.getElementById('drawModal'); modal.classList.remove('hidden');
+    setTimeout(()=>{
+      const wrap=modal.querySelector('.canvaswrap');
+      const W=wrap.clientWidth; const H=wrap.clientHeight;
+      const canvas=cv();
+      let cw, ch;
+      if(canvasPreset==='sq'){ cw=ch=Math.min(W,H)-8; }
+      else { cw=W-8; ch=Math.min(Math.round(cw*0.75),H-8); }
+      canvas.width=Math.max(cw,200); canvas.height=Math.max(ch,150);
+      drawCtx=canvas.getContext('2d');
+      function setupBase(img){
+        drawCtx.fillStyle='#fff'; drawCtx.fillRect(0,0,canvas.width,canvas.height);
+        if(img) drawCtx.drawImage(img,0,0,canvas.width,canvas.height);
+        originalImg=canvas.toDataURL();
+      }
+      if(id){ const p=photos.find(x=>x.id===id); const img=new Image(); img.onload=()=>setupBase(img); img.src=p.dataURL; }
+      else setupBase(null);
+    },60);
+  }
+
+  function redrawFull(){
+    const canvas=cv();
+    function doStrokes(){
+      strokes.forEach(s=>{
+        if(s.type==='line'){
+          drawCtx.strokeStyle=s.c; drawCtx.lineWidth=4; drawCtx.lineCap='round';
+          drawCtx.beginPath(); drawCtx.moveTo(s.x1,s.y1); drawCtx.lineTo(s.x2,s.y2); drawCtx.stroke();
+        } else if(s.type==='stamp'){
+          drawStampShape(s.text,s.x,s.y);
+        } else { // pen (s.pts)
+          drawCtx.strokeStyle=s.c; drawCtx.lineWidth=4; drawCtx.lineCap='round'; drawCtx.lineJoin='round';
+          drawCtx.beginPath(); (s.pts||[]).forEach((pt,i)=>{ i?drawCtx.lineTo(pt.x,pt.y):drawCtx.moveTo(pt.x,pt.y); }); drawCtx.stroke();
+        }
+      });
+    }
+    if(originalImg){
+      const img=new Image(); img.onload=()=>{ drawCtx.clearRect(0,0,canvas.width,canvas.height); drawCtx.drawImage(img,0,0); doStrokes(); }; img.src=originalImg;
+    } else {
+      drawCtx.clearRect(0,0,canvas.width,canvas.height); drawCtx.fillStyle='#fff'; drawCtx.fillRect(0,0,canvas.width,canvas.height); doStrokes();
+    }
+  }
+
+  function drawStampShape(text, x, y){
+    if(text==='北↑'){
+      drawCtx.save(); drawCtx.fillStyle='#dc2626';
+      drawCtx.beginPath(); drawCtx.arc(x,y,20,0,Math.PI*2); drawCtx.fill();
+      drawCtx.fillStyle='#fff'; drawCtx.font='bold 13px sans-serif'; drawCtx.textAlign='center'; drawCtx.textBaseline='middle';
+      drawCtx.fillText('北↑',x,y); drawCtx.restore(); return;
+    }
+    drawCtx.save(); drawCtx.font='bold 13px sans-serif';
+    const tw=drawCtx.measureText(text).width; const pad=7; const bw=tw+pad*2; const bh=24;
+    const rx=x-bw/2; const ry=y-bh/2; const r=6;
+    drawCtx.fillStyle='#2563eb';
+    drawCtx.beginPath();
+    drawCtx.moveTo(rx+r,ry); drawCtx.lineTo(rx+bw-r,ry); drawCtx.arcTo(rx+bw,ry,rx+bw,ry+r,r);
+    drawCtx.lineTo(rx+bw,ry+bh-r); drawCtx.arcTo(rx+bw,ry+bh,rx+bw-r,ry+bh,r);
+    drawCtx.lineTo(rx+r,ry+bh); drawCtx.arcTo(rx,ry+bh,rx,ry+bh-r,r);
+    drawCtx.lineTo(rx,ry+r); drawCtx.arcTo(rx,ry,rx+r,ry,r); drawCtx.closePath(); drawCtx.fill();
+    drawCtx.fillStyle='#fff'; drawCtx.textAlign='center'; drawCtx.textBaseline='middle';
+    drawCtx.fillText(text,x,y); drawCtx.restore();
+  }
+
+  function pos(e){
+    const c=cv(); const r=c.getBoundingClientRect(); const t=e.touches?e.touches[0]:e;
+    if(!t) return null;
+    return {x:(t.clientX-r.left)*(c.width/r.width), y:(t.clientY-r.top)*(c.height/r.height)};
+  }
+  function startDraw(e){
+    e.preventDefault(); const p=pos(e); if(!p) return;
+    if(drawMode==='pen'){
+      drawing=true; curStroke={type:'pen',c:penColor,pts:[p]}; strokes.push(curStroke); lastX=p.x; lastY=p.y;
+    } else if(drawMode==='line'){
+      lineStartPt=p; snapImg=cv().toDataURL();
+    } else if(drawMode==='stamp'){
+      strokes.push({type:'stamp',text:stampText,x:p.x,y:p.y}); redrawFull();
+    }
+  }
+  function moveDraw(e){
+    e.preventDefault(); const p=pos(e); if(!p) return;
+    if(drawMode==='pen' && drawing){
+      drawCtx.strokeStyle=penColor; drawCtx.lineWidth=4; drawCtx.lineCap='round'; drawCtx.lineJoin='round';
+      drawCtx.beginPath(); drawCtx.moveTo(lastX,lastY); drawCtx.lineTo(p.x,p.y); drawCtx.stroke();
+      curStroke.pts.push(p); lastX=p.x; lastY=p.y;
+    } else if(drawMode==='line' && lineStartPt && snapImg){
+      const img=new Image(); img.onload=()=>{
+        drawCtx.clearRect(0,0,cv().width,cv().height); drawCtx.drawImage(img,0,0);
+        drawCtx.strokeStyle=penColor; drawCtx.lineWidth=4; drawCtx.lineCap='round';
+        drawCtx.beginPath(); drawCtx.moveTo(lineStartPt.x,lineStartPt.y); drawCtx.lineTo(p.x,p.y); drawCtx.stroke();
+      }; img.src=snapImg;
+    }
+  }
+  function endDraw(e){
+    if(drawMode==='pen'){ drawing=false; }
+    else if(drawMode==='line' && lineStartPt){
+      let p=null;
+      if(e && e.changedTouches && e.changedTouches[0]){
+        const t=e.changedTouches[0]; const c=cv(); const r=c.getBoundingClientRect();
+        p={x:(t.clientX-r.left)*(c.width/r.width),y:(t.clientY-r.top)*(c.height/r.height)};
+      } else if(e) { p=pos(e); }
+      if(p) strokes.push({type:'line',c:penColor,x1:lineStartPt.x,y1:lineStartPt.y,x2:p.x,y2:p.y});
+      lineStartPt=null; snapImg=null; redrawFull();
+    }
+  }
+  function undoDraw(){ strokes.pop(); redrawFull(); }
+  function closeDraw(){ document.getElementById('drawModal').classList.add('hidden'); }
+  function saveDraw(){
+    const data=cv().toDataURL('image/jpeg',0.92);
+    if(curDrawId){ const p=photos.find(x=>x.id===curDrawId); p.dataURL=data; p.annotated=true; }
+    else { photos.push({id:++pid, dataURL:data, annotated:true, isDrawing:true}); }
+    renderPhotos(); closeDraw();
+  }
+
+  // ----- 保存先パスの自動生成 -----
+  function gyo(kana){
+    if(!kana) return '';
+    let c = kana.trim().charAt(0);
+    const map={'が':'か','ぎ':'き','ぐ':'く','げ':'け','ご':'こ','ざ':'さ','じ':'し','ず':'す','ぜ':'せ','ぞ':'そ','だ':'た','ぢ':'ち','づ':'つ','で':'て','ど':'と','ば':'は','び':'ひ','ぶ':'ふ','べ':'へ','ぼ':'ほ','ぱ':'は','ぴ':'ひ','ぷ':'ふ','ぺ':'へ','ぽ':'ほ'};
+    if(c>='ァ'&&c<='ン') c=String.fromCharCode(c.charCodeAt(0)-0x60);
+    if(map[c]) c=map[c];
+    const rows=[['あ','あいうえお'],['か','かきくけこ'],['さ','さしすせそ'],['た','たちつてと'],['な','なにぬねの'],['は','はひふへほ'],['ま','まみむめも'],['や','やゆよ'],['ら','らりるれろ'],['わ','わをん']];
+    for(const [g,set] of rows){ if(set.indexOf(c)>=0) return g+'行'; }
+    return '';
+  }
+  function shiku(addr){
+    if(!addr) return '';
+    let a=addr.replace(/^.+?[都道府県]/,'');
+    const m=a.match(/^.+?[市区町村]/);
+    return m?m[0]:'';
+  }
+  function updateDrivePath(){
+    const company = val('company')==='その他'? val('companyOther') : val('company');
+    const name = val('custName'); const kana = val('custKana'); const addr=val('addr');
+    const el = document.getElementById('drivePath');
+    if(!company && !name){ el.textContent='お客様名・会社名を入れると表示されます'; return; }
+    const g = gyo(kana) || '（行）';
+    const head = name? name.charAt(0) : '（頭）';
+    const sk = shiku(addr) || '（市区）';
+    el.innerHTML =
+      '<span class="seg">現場写真</span> / '+
+      '<span class="seg">'+(company||'（会社名）')+'</span> / '+
+      '<span class="seg">'+g+'₋お客様名₋現場住所</span> / '+
+      '<span class="accent">'+head+'_'+(name||'（お客様名）')+'_'+sk+'</span> / '+
+      '<span class="seg">現調写真</span>';
+  }
+
+  function val(id){ const e=document.getElementById(id); return e?e.value.trim():""; }
+  function radio(name){ const e=document.querySelector('input[name="'+name+'"]:checked'); return e?e.value:""; }
+  function multi(name){ return Array.from(document.querySelectorAll('input[name="'+name+'"]:checked')).map(x=>x.value).join("・"); }
+  function caseKey(){ const d=new Date(); const p=n=>String(n).padStart(2,'0');
+    return "G"+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+"-"+p(d.getHours())+p(d.getMinutes())+p(d.getSeconds()); }
+  function reporterVal(){ const r=radio('reporter'); return r==='その他'?('その他：'+val('reporterOther')):r; }
+  function companyVal(){ const c=val('company'); return c==='その他'?('その他：'+val('companyOther')):c; }
+  function surveyTypeVal(){ let a=multi('surveyType'); const o=val('surveyTypeOther'); if(o) a=a.replace('その他','その他：'+o); return a; }
+  function keiyakuVal(){ let a=multi('keiyaku'); const o=val('keiyakuOther'); if(o) a=a.replace('その他','その他：'+o); return a; }
+  function existingVal(){ let a=multi('existing'); const o=val('existingOther'); if(o) a=a.replace('その他','その他：'+o); return a; }
+  function wifiStatusVal(){ const w=radio('wifiStatus'); if(w==='あるが動作未確認'){ const r=val('wifiNote'); return w+(r?('（理由：'+r+'）'):''); } return w; }
+  function battVal(){ if(!document.getElementById('typeBatt').checked) return '';
+    return [val('battMaker'),val('battSeries'),val('battCap')?val('battCap')+'kWh':''].filter(Boolean).join(' '); }
+  function v2hVal(){ if(!document.getElementById('typeV2h').checked) return '';
+    return [val('v2hMaker'),val('v2hModel')].filter(Boolean).join(' '); }
+
+  function buildMemo(){
+    const base=val('memo'); const auto=[];
+    const w=radio('wifiStatus');
+    if(w==='なし') auto.push('【Wi-Fiなし→遠隔モニタリング不可をお客様へ伝達・営業確認要】');
+    if(w==='あるが動作未確認') auto.push('【Wi-Fi動作未確認（'+(val('wifiNote')||'理由未記入')+'）→営業へ】');
+    const ru=multi('roofUnconf'); const rm=val('roofUnconfMemo'); if(ru||rm) auto.push('【屋根等現調延期：'+[ru,rm].filter(Boolean).join('／')+'】');
+    if(radio('park')==='必要'&&radio('parkInformed')==='未') auto.push('【駐車場移動 必要・伝達未→営業へ'+(val('parkMemo')?('（'+val('parkMemo')+'）'):'')+'】');
+    if(radio('shakuchi')==='必要・未取得') auto.push('【借地許可 未取得→要対応'+(val('shakuchiArea')?('（'+val('shakuchiArea')+'）'):'')+'】');
+    if(document.getElementById('salesContact').checked) auto.push('【★営業へ要連絡】');
+    return [auto.join(' '), base].filter(Boolean).join('\n');
+  }
+
+  function collect(){
+    const FT=collectFutai();
+    return {
+      caseKey: caseKey(), registeredAt: new Date().toISOString(),
+      surveyDate: val('surveyDate'), reporter: reporterVal(), surveyType: surveyTypeVal(),
+      roofUnconf: [multi('roofUnconf'),val('roofUnconfMemo')].filter(Boolean).join('／'),
+      company: companyVal(),
+      custName: val('custName'), custKana: val('custKana'), addr: val('addr'),
+      keiyaku: keiyakuVal(), meter: val('meter'), panel: val('panel'),
+      existing: existingVal(),
+      circuits: val('circuits'), emptyCircuits: val('emptyCircuits'),
+      kansen: [val('kansenType'),val('kansenSize')].filter(Boolean).join('-'), earth: radio('earth'),
+      wifiStatus: wifiStatusVal(), wifiId: val('wifiId'), wifiPass: val('wifiPass'),
+      cblPv: val('cblPv'), cblMain: val('cblMain'), cblBatt: val('cblBatt'), cblCt: val('cblCt'),
+      cblOther: collectCblOther(),
+      battType: (document.getElementById('typeBatt').checked?'蓄電池':'')+(document.getElementById('typeV2h').checked?(document.getElementById('typeBatt').checked?'・':'')+'V2H':''),
+      battery: battVal(), v2h: v2hVal(),
+      block: collectBase(), lan: collectLan(),
+      futaiJin: FT.jin, futaiHai: FT.hai, futaiKik: FT.kik, futaiTek: FT.tek, futaiOth: FT.oth,
+      addMemo: val('addMemo'),
+      park: radio('park'), parkInformed: (radio('park')==='必要'?radio('parkInformed'):''), parkMemo: val('parkMemo'),
+      shakuchi: radio('shakuchi'), shakuchiArea: val('shakuchiArea'),
+      scaffold: val('scaffold'), flow: radio('flow'),
+      steps: collectSteps(), totalDays: document.getElementById('totalDays').textContent,
+      hopeDate: val('hopeDate'), ngDate: val('ngDate'), timeSlot: radio('timeSlot'),
+      photoCount: photos.length,
+      photos: photos.map(p=>({dataURL:p.dataURL, annotated:p.annotated})),
+      memo: buildMemo()
+    };
+  }
+
+  function showMsg(text, ok){ const m=document.getElementById('msg'); m.textContent=text; m.className="msg "+(ok?"ok":"err"); }
+  function validate(d){
+    if(!d.surveyDate) return "現地調査日を入力してください";
+    if(!d.reporter) return "報告者を選択してください";
+    if(!d.surveyType) return "現地調査内容を選択してください";
+    if(!d.company) return "会社名を選択してください";
+    if(!d.custName) return "お客様名を入力してください";
+    if(!d.addr) return "現場住所を入力してください";
+    if(!d.keiyaku) return "契約種別・容量を選択してください";
+    if(!d.wifiStatus) return "Wi-Fi状況を選択してください";
+    return "";
+  }
+
+  // 写真をリサイズ・JPEG圧縮する（長辺1000px / 品質70%）
+  function compressPhoto(dataURL, maxPx, quality) {
+    return new Promise(function(resolve) {
+      const img = new Image();
+      img.onload = function() {
+        const scale = Math.min(1, maxPx / Math.max(img.width, img.height));
+        const w = Math.round(img.width * scale);
+        const h = Math.round(img.height * scale);
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(c.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = function() { resolve(dataURL); };
+      img.src = dataURL;
+    });
+  }
+
+  async function submitForm(){
+    const d = collect(); const err = validate(d);
+    if(err){ showMsg(err, false); window.scrollTo({top:0,behavior:'smooth'}); return; }
+    if(PROTO){
+      showMsg("【試作】送信OK（案件キー："+d.caseKey+" / 写真"+d.photoCount+"枚）。本番では写真がDriveの保存先フォルダへ自動格納されます。", true);
+      window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}); return;
+    }
+    const btn=document.getElementById('submitBtn'); btn.disabled=true;
+    // 写真を圧縮
+    if(d.photos && d.photos.length > 0){
+      btn.textContent="写真を圧縮中…("+d.photos.length+"枚)";
+      d.photos = await Promise.all(d.photos.map(async function(p){
+        if(!p || !p.dataURL) return p;
+        const compressed = await compressPhoto(p.dataURL, 1000, 0.7);
+        return Object.assign({}, p, { dataURL: compressed });
+      }));
+    }
+    btn.textContent="送信中…";
+    fetch(GAS_URL, { method:"POST", mode:"no-cors",
+      headers:{"Content-Type":"text/plain;charset=utf-8"}, body: JSON.stringify(d) })
+      .then(function(){ showMsg("送信しました（案件キー："+d.caseKey+"）", true); btn.textContent="送信完了"; var dg=document.getElementById('driveGuide'); if(dg){dg.style.display='block';} })
+      .catch(function(){ showMsg("送信に失敗しました。電波を確認してもう一度お試しください。", false);
+        btn.disabled=false; btn.textContent="送信"; });
+  }
+
+  function clearForm(){
+    if(!confirm("入力内容をクリアします。よろしいですか？")) return;
+    document.querySelectorAll('input,textarea,select').forEach(e=>{
+      if(e.type==='checkbox'||e.type==='radio') e.checked=false; else e.value="";
+    });
+    ['cblOtherList','baseList','lanList','futaiList','stepList'].forEach(id=>{ document.getElementById(id).innerHTML=''; });
+    photos=[]; renderPhotos(); updateTotal(); updateDrivePath();
+    ['reporterOther','surveyTypeOther','companyOther','keiyakuOther','existingOther','wifiId','wifiPass','wifiNote','battBlock','v2hBlock','parkInformedBox','shakuchiArea'].forEach(id=>show(id,false));
+    document.getElementById('existingReminder').classList.add('hidden');
+    showMsg("", true); document.getElementById('msg').className="msg";
+    document.getElementById('surveyDate').valueAsDate=new Date();
+  }
+
+  // 初期化
+  document.getElementById('surveyDate').valueAsDate = new Date();
+  fillSelect(document.getElementById('battMaker'), Object.keys(BATT), 'メーカー');
+  fillSelect(document.getElementById('v2hMaker'), Object.keys(V2H), 'メーカー');
+  renderPhotos(); updateDrivePath();
+  (function(){ const c=cv();
+    c.addEventListener('mousedown',startDraw); c.addEventListener('mousemove',moveDraw);
+    window.addEventListener('mouseup',endDraw);
+    c.addEventListener('touchstart',startDraw,{passive:false}); c.addEventListener('touchmove',moveDraw,{passive:false});
+    c.addEventListener('touchend',endDraw);
+  })();
+</script>
+</body>
+</html>
