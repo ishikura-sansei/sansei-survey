@@ -80,9 +80,9 @@
     background:var(--chip);color:var(--ink)}
   details.guide summary::-webkit-details-marker{display:none}
   details.guide[open] summary{border-bottom:1px solid var(--line)}
-  .guidegrid{display:flex;flew-wrap:wrap;gap:6px;padding:12px}
+  .guidegrid{display:flex;flex-wrap:wrap;gap:6px;padding:12px}
   .guidegrid span{font-size:12px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 11px;color:var(--sub)}
-  .bigadk{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  .bigadd{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
     border:2px dashed var(--accent);border-radius:14px;background:var(--accent-soft);
     color:var(--accent-deep);font-weight:800;font-size:15px;padding:18px;margin-top:6px;cursor:pointer}
   .bigadd.alt{border-color:var(--blue);background:var(--blue-soft);color:var(--blue-deep);margin-top:14px}
@@ -93,7 +93,7 @@
     font-weight:800;border-radius:999px;padding:2px 7px}
   .pcell .edit,.pcell .del{position:absolute;width:30px;height:30px;border-radius:9px;border:none;
     font-size:14px;display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer}
-  .pcell .edit{right:5px;bottom:5px;background:rgba(37,99,235,.92]}
+  .pcell .edit{right:5px;bottom:5px;background:rgba(37,99,235,.92)}
   .pcell .del{right:5px;top:5px;background:rgba(17,24,39,.6)}
   .pempty{grid-column:1/-1;text-align:center;color:var(--sub);font-size:12px;padding:6px 0}
 
@@ -111,7 +111,7 @@
   .draw-tools{display:flex;gap:4px;margin-left:4px}
   .dtool{border:1.5px solid #fff3;border-radius:8px;background:#2b313c;color:#ccc;padding:5px 9px;font-size:15px;font-weight:700;cursor:pointer}
   .dtool.active{background:var(--accent);color:#fff;border-color:var(--accent-deep)}
-  .stamp-bar{display:flex;flew-wrap:wrap;gap:5px;padding:7px 12px;background:#151920;border-bottom:1px solid #2a2f3a}
+  .stamp-bar{display:flex;flex-wrap:wrap;gap:5px;padding:7px 12px;background:#151920;border-bottom:1px solid #2a2f3a}
   .stamp-bar button{background:#2b313c;color:#e0e0e0;border:1.5px solid #fff2;border-radius:8px;padding:5px 9px;font-size:12px;font-weight:800;cursor:pointer}
   .stamp-bar button.ssel{background:var(--blue);border-color:var(--blue-deep);color:#fff}
   .preset-bar{display:flex;gap:6px;padding:4px 12px;background:#11151c;border-bottom:1px solid #1e2330;align-items:center}
@@ -174,7 +174,7 @@
       <input type="text" id="surveyTypeOther" class="hidden" placeholder="その他の内容" style="margin-top:6px">
       <div class="hint">PV=太陽光 / BT=蓄電池 / EQ=エコキュート / V2H / IH</div>
     </div>
-    <div class="f"><label>悪天候等で屋根等は現調が延期になった場合ははみ記入</label>
+    <div class="f"><label>悪天候等で屋根等の現調が延期になった場合のみ記入</label>
       <div class="opts">
         <label><input type="checkbox" name="roofUnconf" value="日程調整した">日程調整した</label>
         <label><input type="checkbox" name="roofUnconf" value="お客様に説明した">お客様に説明した</label>
@@ -247,10 +247,10 @@
         <label><input type="radio" name="wifiStatus" value="なし" onclick="toggleWifi()">なし</label>
         <label><input type="radio" name="wifiStatus" value="あるが動作未確認" onclick="toggleWifi()">あるが動作未確認</label>
       </div>
-      <div class="hint">モドタリングに必須。「なし」→遠隔モドタリング不可を記入（営業へ自動で申し送りされます）。</div>
+      <div class="hint">モニタリングに必須。「なし」→遠隔モニタリング不可をお客様へ伝達／「動作未確認」→理由を記入（営業へ自動で申し送りされます）。</div>
       <input type="text" id="wifiId" class="hidden" placeholder="Wi-Fi ID（SSID）" style="margin-top:6px">
       <input type="text" id="wifiPass" class="hidden" placeholder="Wi-Fi PASS" style="margin-top:6px">
-      <input type="text" id="wifiNote" class="hidden" placeholder="動作未確認の理由（例：お客様不在で確認でくず）" style="margin-top:6px">
+      <input type="text" id="wifiNote" class="hidden" placeholder="動作未確認の理由（例：お客様不在で確認できず）" style="margin-top:6px">
     </div>
   </div>
 
@@ -307,12 +307,10 @@
   <!-- ⑥ 付帯（会社別・5区分） -->
   <div class="sec">
     <h2><span class="n">6</span>付帯（記録）</h2>
-    <div class="note">「工事に必要な物・人工」の記録です。金額は付けません（事務が単価表で算定）。①で選んだ会社の単価表の付帯項目を�5区分グループから選んで数量を入れてください（複数行OK）。CV・PFD等の延長は<b>総計mで多めに</b>記入。</div>
+    <div class="note">「工事に必要な物・人工」の記録です。金額は付けません（事務が単価表で算定）。①で選んだ会社の単価表の付帯項目を、5区分グループから選んで数量を入れてください（複数行OK）。CV・PFD等の延長は<b>総計mで多めに</b>記入。</div>
     <div id="futaiHint" class="hint">※先に①で会社を選んでください。</div>
     <div id="futaiList"></div>
     <button type="button" class="addbtn" style="margin-top:8px" onclick="addFutaiRow()">＋ 付帯を追加</button>
-    <div class="row2" style="margin-top:8px">
-    </div>
     <div class="f"><label>追加工事の補足（自由記入）</label><textarea id="addMemo" placeholder="無い場合は空欄でOK"></textarea></div>
   </div>
 
@@ -348,7 +346,7 @@
       <button type="button" onclick="addStep('PTE（パネル＋蓄電池＋EQ）')">PTE</button>
       <button type="button" onclick="addStep('BT（蓄電池）')">BT</button>
       <button type="button" onclick="addStep('TE（蓄電池＋EQ）')">TE</button>
-      <button type="button" onclick="addStep('PV（太陽光ははみ）')">PV</button>
+      <button type="button" onclick="addStep('PV（太陽光のみ）')">PV</button>
       <button type="button" onclick="addStep('PV+PCS（太陽光）')">PV+PCS</button>
       <button type="button" onclick="addStep('EQ')">EQ</button>
       <button type="button" onclick="addStep('足場設置')">足場設置</button>
@@ -370,7 +368,7 @@
   <!-- ⑨ 写真・図面・伝達事項 -->
   <div class="sec">
     <h2><span class="n">9</span>写真・図面・伝達事項</h2>
-    <div class="note">写真はこの場でアップ。送信すると下の<b>Driveフォルダへ自動保存</b>されます（現場のログイン不要・LINEに送る手間がなくなります）。</div>
+    <div class="note">写真はこの場でアップ。送信すると下の<b>Driveフォルダへ自動保存</b>されます（現場のログイン不要・LINEに送る手間がなくなります）。枚数の上限はありません。</div>
 
     <div class="pathbox">
       <div class="pathlabel">📁 保存先（自動・お客様名と会社名から作成）</div>
@@ -479,7 +477,7 @@
       {n:"瓦屋根施工作業費",u:"式",g:"jin"},{n:"屋根急勾配・異勾配（6寸以上）",u:"式",g:"jin"},{n:"難工事",u:"式",g:"jin"},
       {n:"パネル手上げ作業費",u:"人",g:"jin"},{n:"搬入困難作業費",u:"人",g:"jin"},{n:"3F施工（危険作業費）",u:"式",g:"jin"},
       {n:"蓄電池2段ラック施工",u:"式",g:"jin"},{n:"電気工事難工事一式",u:"式",g:"jin"},{n:"穴あけ困難（コア・タイル等）",u:"箇所",g:"jin"},
-      {n:"ブロック嵩上げ('��囲により)",u:"式",g:"jin"},{n:"土間打ち",u:"箇所",g:"jin"},
+      {n:"ブロック嵩上げ(範囲により)",u:"式",g:"jin"},{n:"土間打ち",u:"箇所",g:"jin"},
       {n:"屋外用ダクト(LD)延長",u:"m",g:"hai"},{n:"宅内用ダクト施工(MD)",u:"m",g:"hai"},
       {n:"PFD16延長",u:"m",g:"hai"},{n:"PFD22延長",u:"m",g:"hai"},{n:"PFD28延長",u:"m",g:"hai"},{n:"PFD36延長",u:"m",g:"hai"},
       {n:"特殊役物使用(ジャバラ、立面等)",u:"式",g:"hai"},{n:"役物多数使用(MD/LD)",u:"式",g:"hai"},
@@ -496,7 +494,7 @@
     ],
     "アルファエレクトロ":[
       {n:"瓦屋根",u:"式",g:"jin"},{n:"急こう配 6寸",u:"式",g:"jin"},{n:"パネル手上げ",u:"式",g:"jin"},
-      {n:"搬入困難",u:"式",g:"jin"},{n:"PV３面以降",u:"面",g:"jin"},{n:"蓄電池基礎（1台当た���",u:"個",g:"jin"},
+      {n:"搬入困難",u:"式",g:"jin"},{n:"PV３面以降",u:"面",g:"jin"},{n:"蓄電池基礎（1台当たり）",u:"個",g:"jin"},
       {n:"PFD延長",u:"m",g:"hai"},{n:"スリムダクト延長",u:"m",g:"hai"},{n:"屋根線延長（DC）1系統ごと",u:"m",g:"hai"},
       {n:"CV5.5 延長",u:"m",g:"hai"},{n:"CV8 延長",u:"m",g:"hai"},{n:"CV14",u:"m",g:"hai"},{n:"MDモール（通常利用分）",u:"式",g:"hai"},
       {n:"MCB・ELB設置 50Aまで",u:"個",g:"kik"},{n:"MCB・ELB設置 75Aまで",u:"個",g:"kik"},
@@ -686,6 +684,8 @@
     sel.onchange=()=>{ const opt=sel.options[sel.selectedIndex]; uspan.textContent=opt?(opt.getAttribute('data-u')||''):''; };
     const del=document.createElement('button'); del.type='button'; del.className='delbtn'; del.textContent='✕'; del.onclick=()=>row.remove();
     inner.appendChild(sel); inner.appendChild(qwrap); inner.appendChild(del); row.appendChild(inner);
+    const memo=document.createElement('textarea'); memo.className='futai-memo'; memo.placeholder='備考（例：狭所作業、搬入困難）'; memo.rows=1; memo.style.cssText='width:100%;margin-top:4px;font-size:13px;resize:vertical;border-radius:4px;border:1px solid var(--bdr);padding:4px 6px;box-sizing:border-box;color:var(--fg);background:var(--bg);';
+    row.appendChild(memo);
     document.getElementById('futaiList').appendChild(row);
   }
   function collectFutai(){
@@ -694,7 +694,8 @@
       const sel=row.querySelector('.futai-item'); const qel=row.querySelector('.futai-qty'); const qty=(qel?qel.value:'').trim();
       const name=sel.value; if(!name) return;
       const opt=sel.options[sel.selectedIndex]; const u=opt.getAttribute('data-u')||''; const grp=opt.getAttribute('data-g')||'oth';
-      g[grp].push(name+(qty?(' '+qty+u):''));
+      const mel=row.querySelector('.futai-memo'); const mo=(mel?mel.value:'').trim();
+      g[grp].push(name+(qty?(' '+qty+u):'')+(mo?' [備考：'+mo+']':''));
     });
     return {jin:g.jin.join(' / '),hai:g.hai.join(' / '),kik:g.kik.join(' / '),tek:g.tek.join(' / '),oth:g.oth.join(' / ')};
   }
@@ -905,7 +906,7 @@
     if(!kana) return '';
     let c = kana.trim().charAt(0);
     const map={'が':'か','ぎ':'き','ぐ':'く','げ':'け','ご':'こ','ざ':'さ','じ':'し','ず':'す','ぜ':'せ','ぞ':'そ','だ':'た','ぢ':'ち','づ':'つ','で':'て','ど':'と','ば':'は','び':'ひ','ぶ':'ふ','べ':'へ','ぼ':'ほ','ぱ':'は','ぴ':'ひ','ぷ':'ふ','ぺ':'へ','ぽ':'ほ'};
-    if(m>='ァ'&&c<='ン') c=String.fromCharCode(c.charCodeAt(0)-0x60);
+    if(c>='ァ'&&c<='ン') c=String.fromCharCode(c.charCodeAt(0)-0x60);
     if(map[c]) c=map[c];
     const rows=[['あ','あいうえお'],['か','かきくけこ'],['さ','さしすせそ'],['た','たちつてと'],['な','なにぬねの'],['は','はひふへほ'],['ま','まみむめも'],['や','やゆよ'],['ら','らりるれろ'],['わ','わをん']];
     for(const [g,set] of rows){ if(set.indexOf(c)>=0) return g+'行'; }
@@ -928,7 +929,7 @@
     el.innerHTML =
       '<span class="seg">現場写真</span> / '+
       '<span class="seg">'+(company||'（会社名）')+'</span> / '+
-      '<span class="seg">'+g+'₋お客様名⊋現場住所</span> / '+
+      '<span class="seg">'+g+'₋お客様名₋現場住所</span> / '+
       '<span class="accent">'+head+'_'+(name||'（お客様名）')+'_'+sk+'</span> / '+
       '<span class="seg">現調写真</span>';
   }
@@ -1001,7 +1002,7 @@
     if(!d.custName) return "お客様名を入力してください";
     if(!d.addr) return "現場住所を入力してください";
     if(!d.keiyaku) return "契約種別・容量を選択してください";
-    if(!d.wifiStatus) return "Wi-Fi犵況を選択してください";
+    if(!d.wifiStatus) return "Wi-Fi状況を選択してください";
     return "";
   }
 
