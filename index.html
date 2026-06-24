@@ -142,7 +142,6 @@
   .drive-guide-sub{font-size:11px;color:#b45309}
   .drive-guide-btn{flex-shrink:0;background:linear-gradient(180deg,#fb923c,var(--accent));color:#fff;border:none;border-radius:10px;padding:10px 14px;font-size:12px;font-weight:800;box-shadow:0 2px 8px rgba(249,115,22,.4);white-space:nowrap;text-decoration:none;display:inline-block}
   </style>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 <header>
@@ -154,8 +153,7 @@
 <div class="wrap">
   <div class="note">※ このシートは「工事情報」の記録です。付帯（請求）の金額は事務側で単価表から算定します。現調者は見たまま・必要なものを入力してください。</div>
 
-  <!-- feature/drive-upload branch -->
-<!-- ① 現地調査 -->
+  <!-- ① 現地調査 -->
   <div class="sec">
     <h2><span class="n">1</span>現地調査</h2>
     <div class="f"><label>現地調査日<span class="req">*</span></label><input type="date" id="surveyDate"></div>
@@ -396,8 +394,6 @@
     </label>
     <div id="photoGrid" class="pgrid"><div class="pempty">まだ写真はありません</div></div>
 
-    <label class="bigadd alt" for="drivePhotoInput" style="cursor:pointer">☁ Drive直保存（写真を選ぶ→自動アップロード）</label>
-    <input type="file" id="drivePhotoInput" accept="image/*" multiple hidden onchange="uploadPhotosToDrive(this)">
     <button type="button" class="bigadd alt" onclick="openDraw(null)">✏ 手書き図面を描く（白紙）</button>
     <div class="hint" style="margin-top:6px;text-align:center">写真は ✏ ボタンで、設置予定など描き込みできます（必要な写真だけでOK）。</div>
 
@@ -462,83 +458,6 @@
 </div>
 
 <script>
-/* ===== Drive直アップロード設定 ===== */
-const DRIVE_CLIENT_ID='586436080806-9rfnic42k8i1orjcfrpethdltt643cpo.apps.googleusercontent.com';
-const PHOTO_FOLDER_ID='1OkP8EnYw0EKCf5kODQAtY-iz3ftB5HFQ';
-let _driveToken=null;
-
-function getDriveToken(){
-  return new Promise((resolve,reject)=>{
-    if(_driveToken){resolve(_driveToken);return;}
-    google.accounts.oauth2.initTokenClient({
-      client_id:DRIVE_CLIENT_ID,
-      scope:'https://www.googleapis.com/auth/drive.file',
-      callback:(resp)=>{
-        if(resp.error){reject(new Error(resp.error));return;}
-        _driveToken=resp.access_token;resolve(_driveToken);
-      }
-    }).requestAccessToken({prompt:''});
-  });
-}
-
-async function uploadFileToDrive(blob,fileName,folderId){
-  const token=await getDriveToken();
-  const meta={name:fileName,parents:[folderId]};
-  const body=new FormData();
-  body.append('metadata',new Blob([JSON.stringify(meta)],{type:'application/json'}));
-  body.append('file',blob);
-  const r=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{
-    method:'POST',headers:{Authorization:'Bearer '+token},body
-  });
-  if(!r.ok)throw new Error('Drive upload failed:'+r.status);
-  return r.json();
-}
-
-async function getOrCreateFolder(name,parentId,token){
-  const q=encodeURIComponent(`name='${name}' and mimeType='application/vnd.google-apps.folder' and '${parentId}' in parents and trashed=false`);
-  const r=await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id)`,{
-    headers:{Authorization:'Bearer '+token}
-  });
-  const d=await r.json();
-  if(d.files?.length)return d.files[0].id;
-  const cr=await fetch('https://www.googleapis.com/drive/v3/files',{
-    method:'POST',
-    headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},
-    body:JSON.stringify({name,mimeType:'application/vnd.google-apps.folder',parents:[parentId]})
-  });
-  return(await cr.json()).id;
-}
-
-function getDriveFolderInfo(){
-  const company=((document.getElementById('company')?.value||'未設定').replace(/[\/\\:*?"<>|]/g,'')||'未設定');
-  const cust=(document.getElementById('custName')?.value||'未設定').trim();
-  const addr=(document.getElementById('addr')?.value||'').trim();
-  const kana=(document.getElementById('custKana')?.value||'').trim();
-  const prefM=addr.match(/(..??[都道府県])/);
-  const pref=prefM?prefM[0]:'';
-  const head=kana?kana[0]:(cust?cust[0]:'_');
-  return{company,subFolder:head+'_'+cust+(pref?'_'+pref:'')};
-}
-
-async function uploadPhotosToDrive(input){
-  const files=Array.from(input.files);
-  if(!files.length)return;
-  const token=await getDriveToken();
-  const{company,subFolder}=getDriveFolderInfo();
-  const date=(document.getElementById('surveyDate')?.value||'').replace(/-/g,'')||'unknown';
-  const companyFid=await getOrCreateFolder(company,PHOTO_FOLDER_ID,token);
-  const custFid=await getOrCreateFolder(subFolder,companyFid,token);
-  let ok=0;
-  for(let i=0;i<files.length;i++){
-    const ext=files[i].name.match(/\.[^.]+$/)?.[0]||'.jpg';
-    const name=date+'_'+subFolder+'_'+(i+1)+ext;
-    await uploadFileToDrive(files[i],name,custFid);
-    ok++;
-  }
-  alert('📁 Drive保存完了：'+ok+'枚をDriveに保存しました');
-  input.value='';
-}
-
   // ===== 送信先GAS =====
   const GAS_URL = "https://script.google.com/macros/s/AKfycbxGxkCOnavWfL737UX_pFrQl2t7idJxbNkcU9QCVZ3gjQWVkajscGdLhtQ77jNqK1Cdaw/exec";
   const PROTO = false; // 本番モード
@@ -1150,19 +1069,7 @@ async function uploadPhotosToDrive(input){
     }
     btn.textContent="送信中…";
     fetch(GAS_URL, { method:"POST", mode:"no-cors",
-      headers:{"Content-Type":"text/plain;
-  // スケッチをDriveに自動アップロード
-  const _sk=document.getElementById('drawCanvas');
-  if(_sk){
-    _sk.toBlob(async(blob)=>{
-      if(!blob||blob.size<2000)return;
-      try{
-        const{company,subFolder}=getDriveFolderInfo();
-        const date=(document.getElementById('surveyDate')?.value||'').replace(/-/g,'')||'unknown';
-        await uploadFileToDrive(blob,date+'_'+subFolder+'_sketch.png',PHOTO_FOLDER_ID);
-      }catch(e){console.error('sketch:',e);}
-    },'image/png');
-  }charset=utf-8"}, body: JSON.stringify(d) })
+      headers:{"Content-Type":"text/plain;charset=utf-8"}, body: JSON.stringify(d) })
       .then(function(){
         showMsg("送信が完了しました。写真はDriveに自動保存されます（少し遅れる場合があります）。", true);
         document.getElementById("submitBtn").disabled = false;
