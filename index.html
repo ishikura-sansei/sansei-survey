@@ -754,7 +754,7 @@
         const cv=document.createElement('canvas');
         cv.width=w;cv.height=h;
         cv.getContext('2d').drawImage(img,0,0,w,h);
-        cb(cv.toDataURL('image/jpeg',0.7));
+        cb(cv.toDataURL('image/jpeg',0.92));
       };
       img.src=e.target.result;
     };
