@@ -8,14 +8,14 @@
   /* ===== v6 本番（2026-06-15）SANSEI配色（白基調＋オレンジ＋ブルー）。金額は一切表示しない ===== */
   :root{
     --bg:#f4f5f7; --panel:#ffffff; --line:#e7e9ee; --ink:#111827; --sub:#6b7280;
-    --accent:#f97316; --accent-soft:#fff1e6; --accent-deep:#c2410c;
+    --accent:#f97316; --accent-soft:#fff1e6; --accent-deep:#c2410hc;
     --blue:#2563eb; --blue-soft:#e9f0ff; --blue-deep:#1e40af;
     --ok:#2e7d32; --warn:#c08a00; --chip:#f3f5f7; --radius:16px;
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);
     font-family:-apple-system,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Meiryo",sans-serif;
-    font-size:16px;line-height:1.5;padding-bottom:96px}
+    font-size:16px;line-height:1.5;padding-bottom:96px}h
   header{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);
     padding:10px 16px 11px;z-index:20;box-shadow:0 1px 0 rgba(17,24,39,.02)}
   header::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;
@@ -750,12 +750,30 @@
   // ===== ⑨ 写真・図面 =====
   let photos = [];   // {id, dataURL, annotated}
   let pid = 0;
+  function compressImg(file,cb){
+    const r=new FileReader();
+    r.onload=e=>{
+      const img=new Image();
+      img.onload=()=>{
+        const MAX=1200;
+        let w=img.width,h=img.height;
+        if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}
+        const cv=document.createElement('canvas');
+        cv.width=w;cv.height=h;
+        cv.getContext('2d').drawImage(img,0,0,w,h);
+        cb(cv.toDataURL('image/jpeg',0.7));
+      };
+      img.src=e.target.result;
+    };
+    r.readAsDataURL(file);
+  }
   function addPhotos(ev){
-    const files = Array.from(ev.target.files||[]);
+    const files=Array.from(ev.target.files||[]);
     files.forEach(f=>{
-      const r = new FileReader();
-      r.onload = e=>{ photos.push({id:++pid, dataURL:e.target.result, annotated:false}); renderPhotos(); };
-      r.readAsDataURL(f);
+      compressImg(f,compressed=>{
+        photos.push({id:++pid, dataURL:compressed, annotated:false});
+        renderPhotos();
+      });
     });
     ev.target.value='';
   }
