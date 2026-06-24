@@ -18,7 +18,7 @@
     font-size:16px;line-height:1.5;padding-bottom:96px}h
   header{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);
     padding:10px 16px 11px;z-index:20;box-shadow:0 1px 0 rgba(17,24,39,.02)}
-  header::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;
+  header::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:0;
     background:linear-gradient(90deg,var(--accent),#fbbf24)}
   .brand{font-weight:800;letter-spacing:.16em;font-size:15px;text-align:center;color:var(--ink)}
   .brand span{color:var(--accent)}
@@ -198,8 +198,8 @@
   <!-- ② お客様情報 -->
   <div class="sec">
     <h2><span class="n">2</span>お客様情報</h2>
-    <div class="alert">⚠ お客様名は<b>漢字を正確に・フルネーム</b>で入力してください（後で検索できなくなるため誤字厳禁）。</div>
-    <div class="f"><label>お客様名（フルネーム）<span class="req">*</span></label><input type="text" id="custName" oninput="updateDrivePath()"></div>
+    <div class="alert hidden" id="custAlert">⚠ お客様名は<b>漢字を正確に・フルネーム</b>で入力してください（後で検索できなくなるため誤字厳禁）。</div>
+    <div class="f"><label>お客様名（フルネーム）<span class="req">*</span></label><input type="text" id="custName" oninput="updateDrivePath()" onfocus="document.getElementById('custAlert')?.classList.remove('hidden')" >></div>
     <div class="f"><label>フリガナ<span class="req">*</span></label><input type="text" id="custKana" oninput="updateDrivePath()"></div>
     <div class="f"><label>現場住所<span class="req">*</span></label><input type="text" id="addr" oninput="updateDrivePath()"></div>
   </div>
@@ -964,7 +964,7 @@
       '<span class="seg">現場写真</span> / '+
       '<span class="seg">'+(company||'（会社名）')+'</span> / '+
       '<span class="seg">'+g+'₋お客様名₋現場住所</span> / '+
-      '<span class="accent">'+head+'_'+(name||'（お客様名）')+'_'+sk+'</span> / '+
+      '<span class="accent">'+head+'-'+(name||'（お客様名）')+'-'+sk+'</span> / '+
       '<span class="seg">現調写真</span>';
   }
 
@@ -1110,3 +1110,4 @@
 </script>
 </body>
 </html>
+                                                                     
