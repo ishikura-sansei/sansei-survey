@@ -199,8 +199,8 @@
   <div class="sec">
     <h2><span class="n">2</span>お客様情報</h2>
     <div class="alert hidden" id="custAlert">⚠ お客様名は<b>漢字を正確に・フルネーム</b>で入力してください（後で検索できなくなるため誤字厳禁）。</div>
-    <div class="f"><label>お客様名（フルネーム）<span class="req">*</span></label><input type="text" id="custName" oninput="updateDrivePath()" onfocus="document.getElementById('custAlert')?.classList.remove('hidden')" >></div>
-    <div class="f"><label>フリガナ<span class="req">*</span></label><input type="text" id="custKana" oninput="updateDrivePath()"></div>
+    <div class="f"><label>お客様名（フルネーム）<span class="req">*</span></label><input type="text" id="custName" oninput="updateDrivePath()" onfocus="document.getElementById('custAlert')?.classList.remove('hidden')" ></div>
+    <div class="f"><label>フリガナ<span class="req">*</span></label><input type="text" id="custKana" oninput="updateDrivePath()" placeholder="ひらがなで記入"></div>
     <div class="f"><label>現場住所<span class="req">*</span></label><input type="text" id="addr" oninput="updateDrivePath()"></div>
   </div>
 
@@ -347,12 +347,13 @@
       <div class="hint">具体的に記載・原則3面以上（※3面以上ルールは現状リケンのみ）。位置の写真は⑨で撮影。</div></div>
     <div class="f"><label>工事当日の流れ説明</label>
       <div class="opts" data-radio="flow"><label><input type="radio" name="flow" value="済">済</label><label><input type="radio" name="flow" value="未">未</label></div></div>
+    <div class="f"><label>お客様の工事に対する要望・注意事項</label><textarea id="custRequest" placeholder="無い場合は空欄でOK"></textarea></div>
   </div>
 
-  <!-- ⑧ 工程・希望日程（ステップ式） -->
+  <!-- ⑧ 工程 -->
   <div class="sec">
-    <h2><span class="n">8</span>工程・希望日程</h2>
-    <div class="note">作業ボタンを押すと工程の末尾に追加されます。各ステップに日数を入れてください（合計は自動）。足場の設置・解体も工程に挟めます。1日案件はPT1ステップでOK。</div>
+    <h2><span class="n">8</span>工程</h2>
+    <div class="note">営業よりこちらで工程を決めると指示がある場合のみ記入。指示がない場合は記入不要。工程ボタンで追加し、各ステップに日数を入れてください（合計は自動）。</div>
     <div class="stepbtns">
       <button type="button" onclick="addStep('PT（パネル＋蓄電池）')">PT</button>
       <button type="button" onclick="addStep('PTE（パネル＋蓄電池＋EQ）')">PTE</button>
@@ -367,14 +368,6 @@
     </div>
     <div id="stepList"></div>
     <div class="total">合計日数：<span id="totalDays">0</span>日</div>
-    <div class="f"><label>お客様希望日程</label><input type="text" id="hopeDate" placeholder="例：12/4・12/6（未定可）"></div>
-    <div class="f"><label>NG日・制約</label><input type="text" id="ngDate" placeholder="例：土日不可・12/10は不在"></div>
-    <div class="f"><label>時間帯希望</label>
-      <div class="opts" data-radio="timeSlot">
-        <label><input type="radio" name="timeSlot" value="特になし">特になし</label>
-        <label><input type="radio" name="timeSlot" value="午前">午前</label>
-        <label><input type="radio" name="timeSlot" value="騒音配慮">騒音配慮</label>
-      </div></div>
   </div>
 
   <!-- ⑨ 写真・図面・伝達事項 -->
@@ -1020,7 +1013,6 @@
       shakuchi: radio('shakuchi'), shakuchiArea: val('shakuchiArea'),
       scaffold: val('scaffold'), flow: radio('flow'),
       steps: collectSteps(), totalDays: document.getElementById('totalDays').textContent,
-      hopeDate: val('hopeDate'), ngDate: val('ngDate'), timeSlot: radio('timeSlot'),
       photoCount: photos.length,
       photos: photos.map(p=>({dataURL:p.dataURL, annotated:p.annotated})),
       memo: buildMemo()
