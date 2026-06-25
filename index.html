@@ -8,17 +8,17 @@
   /* ===== v6 本番（2026-06-15）SANSEI配色（白基調＋オレンジ＋ブルー）。金額は一切表示しない ===== */
   :root{
     --bg:#f4f5f7; --panel:#ffffff; --line:#e7e9ee; --ink:#111827; --sub:#6b7280;
-    --accent:#f97316; --accent-soft:#fff1e6; --accent-deep:#c2410hc;
+    --accent:#f97316; --accent-soft:#fff1e6; --accent-deep:#c2410c;
     --blue:#2563eb; --blue-soft:#e9f0ff; --blue-deep:#1e40af;
     --ok:#2e7d32; --warn:#c08a00; --chip:#f3f5f7; --radius:16px;
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);
     font-family:-apple-system,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Meiryo",sans-serif;
-    font-size:16px;line-height:1.5;padding-bottom:96px}h
+    font-size:16px;line-height:1.5;padding-bottom:96px}
   header{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);
     padding:10px 16px 11px;z-index:20;box-shadow:0 1px 0 rgba(17,24,39,.02)}
-  header::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:0;
+  header::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;
     background:linear-gradient(90deg,var(--accent),#fbbf24)}
   .brand{font-weight:800;letter-spacing:.16em;font-size:15px;text-align:center;color:var(--ink)}
   .brand span{color:var(--accent)}
@@ -82,7 +82,7 @@
   details.guide[open] summary{border-bottom:1px solid var(--line)}
   .guidegrid{display:flex;flex-wrap:wrap;gap:6px;padding:12px}
   .guidegrid span{font-size:12px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 11px;color:var(--sub)}
-  .bigadd{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  .bigadk{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
     border:2px dashed var(--accent);border-radius:14px;background:var(--accent-soft);
     color:var(--accent-deep);font-weight:800;font-size:15px;padding:18px;margin-top:6px;cursor:pointer}
   .bigadd.alt{border-color:var(--blue);background:var(--blue-soft);color:var(--blue-deep);margin-top:14px}
@@ -98,7 +98,7 @@
   .pempty{grid-column:1/-1;text-align:center;color:var(--sub);font-size:12px;padding:6px 0}
 
   /* 描画モーダル */
-  .modal{position:fixed;inset:0;height:100dvh;background:#1f2430;z-index:100;display:flex;flex-direction:column}
+  .modal{position:fixed;inset:0;background:#1f2430;z-index:100;display:flex;flex-direction:column}
   .modal .mbar{display:flex;align-items:center;gap:8px;padding:10px 12px;background:#11151c}
   .modal .mbar button{border:none;border-radius:9px;padding:9px 12px;font-size:13px;font-weight:800;background:#2b313c;color:#fff}
   .modal .mbar .save{background:var(--accent);margin-left:auto}
@@ -129,25 +129,13 @@
   .msg{padding:11px 14px;border-radius:11px;margin:10px 0;font-size:14px;display:none}
   .msg.ok{background:#eaf6ea;color:var(--ok);border:1px solid #cfe8cf;display:block}
   .msg.err{background:#fdecea;color:#c0392b;border:1px solid #f5c6c0;display:block}
-
-  /* ===== 現地調査日 モバイル対応 ===== */
-  input[type=date]{-webkit-appearance:none;appearance:none;min-height:46px}
-
-  /* ===== 送信完了 Drive報告書ガイド ===== */
-  .drive-guide{position:fixed;left:0;right:0;bottom:72px;z-index:19;background:linear-gradient(135deg,#fff7ed 0%,#fef3c7 100%);border-top:3px solid var(--accent);box-shadow:0 -4px 20px rgba(249,115,22,.18);padding:14px 16px 12px;display:none}
-  .drive-guide-inner{max-width:560px;margin:0 auto;display:flex;align-items:center;gap:12px}
-  .drive-guide-icon{width:44px;height:44px;border-radius:12px;flex-shrink:0;background:linear-gradient(135deg,var(--accent),#c2410c);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 2px 8px rgba(249,115,22,.35)}
-  .drive-guide-body{flex:1;min-width:0}
-  .drive-guide-title{font-size:13px;font-weight:800;color:#92400e;line-height:1.3;margin-bottom:2px}
-  .drive-guide-sub{font-size:11px;color:#b45309}
-  .drive-guide-btn{flex-shrink:0;background:linear-gradient(180deg,#fb923c,var(--accent));color:#fff;border:none;border-radius:10px;padding:10px 14px;font-size:12px;font-weight:800;box-shadow:0 2px 8px rgba(249,115,22,.4);white-space:nowrap;text-decoration:none;display:inline-block}
   </style>
 </head>
 <body>
 <header>
   <div class="brand">SAN<span>SEI</span></div>
   <h1>現地調査シート</h1>
-  <div class="sub">工事に必要な情報を記録します（金額は扱いません）</div>
+  <div class="sub">工事に必要な情報を記録します（金額は扱うません）</div>
 </header>
 
 <div class="wrap">
@@ -198,9 +186,9 @@
   <!-- ② お客様情報 -->
   <div class="sec">
     <h2><span class="n">2</span>お客様情報</h2>
-    <div class="alert hidden" id="custAlert">⚠ お客様名は<b>漢字を正確に・フルネーム</b>で入力してください（後で検索できなくなるため誤字厳禁）。</div>
-    <div class="f"><label>お客様名（フルネーム）<span class="req">*</span></label><input type="text" id="custName" oninput="updateDrivePath()" onfocus="document.getElementById('custAlert')?.classList.remove('hidden')" ></div>
-    <div class="f"><label>フリガナ<span class="req">*</span></label><input type="text" id="custKana" oninput="updateDrivePath()" placeholder="ひらがなで記入"></div>
+    <div class="alert">⚠ お客様名は<b>漢字を正確に・フルネーム</b>で入力してください（後で検索できなくなるため誤字厳禁）。</div>
+    <div class="f"><label>お客様名（フルネーム）<span class="req">*</span></label><input type="text" id="custName" oninput="updateDrivePath()"></div>
+    <div class="f"><label>フリガナ<span class="req">*</span></label><input type="text" id="custKana" oninput="updateDrivePath()"></div>
     <div class="f"><label>現場住所<span class="req">*</span></label><input type="text" id="addr" oninput="updateDrivePath()"></div>
   </div>
 
@@ -316,6 +304,29 @@
     <button type="button" class="addbtn" style="margin-top:6px" onclick="addLanRow()">＋ LANを追加</button>
   </div>
 
+
+  <!-- 屋根情報 -->
+  <div class="sec">
+    <h2>屋根情報</h2>
+    <div class="note">図面がある場合は図面の数値を優先して記入してください。</div>
+    <div class="f"><label>屋根勾配</label>
+      <div class="opts" data-radio="roofSlope">
+        <label><input type="radio" name="roofSlope" value="3寸">3寸</label>
+        <label><input type="radio" name="roofSlope" value="4寸">4寸</label>
+        <label><input type="radio" name="roofSlope" value="5寸">5寸</label>
+        <label><input type="radio" name="roofSlope" value="6寸">6寸</label>
+        <label><input type="radio" name="roofSlope" value="その他">その他</label>
+        <label><input type="radio" name="roofSlope" value="不明">不明</label>
+      </div>
+    </div>
+    <div class="f"><label>寸法・スパン</label>
+      <textarea id="roofDimension" style="min-height:60px" placeholder="例：棟〜軒 8.5m　東西 12.3m&#10;（図面があれば図面の寸法を優先記入）"></textarea>
+    </div>
+    <div class="f"><label>割付・レアウトメモ</label>
+      <textarea id="roofLayout" style="min-height:80px" placeholder="例：3×4=12枚 / 南面のみ / 東面は障害物あり&#10;足場設置予定位置など→下の ✏ スケッチで描いてください"></textarea>
+    </div>
+  </div>
+
   <!-- ⑥ 付帯（会社別・5区分） -->
   <div class="sec">
     <h2><span class="n">6</span>付帯（記録）</h2>
@@ -344,58 +355,50 @@
       </div>
       <input type="text" id="shakuchiArea" class="hidden" placeholder="借地する部分（例：北側隣地〇〇様の庭先2m）" style="margin-top:6px"></div>
     <div class="f"><label>足場予定位置</label><input type="text" id="scaffold" placeholder="例：南面・東面・北面（具体的に記載）">
-      <div class="hint">具体的に記載・原則3面以上（※3面以上ルールは現状リケンのみ）。位置の写真は⑨で撮影。</div></div>
+      <div class="hint">具体的に記載・原則3面以上（※3面以上ルールは現䊶リケンのみ）。位置は写真は⑨で撮影。</div></div>
     <div class="f"><label>工事当日の流れ説明</label>
       <div class="opts" data-radio="flow"><label><input type="radio" name="flow" value="済">済</label><label><input type="radio" name="flow" value="未">未</label></div></div>
-    <div class="f"><label>お客様の工事に対する要望・注意事項</label><textarea id="custRequest" placeholder="無い場合は空欄でOK"></textarea></div>
   </div>
 
-  <!-- ⑧ 工程 -->
+  <!-- ⑧ 工程・希望日程（ステップ式） -->
   <div class="sec">
-    <h2><span class="n">8</span>工程</h2>
-    <div class="note">営業よりこちらで工程を決めると指示がある場合のみ記入。指示がない場合は記入不要。工程ボタンで追加し、各ステップに日数を入れてください（合計は自動）。</div>
-    <div class="stepbtns">
-      <button type="button" onclick="addStep('PT（パネル＋蓄電池）')">PT</button>
-      <button type="button" onclick="addStep('PTE（パネル＋蓄電池＋EQ）')">PTE</button>
-      <button type="button" onclick="addStep('BT（蓄電池）')">BT</button>
-      <button type="button" onclick="addStep('TE（蓄電池＋EQ）')">TE</button>
-      <button type="button" onclick="addStep('PV（太陽光のみ）')">PV</button>
-      <button type="button" onclick="addStep('PV+PCS（太陽光）')">PV+PCS</button>
-      <button type="button" onclick="addStep('EQ')">EQ</button>
-      <button type="button" onclick="addStep('足場設置')">足場設置</button>
-      <button type="button" onclick="addStep('足場解体')">足場解体</button>
-      <button type="button" onclick="addStep('',true)">その他</button>
-    </div>
-    <div id="stepList"></div>
-    <div class="total">合計日数：<span id="totalDays">0</span>日</div>
+    <h2><span class="n">8</span>工程・希望日程</h2>
+    <div class="note">説明欄に作業工程を記入してください。<br>例：1日目 屋根工事／PT搬入　2日目 電気工事／IH取付<br>足場が必要な場合は設置・解体の日程も記入してください。</div>
+    <div class="f"><label>作業工程</label><textarea id="flowText" s" style="min-height:80px" placeholder="1日目 屋根工事／PT搬入&#10;2日目 電気工事／IH取付&#10;（足場設置・解体が必要な場合は記入）"></textarea></div>
+
+    <div class="f"><label>お客様希望日程</label><input type="text" id="hopeDate" placeholder="例：12/4・12/6（未定可）"></div>
+    <div class="f"><label>NG日・制約</label><input type="text" id="ngDate" placeholder="例：土日不可・12/10は不在"></div>
+    <div class="f"><label>時間帯希望</label>
+      <div class="opts" data-radio="timeSlot">
+        <label><input type="radio" name="timeSlot" value="特になし">特になし</label>
+        <label><input type="radio" name="timeSlot" value="午前">午前</label>
+        <label><input type="radio" name="timeSlot" value="騒音配慮">騒音配慮</label>
+      </div></div>
   </div>
 
   <!-- ⑨ 写真・図面・伝達事項 -->
   <div class="sec">
     <h2><span class="n">9</span>写真・図面・伝達事項</h2>
-    <div class="note">写真はこの場でアップ。送信すると下の<b>Driveフォルダへ自動保存</b>されます（現場のログイン不要・LINEに送る手間がなくなります）。枚数の上限はありません。</div>
+    <div class="note">チェックリストで撮り忘れを確認してください。写真はスマホはGoogleドライブアプリから格納先フォルダへ直接アップしてください。手書きスケッチは下の ✏ ボタンから追加できます。</div>
 
     <div class="pathbox">
       <div class="pathlabel">📁 保存先（自動・お客様名と会社名から作成）</div>
       <div id="drivePath" class="pathval">お客様名・会社名を入れると表示されます</div>
     </div>
 
-    <details class="guide">
-      <summary>📋 撮影ガイド（リケン標準・撮り忘れ防止）</summary>
+    <details class="guide" open>
+      <summary>📋 撮影チェックリスト（撮り忘れ防止）</summary>
       <div class="guidegrid">
         <span>住宅全景</span><span>屋根</span><span>野地板</span><span>分電盤</span>
-        <span>宅内工事予定</span><span>屋外工事予定</span><span>電気明細</span><span>メーター</span><span>周辺(駐車判断)</span>
+        <span>宅内工事予定</span><span>屋外工事予定</span><span>電気明細</span><span>メーター周辺（駐車判断）</span>
+        <span>点検工口内</span><span>床下経路等</span>
       </div>
     </details>
 
-    <label class="bigadd">
-      📷 写真を撮る／選ぶ（複数OK）
-      <input type="file" accept="image/*" multiple onchange="addPhotos(event)" hidden>
-    </label>
-    <div id="photoGrid" class="pgrid"><div class="pempty">まだ写真はありません</div></div>
+    <div id="photoGrid" class="pgrid"><div class="pempty">まだ手書きはありません</div></div>
 
     <button type="button" class="bigadd alt" onclick="openDraw(null)">✏ 手書き図面を描く（白紙）</button>
-    <div class="hint" style="margin-top:6px;text-align:center">写真は ✏ ボタンで、設置予定など描き込みできます（必要な写真だけでOK）。</div>
+    <div class="hint" style="margin-top:6px;text-align:center">写真は ✏ ボタンで、設置予定など描き込みできます（必要なe��真だけでOK）。</div>
 
     <div class="grp" style="margin-top:16px">伝達事項</div>
     <div class="f"><label>伝達事項・申し送り（自由記入）</label><textarea id="memo" style="min-height:100px" placeholder="営業へ事前連絡したいこと・現場の申し送りを記入"></textarea></div>
@@ -442,19 +445,15 @@
   <div class="canvaswrap"><canvas id="drawCanvas"></canvas></div>
 </div>
 
-<div id="driveGuide" class="drive-guide">
-  <div class="drive-guide-inner">
-    <div class="drive-guide-icon">📋</div>
-    <div class="drive-guide-body">
-      <div class="drive-guide-title">報告書・写真をDriveに保存しました ✓</div>
-      <div class="drive-guide-sub">現調写真フォルダ → 会社名 → お客様フォルダ に自動格納済み</div>
-    </div>
-    <a id="driveGuideLink" href="https://drive.google.com/drive/folders/1OkP8EnYw0EKCf5kODQAtY-iz3ftB5HFQ" target="_blank" class="drive-guide-btn">📂 開く</a>
-  </div>
-</div>
 <div class="bar">
   <button class="btn ghost" onclick="clearForm()">クリア</button>
-  <button class="btn" id="submitBtn" onclick="submitForm()">送信</button>
+  <div id="driveGuide" style="display:none;margin-top:12px;background:#fff7ed;border:2px solid #f97316;border-radius:12px;padding:16px;text-align:center;">
+      <div style="font-size:28px;margin-bottom:6px;">📁</div>
+      <div style="font-weight:bold;font-size:15px;margin-bottom:6px;color:#ea580c;">写真・報告書はDriveをご確認ください</div>
+      <div style="font-size:12px;color:#666;margin-bottom:10px;">送信完了後、現調写真フォルダにデータが自動保存されます</div>
+      <a href="https://drive.google.com/drive/folders/1OkP8EnYw0EKCf5kODQAtY-iz3ftB5HFQ" target="_blank" style="display:inline-block;background:#f97316;color:#fff;border-radius:8px;padding:8px 20px;font-size:13px;font-weight:bold;text-decoration:none;">📂 現調写真フォルダを開く</a>
+    </div>
+    <button class="btn" id="submitBtn" onclick="submitForm()">送信</button>
 </div>
 
 <script>
@@ -480,12 +479,12 @@
   };
   const EXISTING_REMINDER = {};
     const FUTAI_GROUPS = [["jin","人工・屋根"],["hai","配線・ダクト"],["kik","機器・分電盤"],["tek","撤去・処分"],["oth","交通・申請・その他"]];
-  const FUTAI_GRP_OVR = {"リケンエナジー":{"jin":"追加作業費"}};
+  const FUTAI_GRP_OVR = {"リケン㊨ナジー":{"jin":"追加作業費"}};
   const FUTAI = {
     "リケンエナジー":[
       {n:"瓦屋根施工作業費",u:"式",g:"jin"},{n:"屋根急勾配・異勾配（6寸以上）",u:"式",g:"jin"},{n:"難工事",u:"式",g:"jin"},
       {n:"パネル手上げ作業費",u:"人",g:"jin"},{n:"搬入困難作業費",u:"人",g:"jin"},{n:"3F施工（危険作業費）",u:"式",g:"jin"},
-      {n:"蓄電池2段ラック施工",u:"式",g:"jin"},{n:"電気工事難工事一式",u:"式",g:"jin"},{n:"穴あけ困難（コア・タイル等）",u:"箇所",g:"jin"},
+      {n:"蓄電池2段ラック",u:"式",g:"jin"},{n:"電気工事難工事一式",u:"式",g:"jin"},{n:"穴あけ困難（コア・タイル等）",u:"箇所",g:"jin"},
       {n:"ブロック嵩上げ(範囲により)",u:"式",g:"jin"},{n:"土間打ち",u:"箇所",g:"jin"},
       {n:"屋外用ダクト(LD)延長",u:"m",g:"hai"},{n:"宅内用ダクト施工(MD)",u:"m",g:"hai"},
       {n:"PFD16延長",u:"m",g:"hai"},{n:"PFD22延長",u:"m",g:"hai"},{n:"PFD28延長",u:"m",g:"hai"},{n:"PFD36延長",u:"m",g:"hai"},
@@ -499,12 +498,12 @@
       {n:"機器設備メクラ処理",u:"式",g:"kik"},{n:"防犯カメラ電源移植（簡易）",u:"式",g:"kik"},
       {n:"PCS類撤去・処分(1台につき)",u:"台",g:"tek"},{n:"蓄電池撤去・処分費（1台につき）",u:"台",g:"tek"},
       {n:"PV撤去・処分(1枚につき)",u:"枚",g:"tek"},{n:"その他既設機器撤去・処分",u:"式",g:"tek"},
-      {n:"遠方交通費（100km）",u:"式",g:"oth"},{n:"追加工程分交通費",u:"台",g:"oth"},{n:"追加行程分(状況により)",u:"式",g:"oth"}
+      {n:"遠方交通費（100km）",u:"式",g:"oth"},{n:"追加工程分交通費",u:"台",g:"oth"},{n:"追加行程分(状況とり)",u:"式",g:"oth"}
     ],
     "アルファエレクトロ":[
       {n:"瓦屋根",u:"式",g:"jin"},{n:"急こう配 6寸",u:"式",g:"jin"},{n:"パネル手上げ",u:"式",g:"jin"},
       {n:"搬入困難",u:"式",g:"jin"},{n:"PV３面以降",u:"面",g:"jin"},{n:"蓄電池基礎（1台当たり）",u:"個",g:"jin"},
-      {n:"PFD延長",u:"m",g:"hai"},{n:"スリムダクト延長",u:"m",g:"hai"},{n:"屋根線延長（DC）1系統ごと",u:"m",g:"hai"},
+      {n:"PFD延長",u:"m",g:"hai"},{n:"スリムダクト延長",u:"m",g:"hai"},{n:"屋根線延長��!（e系統ごと",u:"m",g:"hai"},
       {n:"CV5.5 延長",u:"m",g:"hai"},{n:"CV8 延長",u:"m",g:"hai"},{n:"CV14",u:"m",g:"hai"},{n:"MDモール（通常利用分）",u:"式",g:"hai"},
       {n:"MCB・ELB設置 50Aまで",u:"個",g:"kik"},{n:"MCB・ELB設置 75Aまで",u:"個",g:"kik"},
       {n:"フリーボックスW",u:"個",g:"kik"},{n:"点検口設置",u:"式",g:"kik"}
@@ -534,7 +533,7 @@
       {n:"特殊工事（足場設置不可・難工事等）",u:"式",g:"jin"},{n:"搬入困難（工員増員）",u:"式",g:"jin"},
       {n:"オムロン蓄電池 庇設置取付",u:"式",g:"jin"},
       {n:"電気配線延長（10m以上）",u:"m",g:"hai"},{n:"リモコン線延長",u:"m",g:"hai"},
-      {n:"幹線張替工事（CV14まで）",u:"式",g:"hai"},{n:"幹線張替延長（CV14 10m以上）",u:"m",g:"hai"},
+      {n:"幹線張替工事（CV14まで）",u:"式",g:"hai"},{n:"幹線張替延長（CV14 10m以上）",u:"m",�",u:"m",g:"hai"},
       {n:"ケーブル埋設工事",u:"式",g:"hai"},{n:"ケーブル飛ばし",u:"式",g:"hai"},
       {n:"LANケーブル（10mまで）",u:"m",g:"hai"},{n:"配管延長（4m以上）",u:"m",g:"hai"},
       {n:"配管ダクト使用（太陽光・EQ）",u:"m",g:"hai"},{n:"エコキュート用ヒーターバンド",u:"m",g:"hai"},
@@ -743,30 +742,12 @@
   // ===== ⑨ 写真・図面 =====
   let photos = [];   // {id, dataURL, annotated}
   let pid = 0;
-  function compressImg(file,cb){
-    const r=new FileReader();
-    r.onload=e=>{
-      const img=new Image();
-      img.onload=()=>{
-        const MAX=1200;
-        let w=img.width,h=img.height;
-        if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}
-        const cv=document.createElement('canvas');
-        cv.width=w;cv.height=h;
-        cv.getContext('2d').drawImage(img,0,0,w,h);
-        cb(cv.toDataURL('image/jpeg',0.92));
-      };
-      img.src=e.target.result;
-    };
-    r.readAsDataURL(file);
-  }
   function addPhotos(ev){
-    const files=Array.from(ev.target.files||[]);
+    const files = Array.from(ev.target.files||[]);
     files.forEach(f=>{
-      compressImg(f,compressed=>{
-        photos.push({id:++pid, dataURL:compressed, annotated:false});
-        renderPhotos();
-      });
+      const r = new FileReader();
+      r.onload = e=>{ photos.push({id:++pid, dataURL:e.target.result, annotated:false}); renderPhotos(); };
+      r.readAsDataURL(f);
     });
     ev.target.value='';
   }
@@ -957,7 +938,7 @@
       '<span class="seg">現場写真</span> / '+
       '<span class="seg">'+(company||'（会社名）')+'</span> / '+
       '<span class="seg">'+g+'₋お客様名₋現場住所</span> / '+
-      '<span class="accent">'+head+'-'+(name||'（お客様名）')+'-'+sk+'</span> / '+
+      '<span class="accent">'+head+'_'+(name||'（お客様名）')+'_'+sk+'</span> / '+
       '<span class="seg">現調写真</span>';
   }
 
@@ -1011,8 +992,10 @@
       addMemo: val('addMemo'),
       park: radio('park'), parkInformed: (radio('park')==='必要'?radio('parkInformed'):''), parkMemo: val('parkMemo'),
       shakuchi: radio('shakuchi'), shakuchiArea: val('shakuchiArea'),
+      roofSlope: radio('roofSlope'), roofDimension: val('roofDimension'), roofLayout: val('roofLayout'),
       scaffold: val('scaffold'), flow: radio('flow'),
-      steps: collectSteps(), totalDays: document.getElementById('totalDays').textContent,
+      steps: val('flowText'),
+      hopeDate: val('hopeDate'), ngDate: val('ngDate'), timeSlot: radio('timeSlot'),
       photoCount: photos.length,
       photos: photos.map(p=>({dataURL:p.dataURL, annotated:p.annotated})),
       memo: buildMemo()
@@ -1070,20 +1053,17 @@
     btn.textContent="送信中…";
     fetch(GAS_URL, { method:"POST", mode:"no-cors",
       headers:{"Content-Type":"text/plain;charset=utf-8"}, body: JSON.stringify(d) })
-      .then(function(){
-        showMsg("送信が完了しました。写真はDriveに自動保存されます（少し遅れる場合があります）。", true);
-        document.getElementById("submitBtn").disabled = false;
-      })
+      .then(function(){ showMsg("送信しました（案件キー："+d.caseKey+"）", true); btn.textContent="送信完了"; var dg=document.getElementById('driveGuide'); if(dg){dg.style.display='block';} })
       .catch(function(){ showMsg("送信に失敗しました。電波を確認してもう一度お試しください。", false);
         btn.disabled=false; btn.textContent="送信"; });
   }
 
   function clearForm(){
-    if(!confirm("入力内容をクリアします。よろしいですか？")) return;
+    if(!confirm("入力内容をクリアします。よろしいですに？")) return;
     document.querySelectorAll('input,textarea,select').forEach(e=>{
       if(e.type==='checkbox'||e.type==='radio') e.checked=false; else e.value="";
     });
-    ['cblOtherList','baseList','lanList','futaiList','stepList'].forEach(id=>{ document.getElementById(id).innerHTML=''; });
+    ['cblOtherList','baseList','lanList','futaiList'].forEach(id=>{ document.getElementById(id).innerHTML=''; });
     photos=[]; renderPhotos(); updateTotal(); updateDrivePath();
     ['reporterOther','surveyTypeOther','companyOther','keiyakuOther','existingOther','wifiId','wifiPass','wifiNote','battBlock','v2hBlock','parkInformedBox','shakuchiArea'].forEach(id=>show(id,false));
     document.getElementById('existingReminder').classList.add('hidden');
@@ -1105,4 +1085,3 @@
 </script>
 </body>
 </html>
-                                                                     
