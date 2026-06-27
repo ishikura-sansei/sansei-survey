@@ -135,7 +135,7 @@
 <header>
   <div class="brand">SAN<span>SEI</span></div>
   <h1>現地調査シート</h1>
-  <div class="sub">工事に必要な情報を記録します（金額は扱うません）</div>
+  <div class="sub">工事に必要な情報を記録します（金額は扱いません）</div>
 </header>
 
 <div class="wrap">
@@ -229,7 +229,7 @@
       <div class="opts" data-radio="earth"><label><input type="radio" name="earth" value="有">有</label><label><input type="radio" name="earth" value="無">無</label></div></div>
     <div class="f"><label>既設機器（見える物だけチェック＝有／未チェック＝無）</label>
       <div class="opts">
-        <label><input type="checkbox" name="existing" value="エネファーム">エネファーム</label>
+        <label><input type="checkbox" name="existing" value="エネプァーム">エネプァーム</label>
         <label><input type="checkbox" name="existing" value="エコキュート" onclick="updateExistingReminder()">エコキュート</label>
         <label><input type="checkbox" name="existing" value="給湯器">給湯器</label>
         <label><input type="checkbox" name="existing" value="既設太陽光">既設太陽光</label>
@@ -322,8 +322,8 @@
     <div class="f"><label>寸法・スパン</label>
       <textarea id="roofDimension" style="min-height:60px" placeholder="例：棟〜軒 8.5m　東西 12.3m&#10;（図面があれば図面の寸法を優先記入）"></textarea>
     </div>
-    <div class="f"><label>割付・レアウトメモ</label>
-      <textarea id="roofLayout" style="min-height:80px" placeholder="例：3×4=12枚 / 南面のみ / 東面は障害物あり&#10;足場設置予定位置など→下の ✏ スケッチで描いてください"></textarea>
+    <div class="f"><label>割付・レイアウトメモ</label>
+      <textarea id="roofLayout" style="min-height:80px" placeholder="例：3×4=12枚 / 南面のみ / 東面は障害物あり&#107足場設置予定位置など→下の ✏ スケッチで描いてください"></textarea>
     </div>
   </div>
 
@@ -355,7 +355,7 @@
       </div>
       <input type="text" id="shakuchiArea" class="hidden" placeholder="借地する部分（例：北側隣地〇〇様の庭先2m）" style="margin-top:6px"></div>
     <div class="f"><label>足場予定位置</label><input type="text" id="scaffold" placeholder="例：南面・東面・北面（具体的に記載）">
-      <div class="hint">具体的に記載・原則3面以上（※3面以上ルールは現䊶リケンのみ）。位置は写真は⑨で撮影。</div></div>
+      <div class="hint">具体的に記載・原則3面以上（※3面以上ルールは現䊶リケンのみ）。位置の写真は⑨で撮影。</div></div>
     <div class="f"><label>工事当日の流れ説明</label>
       <div class="opts" data-radio="flow"><label><input type="radio" name="flow" value="済">済</label><label><input type="radio" name="flow" value="未">未</label></div></div>
   </div>
@@ -363,8 +363,18 @@
   <!-- ⑧ 工程・希望日程（ステップ式） -->
   <div class="sec">
     <h2><span class="n">8</span>工程・希望日程</h2>
-    <div class="note">説明欄に作業工程を記入してください。<br>例：1日目 屋根工事／PT搬入　2日目 電気工事／IH取付<br>足場が必要な場合は設置・解体の日程も記入してください。</div>
-    <div class="f"><label>作業工程</label><textarea id="flowText" s" style="min-height:80px" placeholder="1日目 屋根工事／PT搬入&#10;2日目 電気工事／IH取付&#10;（足場設置・解体が必要な場合は記入）"></textarea></div>
+    <div class="grp">工程（ボタンをタップして追加）</div>
+    <div class="stepbtns">
+      <button type="button" onclick="addStep('PT（パネル＋蓄電池）')">PT</button>
+      <button type="button" onclick="addStep('BT（蓄電池）')">BT</button>
+      <button type="button" onclick="addStep('PV+PCS（太陽光）')">PV+PCS</button>
+      <button type="button" onclick="addStep('EQ')">EQ</button>
+      <button type="button" onclick="addStep('足場設置')">足場設置</button>
+      <button type="button" onclick="addStep('足場解体')">足場解体</button>
+      <button type="button" onclick="addStep('',true)">その他</button>
+    </div>
+    <div id="stepList"></div>
+    <div class="total">合計日数：<span id="totalDays">0</span>日</div>
 
     <div class="f"><label>お客様希望日程</label><input type="text" id="hopeDate" placeholder="例：12/4・12/6（未定可）"></div>
     <div class="f"><label>NG日・制約</label><input type="text" id="ngDate" placeholder="例：土日不可・12/10は不在"></div>
@@ -398,7 +408,7 @@
     <div id="photoGrid" class="pgrid"><div class="pempty">まだ手書きはありません</div></div>
 
     <button type="button" class="bigadd alt" onclick="openDraw(null)">✏ 手書き図面を描く（白紙）</button>
-    <div class="hint" style="margin-top:6px;text-align:center">写真は ✏ ボタンで、設置予定など描き込みできます（必要なe��真だけでOK）。</div>
+    <div class="hint" style="margin-top:6px;text-align:center">写真は ✏ ボタンで、設置予定など描き込みできます（必要な写真だけでOK）。</div>
 
     <div class="grp" style="margin-top:16px">伝達事項</div>
     <div class="f"><label>伝達事項・申し送り（自由記入）</label><textarea id="memo" style="min-height:100px" placeholder="営業へ事前連絡したいこと・現場の申し送りを記入"></textarea></div>
@@ -479,12 +489,12 @@
   };
   const EXISTING_REMINDER = {};
     const FUTAI_GROUPS = [["jin","人工・屋根"],["hai","配線・ダクト"],["kik","機器・分電盤"],["tek","撤去・処分"],["oth","交通・申請・その他"]];
-  const FUTAI_GRP_OVR = {"リケン㊨ナジー":{"jin":"追加作業費"}};
+  const FUTAI_GRP_OVR = {"リケンエナジー":{"jin":"追加作業費"}};
   const FUTAI = {
     "リケンエナジー":[
       {n:"瓦屋根施工作業費",u:"式",g:"jin"},{n:"屋根急勾配・異勾配（6寸以上）",u:"式",g:"jin"},{n:"難工事",u:"式",g:"jin"},
       {n:"パネル手上げ作業費",u:"人",g:"jin"},{n:"搬入困難作業費",u:"人",g:"jin"},{n:"3F施工（危険作業費）",u:"式",g:"jin"},
-      {n:"蓄電池2段ラック",u:"式",g:"jin"},{n:"電気工事難工事一式",u:"式",g:"jin"},{n:"穴あけ困難（コア・タイル等）",u:"箇所",g:"jin"},
+      {n:"蓄電池2段ラック施工",u:"式",g:"jin"},{n:"電気工事難工事一式",u:"式",g:"jin"},{n:"穴あけ困難（コア・タイル等）",u:"箇所",g:"jin"},
       {n:"ブロック嵩上げ(範囲により)",u:"式",g:"jin"},{n:"土間打ち",u:"箇所",g:"jin"},
       {n:"屋外用ダクト(LD)延長",u:"m",g:"hai"},{n:"宅内用ダクト施工(MD)",u:"m",g:"hai"},
       {n:"PFD16延長",u:"m",g:"hai"},{n:"PFD22延長",u:"m",g:"hai"},{n:"PFD28延長",u:"m",g:"hai"},{n:"PFD36延長",u:"m",g:"hai"},
@@ -493,17 +503,17 @@
       {n:"屋根線延長(DC)",u:"m/系統",g:"hai"},{n:"VVF延長",u:"m",g:"hai"},{n:"FCPV線",u:"m",g:"hai"},{n:"床下配線",u:"式",g:"hai"},
       {n:"リレーボックス設置",u:"式",g:"kik"},{n:"MCB追加（60A以下／60A以上）",u:"式",g:"kik"},
       {n:"京セラ Enerezza 追加材料費",u:"式",g:"kik"},{n:"京セラEnerezza作業費",u:"式",g:"kik"},
-      {n:"ニチコン19.9 作業費",u:"式",g:"kik"},{n:"追加PCS設置",u:"台",g:"kik"},
+      {n:"ニチコン19.9 $��業費",u:"式",g:"kik"},{n:"追加PCS設置",u:"台",g:"kik"},
       {n:"AiSEG設置",u:"式",g:"kik"},{n:"DR対象施工",u:"式",g:"kik"},{n:"EVコンセント設置",u:"台",g:"kik"},
       {n:"機器設備メクラ処理",u:"式",g:"kik"},{n:"防犯カメラ電源移植（簡易）",u:"式",g:"kik"},
       {n:"PCS類撤去・処分(1台につき)",u:"台",g:"tek"},{n:"蓄電池撤去・処分費（1台につき）",u:"台",g:"tek"},
       {n:"PV撤去・処分(1枚につき)",u:"枚",g:"tek"},{n:"その他既設機器撤去・処分",u:"式",g:"tek"},
-      {n:"遠方交通費（100km）",u:"式",g:"oth"},{n:"追加工程分交通費",u:"台",g:"oth"},{n:"追加行程分(状況とり)",u:"式",g:"oth"}
+      {n:"遠方交通費（100km）",u:"式",g:"oth"},{n:"追加工程分交通費",u:"台",g:"oth"},{n:"追加行程分(状況により)",u:"式",g:"oth"}
     ],
     "アルファエレクトロ":[
       {n:"瓦屋根",u:"式",g:"jin"},{n:"急こう配 6寸",u:"式",g:"jin"},{n:"パネル手上げ",u:"式",g:"jin"},
       {n:"搬入困難",u:"式",g:"jin"},{n:"PV３面以降",u:"面",g:"jin"},{n:"蓄電池基礎（1台当たり）",u:"個",g:"jin"},
-      {n:"PFD延長",u:"m",g:"hai"},{n:"スリムダクト延長",u:"m",g:"hai"},{n:"屋根線延長��!（e系統ごと",u:"m",g:"hai"},
+      {n:"PFD延長",u:"m",g:"hai"},{n:"スリムダクト延長",u:"m",g:"hai"},{n:"屋根線延長（DC）1系統ごと",u:"m",g:"hai"},
       {n:"CV5.5 延長",u:"m",g:"hai"},{n:"CV8 延長",u:"m",g:"hai"},{n:"CV14",u:"m",g:"hai"},{n:"MDモール（通常利用分）",u:"式",g:"hai"},
       {n:"MCB・ELB設置 50Aまで",u:"個",g:"kik"},{n:"MCB・ELB設置 75Aまで",u:"個",g:"kik"},
       {n:"フリーボックスW",u:"個",g:"kik"},{n:"点検口設置",u:"式",g:"kik"}
@@ -533,7 +543,7 @@
       {n:"特殊工事（足場設置不可・難工事等）",u:"式",g:"jin"},{n:"搬入困難（工員増員）",u:"式",g:"jin"},
       {n:"オムロン蓄電池 庇設置取付",u:"式",g:"jin"},
       {n:"電気配線延長（10m以上）",u:"m",g:"hai"},{n:"リモコン線延長",u:"m",g:"hai"},
-      {n:"幹線張替工事（CV14まで）",u:"式",g:"hai"},{n:"幹線張替延長（CV14 10m以上）",u:"m",�",u:"m",g:"hai"},
+      {n:"幹線張替工事（CV14まで）",u:"式",g:"hai"},{n:"幹線張替延長（CV14 10m以上）",u:"m",g:"hai"},
       {n:"ケーブル埋設工事",u:"式",g:"hai"},{n:"ケーブル飛ばし",u:"式",g:"hai"},
       {n:"LANケーブル（10mまで）",u:"m",g:"hai"},{n:"配管延長（4m以上）",u:"m",g:"hai"},
       {n:"配管ダクト使用（太陽光・EQ）",u:"m",g:"hai"},{n:"エコキュート用ヒーターバンド",u:"m",g:"hai"},
@@ -937,7 +947,7 @@
     el.innerHTML =
       '<span class="seg">現場写真</span> / '+
       '<span class="seg">'+(company||'（会社名）')+'</span> / '+
-      '<span class="seg">'+g+'₋お客様名₋現場住所</span> / '+
+      '<span class="seg">'+g+'₋お客様名⊋現場住所</span> / '+
       '<span class="accent">'+head+'_'+(name||'（お客様名）')+'_'+sk+'</span> / '+
       '<span class="seg">現調写真</span>';
   }
@@ -994,7 +1004,7 @@
       shakuchi: radio('shakuchi'), shakuchiArea: val('shakuchiArea'),
       roofSlope: radio('roofSlope'), roofDimension: val('roofDimension'), roofLayout: val('roofLayout'),
       scaffold: val('scaffold'), flow: radio('flow'),
-      steps: val('flowText'),
+      steps: collectSteps(),
       hopeDate: val('hopeDate'), ngDate: val('ngDate'), timeSlot: radio('timeSlot'),
       photoCount: photos.length,
       photos: photos.map(p=>({dataURL:p.dataURL, annotated:p.annotated})),
@@ -1059,7 +1069,7 @@
   }
 
   function clearForm(){
-    if(!confirm("入力内容をクリアします。よろしいですに？")) return;
+    if(!confirm("入力内容をクリアします。よろしいですか？")) return;
     document.querySelectorAll('input,textarea,select').forEach(e=>{
       if(e.type==='checkbox'||e.type==='radio') e.checked=false; else e.value="";
     });
@@ -1077,11 +1087,4 @@
   fillSelect(document.getElementById('v2hMaker'), Object.keys(V2H), 'メーカー');
   renderPhotos(); updateDrivePath();
   (function(){ const c=cv();
-    c.addEventListener('mousedown',startDraw); c.addEventListener('mousemove',moveDraw);
-    window.addEventListener('mouseup',endDraw);
-    c.addEventListener('touchstart',startDraw,{passive:false}); c.addEventListener('touchmove',moveDraw,{passive:false});
-    c.addEventListener('touchend',endDraw);
-  })();
-</script>
-</body>
-</html>
+    c.addEventListener('mousedown',startDraw); c.add
