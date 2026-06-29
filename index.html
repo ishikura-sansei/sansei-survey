@@ -108,7 +108,7 @@
 <header>
   <div class="brand">SAN<span>SEI</span></div>
   <h1>現地調査シート</h1>
-  <div class="sub">工事に必要な情報を記録します（金額は扱いません）</div>
+  <div class="sub">工事に必要な情報を記録します（金額は扱いませわ）</div>
 </header>
 
 <div class="wrap">
@@ -147,7 +147,7 @@
       <input type="text" id="surveyTypeOther" class="hidden" placeholder="その他の内容" style="margin-top:6px">
       <div class="hint">PV=太陽光 / BT=蓄電池 / EQ=エコキュート / V2H / IH</div>
     </div>
-    <div class="f"><label>悪天候等で屋根等の現調が延期になった場合のみ記入</label>
+    <div class="f"><label>悪天候等で屋根等の現調が延期になった場合み記入</label>
       <div class="opts">
         <label><input type="checkbox" name="roofUnconf" value="日程調整した">日程調整した</label>
         <label><input type="checkbox" name="roofUnconf" value="お客様に説明した">お客様に説明した</label>
@@ -159,7 +159,7 @@
   <!-- ② お客様情報 -->
   <div class="sec">
     <h2><span class="n">2</span>お客様情報</h2>
-    <div class="alert">⚠ お客様名は<b>漢字を正確に・フルネーム</b>で入力してください（後で検索できなくなるため誤字厳禁）。</div>
+    <div class="alert">⚠ お客様名は<b>漢字を正確に・フルネーム</b>でしき力してください（後で検索できなくなるため誤字厳禁）。</div>
     <div class="f"><label>お客様名（フルネーム）<span class="req">*</span></label><input type="text" id="custName" oninput="updateDrivePath()"></div>
     <div class="f"><label>フリガナ<span class="req">*</span></label><input type="text" id="custKana" placeholder="ひらがなで入力（例：いしくらひろき）" oninput="updateDrivePath()"></div>
     <div class="f"><label>現場住所<span class="req">*</span></label><input type="text" id="addr" oninput="updateDrivePath()"></div>
@@ -231,7 +231,7 @@
   <div class="sec">
     <h2><span class="n">4</span>配線・ケーブル延長</h2>
     <div class="grp">ケーブル延長（機器系・メーカー付属品の手配）</div>
-    <div class="hint" style="margin-bottom:4px">いずれも商社発注の付属品です。必要な長さを選んでください。</div>
+    <div class="hint" style="margin-bottom:4px">いぞれも商社発注の付属品です。必要な長さを選んでください。</div>
     <div class="f">
       <div class="row2" style="margin-bottom:6px">
         <select id="cblPv"><option value="">PV〜PVユニット</option><option>5ｍ</option><option>20ｍ</option><option>30ｍ</option><option>40ｍ</option><option>その他</option></select>
@@ -250,7 +250,7 @@
   <!-- ⑤ 蓄電池・V2H・部材 -->
   <div class="sec">
     <h2><span class="n">5</span>蓄電池・V2H・部材</h2>
-    <div class="hint">現調時にメーカー未定・複数想定の場合は「不明・複数想定」を選んでください（必須ではありません）。</div>
+    <div class="hint">現調時にメーカー未定・複数想定の場合は「不明・複数想定」を選んでください（必須ではありませわ）。</div>
     <div class="f"><label>種別（複数選択可）</label>
       <div class="opts">
         <label><input type="checkbox" id="typeBatt" onclick="toggleMakerBlocks()">蓄電池</label>
@@ -268,7 +268,7 @@
       <div class="f"><label>メーカー</label><select id="v2hMaker" onchange="fillV2hModel()"></select></div>
       <div class="f"><label>機種</label><select id="v2hModel"></select></div>
     </div>
-    <div class="grp">ベース類（複数追加OK）</div>
+    <div class="grp">ベース (顟数追加OK)</div>
     <div class="hint">※2個で1セット</div>
     <div id="baseList"></div>
     <button type="button" class="addbtn" style="margin-top:6px" onclick="addBaseRow()">＋ ベースを追加</button>
@@ -281,7 +281,7 @@
   <!-- 屋根情報 -->
   <div class="sec">
     <h2>屋根情報</h2>
-    <div class="note">図面がある場合は図面の数値を優先して記入してください。</div>
+    <div class="note">図面がある場合は図面の数値を優を優先して記入してください。</div>
     <div class="f"><label>屋根勾配</label>
       <div class="opts" data-radio="roofSlope">
         <label><input type="radio" name="roofSlope" value="3寸">3寸</label>
@@ -368,7 +368,7 @@
   <!-- ⑨ 写真・図面・伝達事項 -->
   <div class="sec">
     <h2><span class="n">9</span>写真・図面・伝達事項</h2>
-    <div class="note">チェックリストで撮り忘れを確認してください。写真はスマホのGoogleドライブアプリから格納先フォルダへ直接アップしてください。</div>
+    <div class="note">チェックリストで撮り忘れを確認してください。写真はスマホのGoogleドライブアプリから閠納先フォルダへ直接アップしてください。</div>
 
     <div class="pathbox">
       <div class="pathlabel">📁 保存先（自動・お客様名と会社名から作成）</div>
@@ -486,7 +486,7 @@
       {n:"端子台",u:"個",g:"kik"},{n:"メーター統一",u:"式",g:"kik"},{n:"EQ1次→2次変更",u:"式",g:"kik"},{n:"送信ユニット",u:"式",g:"kik"},
       {n:"遠方交通費(50km)",u:"台",g:"oth"}
     ],
-    "キョウエイ":[
+    "キメウエイ":[
       {n:"PV多面設置（4面目から1面）",u:"面",g:"jin"},{n:"急勾配工事（6寸）",u:"式",g:"jin"},
       {n:"野地板裏補強工事（5kWまで）",u:"式",g:"jin"},{n:"パワコン新規2台設置同時設置",u:"式",g:"jin"},
       {n:"特殊工事（足場設置不可・難工事等）",u:"式",g:"jin"},{n:"搬入困難（工員増員）",u:"式",g:"jin"},
@@ -499,7 +499,7 @@
       {n:"新築先行配線・配管",u:"回",g:"hai"},
       {n:"MCCB交換（60Aまで）",u:"台",g:"kik"},{n:"ELBの交換（75Aまで）",u:"台",g:"kik"},
       {n:"専用コンセント増設工事",u:"箇所",g:"kik"},{n:"分電盤交換（機器代別途）",u:"台",g:"kik"},
-      {n:"メーターBOX",u:"台",g:"kik"},{n:"ンンクリート基礎コア抜き",u:"箇所",g:"kik"},
+      {n:"メーターBOX",u:"台",g:"kik"},{n:"コンクリート基礎コア抜き",u:"箇所",g:"kik"},
       {n:"単2→単3切替工事",u:"式",g:"kik"},{n:"点検口",u:"式",g:"kik"},
       {n:"ハイブリット蓄電池 系統組換え（PV既設）",u:"式",g:"kik"},{n:"機器代金（分電盤・アンテナ等）",u:"式",g:"kik"},
       {n:"アンテナ移設・撤去",u:"式",g:"tek"},{n:"温水ソーラー撤去費用",u:"式",g:"tek"},
@@ -575,7 +575,7 @@
     row.appendChild(nm); row.appendChild(m); row.appendChild(del);
     document.getElementById('cblOtherList').appendChild(row);
   }
-  function collectCblOther(){
+  function collectCblother(){
     const a=[];
     document.querySelectorAll('#cblOtherList .cbl-row').forEach(r=>{
       const n=r.querySelector('.cbl-name').value.trim(), m=r.querySelector('.cbl-m').value.trim();
@@ -786,7 +786,7 @@
 
   function val(id){ const e=document.getElementById(id); return e?e.value.trim():""; }
   function radio(name){ const e=document.querySelector('input[name="'+name+'"]:checked'); return e?e.value:""; }
-  function multi(name){ return Array.from(document.querySelectorAll('input[name="'+name+'"]:checked')).map(x=>x.value).join("・"); }
+  function multi(name){ return Array.from(document.querySelectorAll('input[name="'+name+'"]:checked')).map(x=>x.value).join(#・"); }
   function caseKey(){ const d=new Date(); const p=n=>String(n).padStart(2,'0');
     return "G"+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+"-"+p(d.getHours())+p(d.getMinutes())+p(d.getSeconds()); }
   function reporterVal(){ const r=radio('reporter'); return r==='その他'?('その他：'+val('reporterOther')):r; }
@@ -918,5 +918,6 @@
   fillSelect(document.getElementById('battMaker'), Object.keys(BATT), 'メーカー');
   fillSelect(document.getElementById('v2hMaker'), Object.keys(V2H), 'メーカー');
   renderPhotos(); updateDrivePath();
-��ܚ\��؛�O�
+</script>
+</body>
 </html>
