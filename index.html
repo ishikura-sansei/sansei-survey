@@ -83,6 +83,13 @@
   details.guide[open] summary{border-bottom:1px solid var(--line)}
   .guidegrid{display:flex;flex-wrap:wrap;gap:6px;padding:12px}
   .guidegrid span{font-size:12px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 11px;color:var(--sub)}
+  .reqphotos{border:1.5px solid var(--line);border-radius:12px;padding:8px;margin:6px 0 12px;background:#fafbff}
+  .reqphotos-h{font-size:13px;font-weight:800;padding:4px 6px 8px;color:var(--ink)}
+  .reqchk{display:flex;align-items:center;gap:10px;padding:11px 10px;border:1px solid var(--line);border-radius:9px;background:#fff;margin:5px 0;font-size:14px;cursor:pointer}
+  .reqchk input{width:22px;height:22px;flex:0 0 auto;accent-color:#1a73e8;margin:0}
+  .reqchk small{color:var(--sub);font-size:12px;font-weight:400}
+  .reqchk.on{background:#e6f4ea;border-color:#34a853}
+  .reqchk.on span{color:#188038;font-weight:700}
   .bigadd{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
     border:2px dashed var(--accent);border-radius:14px;background:var(--accent-soft);
     color:var(--accent-deep);font-weight:800;font-size:15px;padding:18px;margin-top:6px;cursor:pointer}
@@ -310,11 +317,15 @@
   <!-- ⑥ 付帯（会社別・5区分） -->
   <div class="sec">
     <h2><span class="n">6</span>付帯（記録）</h2>
-    <div class="note">「工事に必要な物・人工」の記録です。金額は付けません（事務が単価表で算定）。①で選んだ会社の単価表の付帯項目を、5区分グループから選んで数量を入れてください（複数行OK）。CV・PFD等の延長は<b>総計mで多めに</b>記入。</div>
+    <div class="note">「工事に必要な物・人工」の記録です。金額は付けません（事務が単価表で算定）。①で選んだ会社の付帯項目を5区分グループから選び、数量を入れてください（複数行OK）。</div>
+    <div style="background:#fff4f4;border:1.5px solid #f2b8b8;border-radius:10px;padding:10px 12px;margin:8px 0;font-size:12.5px;line-height:1.75;color:#b3261e">
+      <div style="font-weight:800;margin-bottom:5px">⚠️ 付帯の必須ルール</div>
+      <div style="margin-bottom:3px">・<b>電線・ダクト類（CV・PFD・ダクト延長 等）は使用ｍ数を必ず記入</b>（例外なし／総計mで多めに）</div>
+      <div>・該当する付帯工事があれば<b>【付帯】を確認して判断</b>。採用した<b>理由は各付帯の「備考」欄</b>に記入</div>
+    </div>
     <div id="futaiHint" class="hint">※先に①で会社を選んでください。</div>
     <div id="futaiList"></div>
     <button type="button" class="addbtn" style="margin-top:8px" onclick="addFutaiRow()">＋ 付帯を追加</button>
-    <div class="f"><label>追加工事の補足（自由記入）</label><textarea id="addMemo" placeholder="無い場合は空欄でOK"></textarea></div>
   </div>
 
   <!-- ⑦ 確認事項・お約束 -->
@@ -380,14 +391,16 @@
       <a href="https://drive.google.com/drive/folders/1OkP8EnYw0EKCf5kODQAtY-iz3ftB5HFQ" target="_blank" style="display:inline-block;background:#1a73e8;color:#fff;border-radius:8px;padding:10px 22px;font-size:14px;font-weight:bold;text-decoration:none;">📂 現調写真フォルダを開く（Driveへ保存）</a>
     </div>
 
-    <details class="guide" open>
-      <summary>📋 撮影チェックリスト（撮り忘れ防止）</summary>
-      <div class="guidegrid">
-        <span>住宅全景</span><span>屋根</span><span>野地板</span><span>分電盤</span>
-        <span>宅内工事予定</span><span>屋外工事予定</span><span>電気明細</span><span>メーター周辺（駐車判断）</span>
-        <span>点検工口内</span><span>床下経路等</span><span>足場設置予定（レイアウトを記載）</span>
-      </div>
-    </details>
+    <div id="reqPhotoBox" class="reqphotos">
+      <div class="reqphotos-h">📋 必須項目チェック（撮ったらチェック／未チェックは営業へ申し送り）</div>
+      <label class="reqchk"><input type="checkbox" class="reqphoto" data-label="足場 設置例" onchange="this.closest('.reqchk').classList.toggle('on',this.checked)"><span>足場 設置例 <small>（写真にイラストで明記／原則3面設置）</small></span></label>
+      <label class="reqchk"><input type="checkbox" class="reqphoto" data-label="機器 設置予定位置" onchange="this.closest('.reqchk').classList.toggle('on',this.checked)"><span>機器 設置予定位置 <small>（写真にイラストで明記）</small></span></label>
+      <label class="reqchk"><input type="checkbox" class="reqphoto" data-label="電気明細" onchange="this.closest('.reqchk').classList.toggle('on',this.checked)"><span>電気明細</span></label>
+      <label class="reqchk"><input type="checkbox" class="reqphoto" data-label="通線経路" onchange="this.closest('.reqchk').classList.toggle('on',this.checked)"><span>通線経路</span></label>
+      <label class="reqchk"><input type="checkbox" class="reqphoto" data-label="野地板" onchange="this.closest('.reqchk').classList.toggle('on',this.checked)"><span>野地板</span></label>
+      <label class="reqchk"><input type="checkbox" class="reqphoto" data-label="住宅全景" onchange="this.closest('.reqchk').classList.toggle('on',this.checked)"><span>住宅全景</span></label>
+      <label class="reqchk"><input type="checkbox" class="reqphoto" data-label="宅内・宅内工事箇所" onchange="this.closest('.reqchk').classList.toggle('on',this.checked)"><span>宅内・宅内工事箇所</span></label>
+    </div>
 
     <div id="photoGrid" class="pgrid"><div class="pempty">まだ手書きはありません</div></div>
 
@@ -486,7 +499,7 @@
       {n:"端子台",u:"個",g:"kik"},{n:"メーター統一",u:"式",g:"kik"},{n:"EQ1次→2次変更",u:"式",g:"kik"},{n:"送信ユニット",u:"式",g:"kik"},
       {n:"遠方交通費(50km)",u:"台",g:"oth"}
     ],
-    "キメウエイ":[
+    "キョウエイ":[
       {n:"PV多面設置（4面目から1面）",u:"面",g:"jin"},{n:"急勾配工事（6寸）",u:"式",g:"jin"},
       {n:"野地板裏補強工事（5kWまで）",u:"式",g:"jin"},{n:"パワコン新規2台設置同時設置",u:"式",g:"jin"},
       {n:"特殊工事（足場設置不可・難工事等）",u:"式",g:"jin"},{n:"搬入困難（工員増員）",u:"式",g:"jin"},
@@ -652,7 +665,7 @@
     sel.onchange=()=>{ const opt=sel.options[sel.selectedIndex]; uspan.textContent=opt?(opt.getAttribute('data-u')||''):''; };
     const del=document.createElement('button'); del.type='button'; del.className='delbtn'; del.textContent='✕'; del.onclick=()=>row.remove();
     inner.appendChild(sel); inner.appendChild(qwrap); inner.appendChild(del); row.appendChild(inner);
-    const memo=document.createElement('textarea'); memo.className='futai-memo'; memo.placeholder='備考（例：狭所作業、搬入困難）'; memo.rows=1; memo.style.cssText='width:100%;margin-top:4px;font-size:13px;resize:vertical;border-radius:4px;border:1px solid var(--line);padding:4px 6px;box-sizing:border-box;color:var(--ink);background:#fff;';
+    const memo=document.createElement('textarea'); memo.className='futai-memo'; memo.placeholder='備考・採用理由（例：狭所作業、搬入困難）'; memo.rows=1; memo.style.cssText='width:100%;margin-top:4px;font-size:13px;resize:vertical;border-radius:4px;border:1px solid var(--line);padding:4px 6px;box-sizing:border-box;color:var(--ink);background:#fff;';
     row.appendChild(memo);
     document.getElementById('futaiList').appendChild(row);
   }
@@ -786,7 +799,7 @@
 
   function val(id){ const e=document.getElementById(id); return e?e.value.trim():""; }
   function radio(name){ const e=document.querySelector('input[name="'+name+'"]:checked'); return e?e.value:""; }
-  function multi(name){ return Array.from(document.querySelectorAll('input[name="'+name+'"]:checked')).map(x=>x.value).join(#・"); }
+  function multi(name){ return Array.from(document.querySelectorAll('input[name="'+name+'"]:checked')).map(x=>x.value).join("・"); }
   function caseKey(){ const d=new Date(); const p=n=>String(n).padStart(2,'0');
     return "G"+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+"-"+p(d.getHours())+p(d.getMinutes())+p(d.getSeconds()); }
   function reporterVal(){ const r=radio('reporter'); return r==='その他'?('その他：'+val('reporterOther')):r; }
@@ -809,6 +822,8 @@
     if(radio('park')==='必要'&&radio('parkInformed')==='未') auto.push('【駐車場移動 必要・伝達未→営業へ'+(val('parkMemo')?('（'+val('parkMemo')+'）'):'')+'】');
     if(radio('shakuchi')==='必要・未取得') auto.push('【借地許可 未取得→要対応'+(val('shakuchiArea')?('（'+val('shakuchiArea')+'）'):'')+'】');
     if(document.getElementById('salesContact').checked) auto.push('【★営業へ要連絡】');
+    const unReq=[...document.querySelectorAll('.reqphoto')].filter(c=>!c.checked).map(c=>c.getAttribute('data-label'));
+    if(unReq.length) auto.push('【必須写真 未チェック：'+unReq.join('・')+'】');
     return [auto.join(' '), base].filter(Boolean).join('\n');
   }
 
@@ -875,9 +890,25 @@
     });
   }
 
+  function validateFutaiMeters(){
+    const rows=document.querySelectorAll('#futaiList .futai-row');
+    for(const row of rows){
+      const sel=row.querySelector('.futai-item'); if(!sel||!sel.value) continue;
+      const opt=sel.options[sel.selectedIndex]; const u=(opt?opt.getAttribute('data-u'):'')||'';
+      if(u==='m'){
+        const qel=row.querySelector('.futai-qty'); const q=(qel?qel.value:'').trim();
+        if(!q || parseFloat(q)<=0) return '付帯の「'+sel.value+'」はｍ数（数量）の入力が必須です。電線・ダクト類は使用するｍ数を記入してください。';
+      }
+    }
+    return '';
+  }
   async function submitForm(){
     const d = collect(); const err = validate(d);
     if(err){ showMsg(err, false); window.scrollTo({top:0,behavior:'smooth'}); return; }
+    const mErr = validateFutaiMeters();
+    if(mErr){ showMsg(mErr, false); const fl=document.getElementById('futaiList'); if(fl) fl.scrollIntoView({behavior:'smooth',block:'center'}); return; }
+    const unPhoto=[...document.querySelectorAll('.reqphoto')].filter(c=>!c.checked).map(c=>c.getAttribute('data-label'));
+    if(unPhoto.length && !window.__reqPhotoWarned){ window.__reqPhotoWarned=true; showMsg('⚠️ 必須写真で未チェックの項目があります：'+unPhoto.join('、')+'。撮影できていれば各項目にチェックを入れてください。撮り忘れが無ければ、もう一度「送信」を押すと送信します（未チェックは営業へ申し送りされます）。', false); const b=document.getElementById('reqPhotoBox'); if(b) b.scrollIntoView({behavior:'smooth',block:'center'}); return; }
     if(PROTO){
       showMsg("【試作】送信OK（案件キー："+d.caseKey+" / 写真"+d.photoCount+"枚）。本番では写真がDriveの保存先フォルダへ自動格納されます。", true);
       window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}); return;
@@ -907,6 +938,7 @@
     });
     ['cblOtherList','baseList','lanList','futaiList'].forEach(id=>{ document.getElementById(id).innerHTML=''; });
     photos=[]; renderPhotos(); updateTotal(); updateDrivePath();
+    document.querySelectorAll('.reqchk.on').forEach(x=>x.classList.remove('on')); window.__reqPhotoWarned=false;
     ['reporterOther','surveyTypeOther','companyOther','keiyakuOther','existingOther','wifiIdDiv','wifiPassDiv','wifiNote','battBlock','v2hBlock','parkInformedBox','shakuchiArea'].forEach(id=>show(id,false));
     document.getElementById('existingReminder').classList.add('hidden');
     showMsg("", true); document.getElementById('msg').className="msg";
