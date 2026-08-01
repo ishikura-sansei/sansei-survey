@@ -109,13 +109,20 @@
   .msg{padding:11px 14px;border-radius:11px;margin:10px 0;font-size:14px;display:none}
   .msg.ok{background:#eaf6ea;color:var(--ok);border:1px solid #cfe8cf;display:block}
   .msg.err{background:#fdecea;color:#c0392b;border:1px solid #f5c6c0;display:block}
+  .aftersend{display:none;margin:12px 0 4px;background:#fff7ed;border:2px solid var(--accent);
+    border-radius:14px;padding:16px 14px;text-align:center}
+  .aftersend-h{font-size:19px;font-weight:800;color:var(--accent-deep);line-height:1.45;margin-bottom:8px}
+  .aftersend-b{font-size:15px;color:#7c2d12;line-height:1.7;margin-bottom:12px}
+  .aftersend-btn{display:block;background:var(--accent);color:#fff;border-radius:11px;padding:14px;
+    font-size:16px;font-weight:800;text-decoration:none}
+  .aftersend-n{font-size:11.5px;color:var(--sub);margin-top:9px;line-height:1.6}
   </style>
 </head>
 <body>
 <header>
   <div class="brand">SAN<span>SEI</span></div>
   <h1>現地調査シート</h1>
-  <div class="sub">工事に必要な情報を記録します（金額は扱いませわ）</div>
+  <div class="sub">工事に必要な情報を記録します（金額は扱いません）</div>
 </header>
 
 <div class="wrap">
@@ -154,7 +161,7 @@
       <input type="text" id="surveyTypeOther" class="hidden" placeholder="その他の内容" style="margin-top:6px">
       <div class="hint">PV=太陽光 / BT=蓄電池 / EQ=エコキュート / V2H / IH</div>
     </div>
-    <div class="f"><label>悪天候等で屋根等の現調が延期になった場合み記入</label>
+    <div class="f"><label>悪天候等で屋根等の現調が延期になった場合に記入</label>
       <div class="opts">
         <label><input type="checkbox" name="roofUnconf" value="日程調整した">日程調整した</label>
         <label><input type="checkbox" name="roofUnconf" value="お客様に説明した">お客様に説明した</label>
@@ -166,7 +173,7 @@
   <!-- ② お客様情報 -->
   <div class="sec">
     <h2><span class="n">2</span>お客様情報</h2>
-    <div class="alert">⚠ お客様名は<b>漢字を正確に・フルネーム</b>でしき力してください（後で検索できなくなるため誤字厳禁）。</div>
+    <div class="alert">⚠ お客様名は<b>漢字を正確に・フルネーム</b>で入力してください（後で検索できなくなるため誤字厳禁）。</div>
     <div class="f"><label>お客様名（フルネーム）<span class="req">*</span></label><input type="text" id="custName" oninput="updateDrivePath()"></div>
     <div class="f"><label>フリガナ<span class="req">*</span></label><input type="text" id="custKana" placeholder="ひらがなで入力（例：いしくらひろき）" oninput="updateDrivePath()"></div>
     <div class="f"><label>現場住所<span class="req">*</span></label><input type="text" id="addr" oninput="updateDrivePath()"></div>
@@ -238,7 +245,7 @@
   <div class="sec">
     <h2><span class="n">4</span>配線・ケーブル延長</h2>
     <div class="grp">ケーブル延長（機器系・メーカー付属品の手配）</div>
-    <div class="hint" style="margin-bottom:4px">いぞれも商社発注の付属品です。必要な長さを選んでください。</div>
+    <div class="hint" style="margin-bottom:4px">いずれも商社発注の付属品です。必要な長さを選んでください。</div>
     <div class="f">
       <div class="row2" style="margin-bottom:6px">
         <select id="cblPv"><option value="">PV〜PVユニット</option><option>5ｍ</option><option>20ｍ</option><option>30ｍ</option><option>40ｍ</option><option>その他</option></select>
@@ -257,7 +264,7 @@
   <!-- ⑤ 蓄電池・V2H・部材 -->
   <div class="sec">
     <h2><span class="n">5</span>蓄電池・V2H・部材</h2>
-    <div class="hint">現調時にメーカー未定・複数想定の場合は「不明・複数想定」を選んでください（必須ではありませわ）。</div>
+    <div class="hint">現調時にメーカー未定・複数想定の場合は「不明・複数想定」を選んでください（必須ではありません）。</div>
     <div class="f"><label>種別（複数選択可）</label>
       <div class="opts">
         <label><input type="checkbox" id="typeBatt" onclick="toggleMakerBlocks()">蓄電池</label>
@@ -275,7 +282,7 @@
       <div class="f"><label>メーカー</label><select id="v2hMaker" onchange="fillV2hModel()"></select></div>
       <div class="f"><label>機種</label><select id="v2hModel"></select></div>
     </div>
-    <div class="grp">ベース (顟数追加OK)</div>
+    <div class="grp">ベース（複数追加OK）</div>
     <div class="hint">※2個で1セット</div>
     <div id="baseList"></div>
     <button type="button" class="addbtn" style="margin-top:6px" onclick="addBaseRow()">＋ ベースを追加</button>
@@ -288,7 +295,7 @@
   <!-- 屋根情報 -->
   <div class="sec">
     <h2>屋根情報</h2>
-    <div class="note">図面がある場合は図面の数値を優を優先して記入してください。</div>
+    <div class="note">図面がある場合は図面の数値を優先して記入してください。</div>
     <div class="f"><label>屋根勾配</label>
       <div class="opts" data-radio="roofSlope">
         <label><input type="radio" name="roofSlope" value="3寸">3寸</label>
@@ -379,7 +386,7 @@
   <!-- ⑨ 写真・図面・伝達事項 -->
   <div class="sec">
     <h2><span class="n">9</span>写真・図面・伝達事項</h2>
-    <div class="note">チェックリストで撮り忘れを確認してください。写真はスマホのGoogleドライブアプリから閠納先フォルダへ直接アップしてください。</div>
+    <div class="note">チェックリストで撮り忘れを確認してください。写真はスマホのGoogleドライブアプリから格納先フォルダへ直接アップしてください。</div>
 
     <div class="pathbox">
       <div class="pathlabel">📁 保存先（自動・お客様名と会社名から作成）</div>
@@ -392,7 +399,7 @@
     </div>
 
     <div id="reqPhotoBox" class="reqphotos">
-      <div class="reqphotos-h">📋 必須項目チェック（撮ったらチェック／未チェックは営業へ申し送り）</div>
+      <div class="reqphotos-h">📋 撮影チェック（任意・チェックしなくても送信できます／未チェックは営業へ申し送り）</div>
       <label class="reqchk"><input type="checkbox" class="reqphoto" data-label="足場 設置例" onchange="this.closest('.reqchk').classList.toggle('on',this.checked)"><span>足場 設置例 <small>（写真にイラストで明記／原則3面設置）</small></span></label>
       <label class="reqchk"><input type="checkbox" class="reqphoto" data-label="機器 設置予定位置" onchange="this.closest('.reqchk').classList.toggle('on',this.checked)"><span>機器 設置予定位置 <small>（写真にイラストで明記）</small></span></label>
       <label class="reqchk"><input type="checkbox" class="reqphoto" data-label="電気明細" onchange="this.closest('.reqchk').classList.toggle('on',this.checked)"><span>電気明細</span></label>
@@ -402,7 +409,7 @@
       <label class="reqchk"><input type="checkbox" class="reqphoto" data-label="宅内・宅内工事箇所" onchange="this.closest('.reqchk').classList.toggle('on',this.checked)"><span>宅内・宅内工事箇所</span></label>
     </div>
 
-    <div id="photoGrid" class="pgrid"><div class="pempty">まだ手書きはありません</div></div>
+    <div id="photoGrid" class="pgrid"><div class="pempty">まだ写真はありません</div></div>
 
 
     <div class="grp" style="margin-top:16px">伝達事項</div>
@@ -414,18 +421,19 @@
   </div>
 
   <div id="msg" class="msg"></div>
+
+  <div id="afterSend" class="aftersend">
+    <div class="aftersend-h">⚠️ 送信＝完了ではありません</div>
+    <div class="aftersend-b">このあと <b>現調写真フォルダへ写真をアップロード</b>してください。<br>写真が届かないと、営業側で見積・手配を進められません。</div>
+    <a class="aftersend-btn" href="https://drive.google.com/drive/folders/1OkP8EnYw0EKCf5kODQAtY-iz3ftB5HFQ" target="_blank" rel="noopener">📂 現調写真フォルダを開く</a>
+    <div class="aftersend-n">保存先：現調写真 ／ 元請け会社 ／ かな行-お客様名-市区</div>
+  </div>
 </div>
 
 
 <div class="bar">
   <button class="btn ghost" onclick="clearForm()">クリア</button>
-  <div id="driveGuide" style="display:none;margin-top:12px;background:#fff7ed;border:2px solid #f97316;border-radius:12px;padding:16px;text-align:center;">
-      <div style="font-size:28px;margin-bottom:6px;">📁</div>
-      <div style="font-weight:bold;font-size:15px;margin-bottom:6px;color:#ea580c;">写真・報告書はDriveをご確認ください</div>
-      <div style="font-size:12px;color:#666;margin-bottom:10px;">送信完了後、現調写真フォルダにデータが自動保存されます</div>
-      <a href="https://drive.google.com/drive/folders/1OkP8EnYw0EKCf5kODQAtY-iz3ftB5HFQ" target="_blank" style="display:inline-block;background:#f97316;color:#fff;border-radius:8px;padding:8px 20px;font-size:13px;font-weight:bold;text-decoration:none;">📂 現調写真フォルダを開く</a>
-    </div>
-    <button class="btn" id="submitBtn" onclick="submitForm()">送信</button>
+  <button class="btn" id="submitBtn" onclick="submitForm()">送信</button>
 </div>
 
 <script>
@@ -745,7 +753,7 @@
     if(c>='ァ'&&c<='ン') c=String.fromCharCode(c.charCodeAt(0)-0x60);
     if(map[c]) c=map[c];
     const rows=[['あ','あいうえお'],['か','かきくけこ'],['さ','さしすせそ'],['た','たちつてと'],['な','なにぬねの'],['は','はひふへほ'],['ま','まみむめも'],['や','やゆよ'],['ら','らりるれろ'],['わ','わをん']];
-    for(const [g,set] of rows){ if(set.indexOf(c)>=0) return g+'行'; }
+    for(const [g,set] of rows){ if(set.indexOf(c)>=0) return g; } // Drive実物の命名は「さ-氏名-市区」なので「行」は付けない
     return '';
   }
   function shiku(addr){
@@ -764,17 +772,15 @@
       if(copyBtn) copyBtn.classList.add('hidden');
       return;
     }
-    const g = gyo(kana) || '（行）';
-    const head = name? name.charAt(0) : '（頭）';
+    const g = gyo(kana) || '（かな行）';
+    const head = name? name.charAt(0) : '（頭）'; // 予備（現行の命名は「かな行-氏名-市区」）
     const sk = shiku(addr) || '（市区）';
     el.innerHTML =
-      '<span class="seg">現場写真</span> / '+
+      '<span class="seg">現調写真</span> / '+
       '<span class="seg">'+(company||'（会社名）')+'</span> / '+
-      '<span class="seg">'+g+'₋お客様名₋現場住所</span> / '+
-      '<span class="accent">'+head+'_'+(name||'（お客様名）')+'_'+sk+'</span> / '+
-      '<span class="seg">現調写真</span>';
+      '<span class="accent">'+g+'-'+(name||'（お客様名）')+'-'+sk+'</span>';
     if(copyBtn){
-      const folderName = g+'₋'+(name||'（お客様名）')+'₋'+sk;
+      const folderName = g+'-'+(name||'（お客様名）')+'-'+sk;
       copyBtn.dataset.folder = folderName;
       copyBtn.textContent = '📋 '+folderName+' をコピー';
       if(name) copyBtn.classList.remove('hidden'); else copyBtn.classList.add('hidden');
@@ -823,7 +829,7 @@
     if(radio('shakuchi')==='必要・未取得') auto.push('【借地許可 未取得→要対応'+(val('shakuchiArea')?('（'+val('shakuchiArea')+'）'):'')+'】');
     if(document.getElementById('salesContact').checked) auto.push('【★営業へ要連絡】');
     const unReq=[...document.querySelectorAll('.reqphoto')].filter(c=>!c.checked).map(c=>c.getAttribute('data-label'));
-    if(unReq.length) auto.push('【必須写真 未チェック：'+unReq.join('・')+'】');
+    if(unReq.length) auto.push('【撮影チェック 未チェック：'+unReq.join('・')+'】');
     return [auto.join(' '), base].filter(Boolean).join('\n');
   }
 
@@ -907,8 +913,6 @@
     if(err){ showMsg(err, false); window.scrollTo({top:0,behavior:'smooth'}); return; }
     const mErr = validateFutaiMeters();
     if(mErr){ showMsg(mErr, false); const fl=document.getElementById('futaiList'); if(fl) fl.scrollIntoView({behavior:'smooth',block:'center'}); return; }
-    const unPhoto=[...document.querySelectorAll('.reqphoto')].filter(c=>!c.checked).map(c=>c.getAttribute('data-label'));
-    if(unPhoto.length && !window.__reqPhotoWarned){ window.__reqPhotoWarned=true; showMsg('⚠️ 必須写真で未チェックの項目があります：'+unPhoto.join('、')+'。撮影できていれば各項目にチェックを入れてください。撮り忘れが無ければ、もう一度「送信」を押すと送信します（未チェックは営業へ申し送りされます）。', false); const b=document.getElementById('reqPhotoBox'); if(b) b.scrollIntoView({behavior:'smooth',block:'center'}); return; }
     if(PROTO){
       showMsg("【試作】送信OK（案件キー："+d.caseKey+" / 写真"+d.photoCount+"枚）。本番では写真がDriveの保存先フォルダへ自動格納されます。", true);
       window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}); return;
@@ -926,22 +930,25 @@
     btn.textContent="送信中…";
     fetch(GAS_URL, { method:"POST", mode:"no-cors",
       headers:{"Content-Type":"text/plain;charset=utf-8"}, body: JSON.stringify(d) })
-      .then(function(){ showMsg("送信しました（案件キー："+d.caseKey+"）", true); btn.textContent="送信完了"; var dg=document.getElementById('driveGuide'); if(dg){dg.style.display='block';} })
+      .then(function(){ showMsg("送信しました（案件キー："+d.caseKey+"）", true); btn.textContent="送信完了";
+        var dg=document.getElementById('afterSend');
+        if(dg){ dg.style.display='block'; dg.scrollIntoView({behavior:'smooth',block:'center'}); } })
       .catch(function(){ showMsg("送信に失敗しました。電波を確認してもう一度お試しください。", false);
         btn.disabled=false; btn.textContent="送信"; });
   }
 
   function clearForm(){
-    if(!confirm("入力内容をクリアします。よろしいですお？")) return;
+    if(!confirm("入力内容をクリアします。よろしいですか？")) return;
     document.querySelectorAll('input,textarea,select').forEach(e=>{
       if(e.type==='checkbox'||e.type==='radio') e.checked=false; else e.value="";
     });
     ['cblOtherList','baseList','lanList','futaiList'].forEach(id=>{ document.getElementById(id).innerHTML=''; });
     photos=[]; renderPhotos(); updateTotal(); updateDrivePath();
-    document.querySelectorAll('.reqchk.on').forEach(x=>x.classList.remove('on')); window.__reqPhotoWarned=false;
+    document.querySelectorAll('.reqchk.on').forEach(x=>x.classList.remove('on'));
     ['reporterOther','surveyTypeOther','companyOther','keiyakuOther','existingOther','wifiIdDiv','wifiPassDiv','wifiNote','battBlock','v2hBlock','parkInformedBox','shakuchiArea'].forEach(id=>show(id,false));
     document.getElementById('existingReminder').classList.add('hidden');
     showMsg("", true); document.getElementById('msg').className="msg";
+    var _as=document.getElementById('afterSend'); if(_as) _as.style.display='none';
     document.getElementById('surveyDate').valueAsDate=new Date();
   }
 
