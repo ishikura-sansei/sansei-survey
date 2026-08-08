@@ -214,7 +214,7 @@
     </div>
     <div class="f"><label>アース目視確認</label>
       <div class="opts" data-radio="earth"><label><input type="radio" name="earth" value="有">有</label><label><input type="radio" name="earth" value="無">無</label></div></div>
-    <div class="f"><label>既設機器（見える物だけチェック＝有／未チェック＝無）</label>
+    <div class="f"><label>既設機器・外部機器（見える物だけチェック＝有／未チェック＝無）</label>
       <div class="opts">
         <label><input type="checkbox" name="existing" value="エネファーム">エネファーム</label>
         <label><input type="checkbox" name="existing" value="エコキュート" onclick="updateExistingReminder()">エコキュート</label>
@@ -223,10 +223,16 @@
         <label><input type="checkbox" name="existing" value="既設蓄電池">既設蓄電池</label>
         <label><input type="checkbox" name="existing" value="IH">IH</label>
         <label><input type="checkbox" name="existing" value="テレビアンテナ">テレビアンテナ</label>
+        <label><input type="checkbox" name="existing" value="V2H">V2H</label>
+        <label><input type="checkbox" name="existing" value="太陽熱温水器">太陽熱温水器</label>
+        <label><input type="checkbox" name="existing" value="エアコン室外機">エアコン室外機</label>
         <label><input type="checkbox" name="existing" value="その他" onclick="toggleExistingOther()">その他</label>
       </div>
       <input type="text" id="existingOther" class="hidden" placeholder="その他の既設機器" style="margin-top:6px">
       <div id="existingReminder" class="alert hidden"></div>
+      <div class="f" style="margin-top:8px"><label>外部機器の設置位置・支障（自由記入）</label>
+        <textarea id="externalMemo" style="min-height:60px" placeholder="例：エネファーム＝南面外壁ぎわ／室外機2台＝東面、足場に支障あり"></textarea>
+      </div>
     </div>
     <div class="f"><label>Wi-Fi状況<span class="req">*</span></label>
       <div class="opts" data-radio="wifi">
@@ -296,6 +302,19 @@
   <div class="sec">
     <h2>屋根情報</h2>
     <div class="note">図面がある場合は図面の数値を優先して記入してください。</div>
+    <div class="f"><label>屋根材</label>
+      <div class="opts" data-radio="roofMaterial">
+        <label><input type="radio" name="roofMaterial" value="スレート" onclick="toggleRoofMatOther()">スレート</label>
+        <label><input type="radio" name="roofMaterial" value="和瓦" onclick="toggleRoofMatOther()">和瓦</label>
+        <label><input type="radio" name="roofMaterial" value="洋瓦" onclick="toggleRoofMatOther()">洋瓦</label>
+        <label><input type="radio" name="roofMaterial" value="横葺き金属" onclick="toggleRoofMatOther()">横葺き金属</label>
+        <label><input type="radio" name="roofMaterial" value="立平" onclick="toggleRoofMatOther()">立平</label>
+        <label><input type="radio" name="roofMaterial" value="折板" onclick="toggleRoofMatOther()">折板</label>
+        <label><input type="radio" name="roofMaterial" value="アスファルトシングル" onclick="toggleRoofMatOther()">アスファルトシングル</label>
+        <label><input type="radio" name="roofMaterial" value="その他" onclick="toggleRoofMatOther()">その他</label>
+      </div>
+      <input type="text" id="roofMaterialOther" class="hidden" placeholder="屋根材（その他）を記入" style="margin-top:6px">
+    </div>
     <div class="f"><label>屋根勾配</label>
       <div class="opts" data-radio="roofSlope">
         <label><input type="radio" name="roofSlope" value="3寸">3寸</label>
@@ -318,6 +337,23 @@
     </div>
     <div class="f"><label>屋根メモ（自由記入）</label>
       <textarea id="roofLayout" style="min-height:80px" placeholder="例：切妻・寄棟・形状の特記、障害物、割付など"></textarea>
+    </div>
+    <div class="f"><label>パネルレイアウト図</label>
+      <div class="opts" data-radio="layoutExist">
+        <label><input type="radio" name="layoutExist" value="あり" onclick="toggleLayout()">あり</label>
+        <label><input type="radio" name="layoutExist" value="なし" onclick="toggleLayout()">なし（図面の支給なし）</label>
+      </div>
+      <div class="hint">平面図・割付図が支給されていない場合は「なし」を選んでください。</div>
+    </div>
+    <div id="layoutOkDiv" class="hidden f">
+      <label>レイアウト通り施工</label>
+      <div class="opts" data-radio="layoutOk">
+        <label><input type="radio" name="layoutOk" value="可" onclick="toggleLayoutMemo()">可</label>
+        <label><input type="radio" name="layoutOk" value="不可" onclick="toggleLayoutMemo()">不可</label>
+        <label><input type="radio" name="layoutOk" value="要相談" onclick="toggleLayoutMemo()">要相談</label>
+      </div>
+      <div class="hint">変更内容の記載は不要です。可否だけ選んでください。</div>
+      <input type="text" id="layoutMemo" class="hidden" placeholder="不可・要相談の理由（任意・一行でOK）" style="margin-top:6px">
     </div>
   </div>
 
@@ -812,6 +848,11 @@
   function companyVal(){ const c=val('company'); return c==='その他'?('その他：'+val('companyOther')):c; }
   function surveyTypeVal(){ let a=multi('surveyType'); const o=val('surveyTypeOther'); if(o) a=a.replace('その他','その他：'+o); return a; }
   function keiyakuVal(){ let a=multi('keiyaku'); const o=val('keiyakuOther'); if(o) a=a.replace('その他','その他：'+o); return a; }
+  function roofMaterialVal(){ const r=radio('roofMaterial'); return r==='その他'?('その他：'+val('roofMaterialOther')):r; }
+  function toggleRoofMatOther(){ show('roofMaterialOther', radio('roofMaterial')==='その他'); }
+  function toggleLayout(){ const on=radio('layoutExist')==='あり'; show('layoutOkDiv', on);
+    if(!on){ document.querySelectorAll('input[name="layoutOk"]').forEach(x=>{x.checked=false;}); const m=document.getElementById('layoutMemo'); if(m){ m.value=''; } show('layoutMemo', false); } }
+  function toggleLayoutMemo(){ const v=radio('layoutOk'); show('layoutMemo', v==='不可'||v==='要相談'); }
   function existingVal(){ let a=multi('existing'); const o=val('existingOther'); if(o) a=a.replace('その他','その他：'+o); return a; }
   function wifiStatusVal(){ const w=radio('wifiStatus'); if(w==='あるが動作未確認'){ const r=val('wifiNote'); return w+(r?('（理由：'+r+'）'):''); } return w; }
   function battVal(){ if(!document.getElementById('typeBatt').checked) return '';
@@ -827,6 +868,9 @@
     const ru=multi('roofUnconf'); const rm=val('roofUnconfMemo'); if(ru||rm) auto.push('【屋根等現調延期：'+[ru,rm].filter(Boolean).join('／')+'】');
     if(radio('park')==='必要'&&radio('parkInformed')==='未') auto.push('【駐車場移動 必要・伝達未→営業へ'+(val('parkMemo')?('（'+val('parkMemo')+'）'):'')+'】');
     if(radio('shakuchi')==='必要・未取得') auto.push('【借地許可 未取得→要対応'+(val('shakuchiArea')?('（'+val('shakuchiArea')+'）'):'')+'】');
+    if(radio('layoutExist')==='なし') auto.push('【パネルレイアウト図の支給なし】');
+    if(radio('layoutExist')==='あり'&&radio('layoutOk')==='不可') auto.push('【レイアウト通り施工不可'+(val('layoutMemo')?('：'+val('layoutMemo')):'')+'→営業へ】');
+    if(radio('layoutExist')==='あり'&&radio('layoutOk')==='要相談') auto.push('【レイアウト 要相談'+(val('layoutMemo')?('：'+val('layoutMemo')):'')+'】');
     if(document.getElementById('salesContact').checked) auto.push('【★営業へ要連絡】');
     const unReq=[...document.querySelectorAll('.reqphoto')].filter(c=>!c.checked).map(c=>c.getAttribute('data-label'));
     if(unReq.length) auto.push('【撮影チェック 未チェック：'+unReq.join('・')+'】');
@@ -855,7 +899,9 @@
       addMemo: val('addMemo'),
       park: radio('park'), parkInformed: (radio('park')==='必要'?radio('parkInformed'):''), parkMemo: val('parkMemo'),
       shakuchi: radio('shakuchi'), shakuchiArea: val('shakuchiArea'),
-      roofSlope: radio('roofSlope'), eaveSouth: val('eaveSouth'), eaveNorth: val('eaveNorth'), eaveEast: val('eaveEast'), eaveWest: val('eaveWest'), ridgeLength: val('ridgeLength'), roofArea: val('roofArea'), roofLayout: val('roofLayout'),
+      roofMaterial: roofMaterialVal(), roofSlope: radio('roofSlope'), eaveSouth: val('eaveSouth'), eaveNorth: val('eaveNorth'), eaveEast: val('eaveEast'), eaveWest: val('eaveWest'), ridgeLength: val('ridgeLength'), roofArea: val('roofArea'), roofLayout: val('roofLayout'),
+      layoutExist: radio('layoutExist'), layoutOk: (radio('layoutExist')==='あり'?radio('layoutOk'):''), layoutMemo: (radio('layoutExist')==='あり'?val('layoutMemo'):''),
+      externalMemo: val('externalMemo'),
       scaffold: val('scaffold'), flow: radio('flow'),
       steps: collectSteps(),
       hopeDate: val('hopeDate'), ngDate: val('ngDate'), timeSlot: radio('timeSlot'),
@@ -945,7 +991,7 @@
     ['cblOtherList','baseList','lanList','futaiList'].forEach(id=>{ document.getElementById(id).innerHTML=''; });
     photos=[]; renderPhotos(); updateTotal(); updateDrivePath();
     document.querySelectorAll('.reqchk.on').forEach(x=>x.classList.remove('on'));
-    ['reporterOther','surveyTypeOther','companyOther','keiyakuOther','existingOther','wifiIdDiv','wifiPassDiv','wifiNote','battBlock','v2hBlock','parkInformedBox','shakuchiArea'].forEach(id=>show(id,false));
+    ['reporterOther','surveyTypeOther','companyOther','keiyakuOther','existingOther','wifiIdDiv','wifiPassDiv','wifiNote','battBlock','v2hBlock','parkInformedBox','shakuchiArea','roofMaterialOther','layoutOkDiv','layoutMemo'].forEach(id=>show(id,false));
     document.getElementById('existingReminder').classList.add('hidden');
     showMsg("", true); document.getElementById('msg').className="msg";
     var _as=document.getElementById('afterSend'); if(_as) _as.style.display='none';
@@ -958,6 +1004,171 @@
   fillSelect(document.getElementById('v2hMaker'), Object.keys(V2H), 'メーカー');
   renderPhotos(); updateDrivePath();
 </script>
+
+<!-- ============ 2026-08-08 追加 v6.5：入力漏れチェック＋契約種別/容量の分割＋足場（なしは理由必須）（ここから） ============
+   1) 契約種別と契約容量を別々の項目に分ける（両方必須・それぞれ「その他」あり）
+   2) フリガナ … カタカナ/全角スペースを自動でひらがな・半角にそろえる
+   3) Wi-Fiパスワード … Wi-Fi「あり」なら必須
+   4) 付帯工事 … 1行ごとに [備考：…] が無いと送信不可
+   5) 足場予定位置 … 必須（「わからない・足場なし」で「不明」を送る）
+   6) 当日の流れ説明 … 必須
+   ※このブロックを消せば以前の動きに完全に戻ります。DBに入る形式は今までと同じです。
+================================================================================ -->
+<script>
+(function(){
+  function toHira(s){
+    return String(s||'')
+      .replace(/[\u30a1-\u30f6]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-0x60);})
+      .replace(/\u3000/g,' ').trim();
+  }
+  function splitFutai(s){
+    var out=[],buf='',depth=0; s=String(s||'');
+    for(var i=0;i<s.length;i++){
+      var ch=s.charAt(i);
+      if(ch==='[')depth++;
+      if(ch===']')depth--;
+      if(depth===0 && s.substr(i,3)===' / '){ out.push(buf); buf=''; i+=2; continue; }
+      buf+=ch;
+    }
+    if(buf.trim())out.push(buf);
+    return out;
+  }
+  var FUTAI=[
+    ['futaiJin','付帯工事（人工・屋根）'],['futaiHai','付帯工事（配線・ダクト）'],
+    ['futaiKik','付帯工事（機器・分電盤）'],['futaiTek','付帯工事（撤去・処分）'],
+    ['futaiOth','付帯工事（交通・申請・その他）']
+  ];
+  var TYPES=['単相2線','単相3線','その他'];
+  var AMPS=['20A','30A','40A','50A','60A','70A','その他'];
+
+  function q(n){ return document.querySelector('input[name='+n+']:checked'); }
+  function kv(n){ var e=q(n); return e?e.value:''; }
+  function boxes(){ return [].slice.call(document.getElementsByName('keiyaku')); }
+
+  function syncKeiyaku(){
+    var ty=kv('keiyakuType'), am=kv('keiyakuAmp');
+    var tO=document.getElementById('keiyakuTypeOther'), aO=document.getElementById('keiyakuAmpOther');
+    if(!tO||!aO) return;
+    tO.classList.toggle('hidden', ty!=='その他');
+    aO.classList.toggle('hidden', am!=='その他');
+    var want=[], oth=[];
+    if(ty==='その他'){ want.push('その他'); if(tO.value.trim()) oth.push(tO.value.trim()); }
+    else if(ty){ want.push(ty); }
+    if(am==='その他'){ if(want.indexOf('その他')<0) want.push('その他'); if(aO.value.trim()) oth.push(aO.value.trim()); }
+    else if(am){ want.push(am); }
+    boxes().forEach(function(c){
+      var on = want.indexOf(c.value)>=0;
+      if(c.checked!==on){ c.checked=on; c.dispatchEvent(new Event('change',{bubbles:true})); }
+    });
+    var ko=document.getElementById('keiyakuOther');
+    if(ko){ ko.value=oth.join('・'); ko.dispatchEvent(new Event('input',{bubbles:true})); }
+  }
+
+  function buildKeiyaku(){
+    var k0=document.getElementsByName('keiyaku')[0];
+    if(!k0 || document.getElementById('keiyakuType0')) return;
+    var f=k0.closest('.f'); if(!f) return;
+    var lab=f.querySelector('label'), opts=f.querySelector('.opts');
+    if(lab) lab.style.display='none';
+    if(opts) opts.style.display='none';
+    function grp(title,name,arr,otherId){
+      var d=document.createElement('div');
+      var h='<label>'+title+' <span style="color:#dc2626">*</span></label><div class="opts">';
+      for(var i=0;i<arr.length;i++){
+        h+='<label><input type="radio" name="'+name+'" value="'+arr[i]+'" id="'+name+i+'"> '+arr[i]+'</label>';
+      }
+      h+='</div><input type="text" class="hidden" id="'+otherId+'" placeholder="内容を入力（例：三相3線）">';
+      d.innerHTML=h;
+      return d;
+    }
+    f.appendChild(grp('契約種別','keiyakuType',TYPES,'keiyakuTypeOther'));
+    f.appendChild(grp('契約容量','keiyakuAmp',AMPS,'keiyakuAmpOther'));
+    f.addEventListener('change', function(e){
+      if(e.target && /^keiyaku(Type|Amp)$/.test(e.target.name||'')) syncKeiyaku();
+    });
+    ['keiyakuTypeOther','keiyakuAmpOther'].forEach(function(id){
+      var el=document.getElementById(id);
+      if(el) el.addEventListener('input', syncKeiyaku);
+    });
+    boxes().forEach(function(c){
+      if(!c.checked) return;
+      if(TYPES.indexOf(c.value)>=0){ var t=document.querySelector('input[name=keiyakuType][value="'+c.value+'"]'); if(t)t.checked=true; }
+      if(AMPS.indexOf(c.value)>=0 && c.value!=='その他'){ var a=document.querySelector('input[name=keiyakuAmp][value="'+c.value+'"]'); if(a)a.checked=true; }
+    });
+  }
+
+  function boot(){
+    buildKeiyaku();
+    var sc=document.getElementById('scaffold');
+    if(sc && !document.getElementById('scaffoldNone')){
+      var chk=document.createElement('div');
+      chk.style.cssText='margin-top:8px';
+      chk.innerHTML='<label style="display:inline-flex;align-items:center;gap:6px;font-size:14px;color:#374151;cursor:pointer"><input type="checkbox" id="scaffoldNone" style="width:18px;height:18px;accent-color:#ea580c"> 足場なし</label>'
+        +'<input type="text" class="hidden" id="scaffoldNoneReason" style="margin-top:7px" placeholder="足場なしの理由（例：蓄電池のみ／既設足場を使用／平屋で脚立対応）">';
+      sc.parentNode.insertBefore(chk, sc.nextSibling);
+      var box=document.createElement('div');
+      box.style.cssText='margin-top:8px';
+      box.innerHTML=''
+        +'<div style="margin-top:8px;padding:9px 11px;background:#fffbeb;border:1px solid #fbbf24;border-radius:6px;font-size:13px;color:#92400e;line-height:1.75">足場を組む現場は、<b>レイアウト図か手書きメモを ⑨ で必ず撮ってください。</b><br>文字で書ききれない条件（ステージ・アンチのスパン・ハシゴ位置など）は、手書きで描いて撮るのが一番早いです。</div>';
+      var hint=sc.parentNode.querySelector('.hint');
+      if(hint) hint.parentNode.insertBefore(box, hint.nextSibling); else sc.parentNode.insertBefore(box, sc.nextSibling);
+      document.getElementById('scaffoldNone').addEventListener('change',function(e){
+        var rs=document.getElementById('scaffoldNoneReason');
+        if(e.target.checked){ sc.dataset.prev=sc.value; sc.value='足場なし'; sc.readOnly=true; sc.style.background='#f3f4f6'; rs.classList.remove('hidden'); rs.focus(); }
+        else { sc.value=sc.dataset.prev||''; sc.readOnly=false; sc.style.background=''; rs.classList.add('hidden'); }
+      });
+    }
+    var k=document.getElementById('custKana');
+    if(k) k.addEventListener('blur',function(){ k.value=toHira(k.value); });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
+
+  var _orig=window.validate;
+  window.validate=function(d){
+    var ty=kv('keiyakuType'), am=kv('keiyakuAmp');
+    var tO=document.getElementById('keiyakuTypeOther'), aO=document.getElementById('keiyakuAmpOther');
+    if(tO&&aO){
+      if(!ty) return '契約種別を選択してください（単相2線／単相3線／その他）';
+      if(ty==='その他' && !tO.value.trim()) return '契約種別の「その他」の内容を入力してください';
+      if(!am) return '契約容量を選択してください（20A〜70A／その他）';
+      if(am==='その他' && !aO.value.trim()) return '契約容量の「その他」の内容を入力してください';
+      syncKeiyaku();
+      var _p=[];
+      _p.push(ty==='その他' ? 'その他：'+tO.value.trim() : ty);
+      _p.push(am==='その他' ? 'その他：'+aO.value.trim() : am);
+      d.keiyaku=_p.join('・');
+    }
+    var e=_orig(d); if(e) return e;
+    if(d.custKana){
+      d.custKana=toHira(d.custKana);
+      if(/[^\u3040-\u309f\u30fc\u30fb ]/.test(d.custKana))
+        return 'フリガナは ひらがな で入力してください（例：いしくらひろき）';
+    }
+    if(/^あり/.test(d.wifiStatus||'') && !String(d.wifiPass||'').trim())
+      return 'Wi-Fiパスワードを入力してください（Wi-Fi「あり」の場合は必須です）';
+    for(var i=0;i<FUTAI.length;i++){
+      var items=splitFutai(d[FUTAI[i][0]]);
+      for(var j=0;j<items.length;j++){
+        if(items[j].indexOf('[備考：')<0)
+          return FUTAI[i][1]+'の\n「'+items[j].replace(/\s+/g,' ').trim()+'」\nに備考が入っていません。\n付帯工事は必ず理由・状況を備考に書いてください。';
+      }
+    }
+    var _sn=document.getElementById('scaffoldNone');
+    var _sr=document.getElementById('scaffoldNoneReason');
+    if(_sn && _sn.checked){
+      if(!_sr || !_sr.value.trim())
+        return '足場なしの理由を入力してください。\n（例：蓄電池のみ／既設足場を使用／平屋で脚立対応）';
+      d.scaffold='足場なし：'+_sr.value.trim();
+    } else if(!String(d.scaffold||'').trim()){
+      return '足場予定位置を入力してください。\n足場を組まない現場は「足場なし」にチェックして理由を書いてください。';
+    }
+    if(!String(d.flow||'').trim())
+      return '当日の流れ説明（済／未）を選択してください';
+    return '';
+  };
+})();
+</script>
+<!-- ============ 2026-08-08 追加 v6.2（ここまで） ============ -->
 </body>
 <!-- r -->
 </html>
