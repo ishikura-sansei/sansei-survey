@@ -1005,7 +1005,7 @@
   renderPhotos(); updateDrivePath();
 </script>
 
-<!-- ============ 2026-08-08 追加 v6.6：入力漏れチェック＋契約種別/容量の分割＋足場（なしは理由必須）（ここから） ============
+<!-- ============ 2026-08-08 追加 v6.7：入力漏れチェック＋契約種別/容量の分割＋足場（なしは理由必須）（ここから） ============
    1) 契約種別と契約容量を別々の項目に分ける（両方必須・それぞれ「その他」あり）
    2) フリガナ … カタカナ/全角スペースを自動でひらがな・半角にそろえる
    3) Wi-Fiパスワード … Wi-Fi「あり」なら必須
@@ -1120,6 +1120,23 @@
     }
     var k=document.getElementById('custKana');
     if(k) k.addEventListener('blur',function(){ k.value=toHira(k.value); });
+
+    /* 2026-08-09 追加：屋根の「寸法（m）」欄は使わないので隠す */
+    var _dim=document.getElementById('eaveSouth');
+    if(_dim){ var _df=_dim.closest('.f'); if(_df) _df.style.display='none'; }
+
+    /* 2026-08-09 追加：ケーブル欄にCVの案内 */
+    var _cp=document.getElementById('cblPv');
+    if(_cp && !document.getElementById('cableNote')){
+      var _cf=_cp.closest('.f');
+      if(_cf){
+        var _n=document.createElement('div');
+        _n.id='cableNote';
+        _n.style.cssText='margin:6px 0 10px;padding:9px 11px;background:#eff6ff;border:1px solid #93c5fd;border-radius:6px;font-size:13px;color:#1e40af;line-height:1.75';
+        _n.innerHTML='<b>CV・CVTなどの幹線ケーブルは、ここではなく付帯工事に書いてください。</b><br>会社ごとの付帯項目なので、<b>⑥付帯工事の「配線・電線類」で総延長（m）</b>を入力します。<br>この欄は機器と機器の間のケーブル延長だけです。';
+        _cf.parentNode.insertBefore(_n, _cf);
+      }
+    }
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
 
