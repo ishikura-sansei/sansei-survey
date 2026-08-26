@@ -198,6 +198,27 @@
     </div>
     <div class="f"><label>メーター番号</label><input type="text" id="meter"></div>
     <div class="f"><label>分電盤メーカー・型式</label><input type="text" id="panel"></div>
+    <div class="f"><label>主幹ブレーカー定格 <small style="font-weight:normal;color:#6b7280">（契約容量とは別。ブレーカー本体の表示）</small></label>
+      <div class="opts" data-radio="mainBreaker">
+        <label><input type="radio" name="mainBreaker" value="30A">30A</label>
+        <label><input type="radio" name="mainBreaker" value="40A">40A</label>
+        <label><input type="radio" name="mainBreaker" value="50A">50A</label>
+        <label><input type="radio" name="mainBreaker" value="60A">60A</label>
+        <label><input type="radio" name="mainBreaker" value="75A">75A</label>
+        <label><input type="radio" name="mainBreaker" value="100A">100A</label>
+        <label><input type="radio" name="mainBreaker" value="不明">不明</label>
+      </div>
+      <div class="hint">分からなければ「不明」でOK。銘板の写真があれば事務で読み取ります。</div>
+    </div>
+    <div class="f"><label>主幹の極数・素子数 <small style="font-weight:normal;color:#6b7280">（銘板に 3P3E 等の表示）</small></label>
+      <div class="opts" data-radio="mainPole">
+        <label><input type="radio" name="mainPole" value="3P3E">3P3E</label>
+        <label><input type="radio" name="mainPole" value="3P2E">3P2E</label>
+        <label><input type="radio" name="mainPole" value="2P1E">2P1E</label>
+        <label><input type="radio" name="mainPole" value="不明">不明</label>
+      </div>
+      <div class="hint">読めなければ「不明」でOK。</div>
+    </div>
     <div class="row2">
       <div class="f"><label>回路数（全回路）</label><input type="number" id="circuits" inputmode="numeric" placeholder="例：20"><div class="hint">単位：回路</div></div>
       <div class="f"><label>空き回路数</label><input type="number" id="emptyCircuits" inputmode="numeric" placeholder="例：2"><div class="hint">単位：回路</div></div>
@@ -208,7 +229,7 @@
           <option value="">種別</option><option>CV</option><option>CVT</option><option>SV</option><option>その他</option>
         </select>
         <select id="kansenSize">
-          <option value="">サイズ</option><option>8</option><option>14</option><option>その他</option>
+          <option value="">サイズ</option><option>2.6</option><option>5.5</option><option>8</option><option>14</option><option>22</option><option>38</option><option>その他</option>
         </select>
       </div>
     </div>
@@ -264,7 +285,7 @@
       <div id="cblOtherList"></div>
       <button type="button" class="addbtn" style="margin-top:8px" onclick="addCblRow()">＋ その他のケーブル延長を追加（名称＋m）</button>
     </div>
-    <div class="hint" style="margin-top:10px">※ CV・PFD等の幹線延長は <b>⑥付帯</b> で「総計m（多めに）」として記録してください（二重入力を避けるため④からは外しました）。</div>
+    <div style="margin:6px 0 10px;padding:9px 11px;background:#eff6ff;border:1px solid #93c5fd;border-radius:6px;font-size:13px;color:#1e40af;line-height:1.75"><b>CV・CVTなどの幹線ケーブルは、ここではなく付帯工事に書いてください。</b><br>会社ごとの付帯項目なので、<b>⑥付帯工事の「配線・電線類」で総延長（m・多めに）</b>を入力します。<br>この欄は機器と機器の間のケーブル延長だけです。</div>
   </div>
 
   <!-- ⑤ 蓄電池・V2H・部材 -->
@@ -434,6 +455,16 @@
       <a href="https://drive.google.com/drive/folders/1OkP8EnYw0EKCf5kODQAtY-iz3ftB5HFQ" target="_blank" style="display:inline-block;background:#1a73e8;color:#fff;border-radius:8px;padding:10px 22px;font-size:14px;font-weight:bold;text-decoration:none;">📂 現調写真フォルダを開く（Driveへ保存）</a>
     </div>
 
+    <div id="reqPhotoElecBox" class="reqphotos" style="border:2px solid #c62828;background:#fff5f5">
+      <div class="reqphotos-h" style="color:#c62828">📸 電気まわり 必須4枚（単線結線図の作成に使います／全部チェックしないと送信できません）</div>
+      <label class="reqchk"><input type="checkbox" class="reqphoto-elec" data-label="分電盤の内部" onchange="this.closest('.reqchk').classList.toggle('on',this.checked)"><span>分電盤の内部 <small>（蓋を開けた全体）</small></span></label>
+      <label class="reqchk"><input type="checkbox" class="reqphoto-elec" data-label="回路表" onchange="this.closest('.reqchk').classList.toggle('on',this.checked)"><span>回路表 <small>（分電盤の蓋の裏）</small></span></label>
+      <label class="reqchk"><input type="checkbox" class="reqphoto-elec" data-label="主幹ブレーカーの銘板" onchange="this.closest('.reqchk').classList.toggle('on',this.checked)"><span>主幹ブレーカーの銘板アップ <small>（文字が読める寸法で）</small></span></label>
+      <label class="reqchk"><input type="checkbox" class="reqphoto-elec" data-label="電力量計" onchange="this.closest('.reqchk').classList.toggle('on',this.checked)"><span>電力量計 <small>（計器Noが読める寸法で）</small></span></label>
+      <label class="reqchk"><input type="checkbox" class="reqphoto-meter" data-label="検針票" onchange="this.closest('.reqchk').classList.toggle('on',this.checked)"><span>検針票 <small>（任意・あれば撮る。電力会社名と供給地点特定番号が分かります）</small></span></label>
+      <label class="reqchk" style="margin-top:6px;border-top:1px dashed #fca5a5;padding-top:8px"><input type="checkbox" id="elecPhotoNG" onchange="this.closest('.reqchk').classList.toggle('on',this.checked);var r=document.getElementById('elecPhotoNGReason');if(r){r.classList.toggle('hidden',!this.checked);}"><span>今回は撮れなかった <small>（理由の記入が必須。これを選べば送信できます）</small></span></label>
+      <input type="text" id="elecPhotoNGReason" class="hidden" placeholder="例：お客様不在で分電盤に近づけず／屋根のみの再訪" style="margin-top:6px;width:100%;box-sizing:border-box">
+    </div>
     <div id="reqPhotoBox" class="reqphotos">
       <div class="reqphotos-h">📋 撮影チェック（任意・チェックしなくても送信できます／未チェックは営業へ申し送り）</div>
       <label class="reqchk"><input type="checkbox" class="reqphoto" data-label="足場 設置例" onchange="this.closest('.reqchk').classList.toggle('on',this.checked)"><span>足場 設置例 <small>（写真にイラストで明記／原則3面設置）</small></span></label>
@@ -886,6 +917,7 @@
       company: companyVal(),
       custName: val('custName'), custKana: val('custKana'), addr: val('addr'),
       keiyaku: keiyakuVal(), meter: val('meter'), panel: val('panel'),
+      mainBreaker: radio('mainBreaker'), mainPole: radio('mainPole'),
       existing: existingVal(),
       circuits: val('circuits'), emptyCircuits: val('emptyCircuits'),
       kansen: [val('kansenType'),val('kansenSize')].filter(Boolean).join('-'), earth: radio('earth'),
@@ -905,6 +937,8 @@
       scaffold: val('scaffold'), flow: radio('flow'),
       steps: collectSteps(),
       hopeDate: val('hopeDate'), ngDate: val('ngDate'), timeSlot: radio('timeSlot'),
+      totalDays: (function(){var e=document.getElementById('totalDays');return e?(e.textContent||'').trim():'';})(),
+      photoElec: (function(){var a=[].slice.call(document.querySelectorAll('.reqphoto-elec'));var ok=a.filter(function(c){return c.checked;}).length;var m=document.querySelector('.reqphoto-meter');var ng=document.getElementById('elecPhotoNG');var rs=document.getElementById('elecPhotoNGReason');if(ng&&ng.checked) return '撮れず：'+((rs&&rs.value.trim())||'理由未記入');return ok+'／'+a.length+(m&&m.checked?'＋検針票':'');})(),
       photoCount: photos.length,
       photos: photos.map(p=>({dataURL:p.dataURL, annotated:p.annotated})),
       memo: buildMemo()
@@ -1125,18 +1159,7 @@
     var _dim=document.getElementById('eaveSouth');
     if(_dim){ var _df=_dim.closest('.f'); if(_df) _df.style.display='none'; }
 
-    /* 2026-08-09 追加：ケーブル欄にCVの案内 */
-    var _cp=document.getElementById('cblPv');
-    if(_cp && !document.getElementById('cableNote')){
-      var _cf=_cp.closest('.f');
-      if(_cf){
-        var _n=document.createElement('div');
-        _n.id='cableNote';
-        _n.style.cssText='margin:6px 0 10px;padding:9px 11px;background:#eff6ff;border:1px solid #93c5fd;border-radius:6px;font-size:13px;color:#1e40af;line-height:1.75';
-        _n.innerHTML='<b>CV・CVTなどの幹線ケーブルは、ここではなく付帯工事に書いてください。</b><br>会社ごとの付帯項目なので、<b>⑥付帯工事の「配線・電線類」で総延長（m）</b>を入力します。<br>この欄は機器と機器の間のケーブル延長だけです。';
-        _cf.parentNode.insertBefore(_n, _cf);
-      }
-    }
+    /* 2026-08-26 v7.0：案内は静的HTML側に一本化したため、ここでの注入は廃止 */
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
 
@@ -1179,11 +1202,21 @@
     }
     if(!String(d.flow||'').trim())
       return '当日の流れ説明（済／未）を選択してください';
+    var _eng=document.getElementById('elecPhotoNG');
+    var _ers=document.getElementById('elecPhotoNGReason');
+    if(_eng && _eng.checked){
+      if(!_ers || !_ers.value.trim())
+        return '電気まわりの写真が撮れなかった理由を入力してください。\n（例：お客様不在で分電盤に近づけず／屋根のみの再訪）';
+    } else {
+      var _epn=[].slice.call(document.querySelectorAll('.reqphoto-elec')).filter(function(c){return !c.checked;});
+      if(_epn.length)
+        return '電気まわりの必須写真にチェックが入っていません。\n未チェック：' + _epn.map(function(c){return c.getAttribute('data-label');}).join('・') + '\n撮れない事情があるときは「今回は撮れなかった」を選んで理由を書いてください。';
+    }
     return '';
   };
 })();
 </script>
 <!-- ============ 2026-08-08 追加 v6.2（ここまで） ============ -->
 </body>
-<!-- r -->
+<!-- SANSEI 現地調査シート v7.0 (2026-08-26) 主幹容量・極数素子数・電気まわり必須4枚（撮れなかった場合は理由必須）・幹線サイズ拡張・totalDays送信修正 -->
 </html>
