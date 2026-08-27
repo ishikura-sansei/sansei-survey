@@ -198,7 +198,7 @@
     </div>
     <div class="f"><label>メーター番号</label><input type="text" id="meter"></div>
     <div class="f"><label>分電盤メーカー・型式</label><input type="text" id="panel"></div>
-    <div class="f"><label>主幹ブレーカー定格 <small style="font-weight:normal;color:#6b7280">（契約容量とは別。ブレーカー本体の表示）</small></label>
+    <div class="f"><label>主幹ELB 定格 <small style="font-weight:normal;color:#6b7280">（SB＝契約ブレーカーとは別。分電盤の主幹本体の表示）</small></label>
       <div class="opts" data-radio="mainBreaker">
         <label><input type="radio" name="mainBreaker" value="30A">30A</label>
         <label><input type="radio" name="mainBreaker" value="40A">40A</label>
@@ -210,7 +210,7 @@
       </div>
       <div class="hint">分からなければ「不明」でOK。銘板の写真があれば事務で読み取ります。</div>
     </div>
-    <div class="f"><label>主幹の極数・素子数 <small style="font-weight:normal;color:#6b7280">（銘板に 3P3E 等の表示）</small></label>
+    <div class="f"><label>主幹ELB 極数・素子数 <small style="font-weight:normal;color:#6b7280">（銘板に 3P3E 等の表示）</small></label>
       <div class="opts" data-radio="mainPole">
         <label><input type="radio" name="mainPole" value="3P3E">3P3E</label>
         <label><input type="radio" name="mainPole" value="3P2E">3P2E</label>
@@ -459,7 +459,7 @@
       <div class="reqphotos-h" style="color:#c62828">📸 電気まわり 必須4枚（単線結線図の作成に使います／全部チェックしないと送信できません）</div>
       <label class="reqchk"><input type="checkbox" class="reqphoto-elec" data-label="分電盤の内部" onchange="this.closest('.reqchk').classList.toggle('on',this.checked)"><span>分電盤の内部 <small>（蓋を開けた全体）</small></span></label>
       <label class="reqchk"><input type="checkbox" class="reqphoto-elec" data-label="回路表" onchange="this.closest('.reqchk').classList.toggle('on',this.checked)"><span>回路表 <small>（分電盤の蓋の裏）</small></span></label>
-      <label class="reqchk"><input type="checkbox" class="reqphoto-elec" data-label="主幹ブレーカーの銘板" onchange="this.closest('.reqchk').classList.toggle('on',this.checked)"><span>主幹ブレーカーの銘板アップ <small>（文字が読める寸法で）</small></span></label>
+      <label class="reqchk"><input type="checkbox" class="reqphoto-elec" data-label="主幹ELBの銘板" onchange="this.closest('.reqchk').classList.toggle('on',this.checked)"><span>主幹ELBの銘板アップ <small>（文字が読める寸法で）</small></span></label>
       <label class="reqchk"><input type="checkbox" class="reqphoto-elec" data-label="電力量計" onchange="this.closest('.reqchk').classList.toggle('on',this.checked)"><span>電力量計 <small>（計器Noが読める寸法で）</small></span></label>
       <label class="reqchk"><input type="checkbox" class="reqphoto-meter" data-label="検針票" onchange="this.closest('.reqchk').classList.toggle('on',this.checked)"><span>検針票 <small>（任意・あれば撮る。電力会社名と供給地点特定番号が分かります）</small></span></label>
       <label class="reqchk" style="margin-top:6px;border-top:1px dashed #fca5a5;padding-top:8px"><input type="checkbox" id="elecPhotoNG" onchange="this.closest('.reqchk').classList.toggle('on',this.checked);var r=document.getElementById('elecPhotoNGReason');if(r){r.classList.toggle('hidden',!this.checked);}"><span>今回は撮れなかった <small>（理由の記入が必須。これを選べば送信できます）</small></span></label>
@@ -509,7 +509,7 @@
   const PROTO = false; // 本番モード
 
   const BATT = {
-    "ニチコン":{"トライブリッドT5/T6":[7.4,9.9,14.9,19.9],"トライブリッドT3":[4.9,7.4,9.9,14.9],"単機能U5(全負荷)":[7.7,9.7],"単機能U4(全負荷)":[11.1,16.6],"単機能U2系(旧・販売終了)":[11.1,12.0,16.6],"その他":[]},
+    "ニチコン":{"トライブリッドT5":[7.4,9.9,14.9,19.9],"トライブリッドT6":[7.4,9.9,14.9,19.9],"トライブリッドT3":[4.9,7.4,9.9,14.9],"単機能U5(全負荷)":[7.7,9.7],"単機能U4(全負荷)":[11.1,16.6],"単機能U2系(旧・販売終了)":[11.1,12.0,16.6],"その他":[]},
     "京セラ":{"エネレッツァ":[5.0,10.0,15.0],"エネレッツァ プラス(全負荷)":[5.5,11.0,16.5],"その他":[]},
     "オムロン":{"マルチ蓄電プラットフォーム":[6.5,9.8,12.7,16.4],"その他":[]},
     "長州産業":{"Smart PV multi":[6.5,9.8,12.7,16.4],"その他":[]},
@@ -1218,5 +1218,5 @@
 </script>
 <!-- ============ 2026-08-08 追加 v6.2（ここまで） ============ -->
 </body>
-<!-- SANSEI 現地調査シート v7.0 (2026-08-26) 主幹容量・極数素子数・電気まわり必須4枚（撮れなかった場合は理由必須）・幹線サイズ拡張・totalDays送信修正 -->
+<!-- SANSEI 現地調査シート v7.1 (2026-08-26) 主幹ELB表記・蓄電池T5/T6分割／主幹容量・極数素子数・電気まわり必須4枚（撮れなかった場合は理由必須）・幹線サイズ拡張・totalDays送信修正 -->
 </html>
