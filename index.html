@@ -198,6 +198,24 @@
     </div>
     <div class="f"><label>メーター番号</label><input type="text" id="meter"></div>
     <div class="f"><label>分電盤メーカー・型式</label><input type="text" id="panel"></div>
+    <div class="f"><label>既設のSB（契約ブレーカー） <small style="font-weight:normal;color:#6b7280">（スマートメーターだけの家には無い）</small></label>
+      <div class="opts" data-radio="sbExist">
+        <label><input type="radio" name="sbExist" value="ある" onclick="toggleSb()">ある</label>
+        <label><input type="radio" name="sbExist" value="ない" onclick="toggleSb()">ない</label>
+        <label><input type="radio" name="sbExist" value="確認できず" onclick="toggleSb()">確認できず</label>
+      </div>
+      <div id="sbRateBox" class="hidden" style="margin-top:6px">
+        <div class="hint" style="margin-bottom:4px">SBの定格</div>
+        <div class="opts" data-radio="sbRating">
+          <label><input type="radio" name="sbRating" value="30A">30A</label>
+          <label><input type="radio" name="sbRating" value="40A">40A</label>
+          <label><input type="radio" name="sbRating" value="50A">50A</label>
+          <label><input type="radio" name="sbRating" value="60A">60A</label>
+          <label><input type="radio" name="sbRating" value="不明">不明</label>
+        </div>
+      </div>
+      <div class="hint">単線結線図の一番左が、これで決まります。分電盤と電力量計の写真があれば事務で読み取れます。</div>
+    </div>
     <div class="f"><label>主幹ELB 定格 <small style="font-weight:normal;color:#6b7280">（SB＝契約ブレーカーとは別。分電盤の主幹本体の表示）</small></label>
       <div class="opts" data-radio="mainBreaker">
         <label><input type="radio" name="mainBreaker" value="30A">30A</label>
@@ -275,17 +293,21 @@
     <div class="hint" style="margin-bottom:4px">いずれも商社発注の付属品です。必要な長さを選んでください。</div>
     <div class="f">
       <div class="row2" style="margin-bottom:6px">
-        <select id="cblPv"><option value="">PV〜PVユニット</option><option>5ｍ</option><option>20ｍ</option><option>30ｍ</option><option>40ｍ</option><option>その他</option></select>
-        <select id="cblMain"><option value="">主幹</option><option>5ｍ</option><option>20ｍ</option><option>30ｍ</option><option>40ｍ</option><option>その他</option></select>
+        <select id="cblRemote"><option value="">PCS-リモコン</option><option>20ｍ</option><option>40ｍ</option><option>その他</option></select>
+        <select id="cblMain"><option value="">PCS-分電盤</option><option>20ｍ</option><option>40ｍ</option><option>その他</option></select>
       </div>
       <div class="row2">
-        <select id="cblBatt"><option value="">蓄電池通信</option><option>5ｍ</option><option>20ｍ</option><option>30ｍ</option><option>40ｍ</option><option>その他</option></select>
-        <select id="cblCt"><option value="">CTセンサー</option><option>5ｍ</option><option>20ｍ</option><option>30ｍ</option><option>40ｍ</option><option>その他</option></select>
+        <select id="cblBatt"><option value="">PCS-蓄電池</option><option>5ｍ</option><option>20ｍ</option><option>40ｍ</option><option>その他</option></select>
+        <select id="cblV2hPcs"><option value="">V2H-PCS</option><option>5ｍ</option><option>20ｍ</option><option>40ｍ</option><option>その他</option></select>
+      </div>
+      <div class="row2">
+        <select id="cblV2hPod"><option value="">V2H-ポッド</option><option>10ｍ</option><option>30ｍ</option><option>その他</option></select>
+        <span></span>
       </div>
       <div id="cblOtherList"></div>
       <button type="button" class="addbtn" style="margin-top:8px" onclick="addCblRow()">＋ その他のケーブル延長を追加（名称＋m）</button>
     </div>
-    <div style="margin:6px 0 10px;padding:9px 11px;background:#eff6ff;border:1px solid #93c5fd;border-radius:6px;font-size:13px;color:#1e40af;line-height:1.75"><b>CV・CVTなどの幹線ケーブルは、ここではなく付帯工事に書いてください。</b><br>会社ごとの付帯項目なので、<b>⑥付帯工事の「配線・電線類」で総延長（m・多めに）</b>を入力します。<br>この欄は機器と機器の間のケーブル延長だけです。</div>
+    <div style="margin:6px 0 10px;padding:9px 11px;background:#eff6ff;border:1px solid #93c5fd;border-radius:6px;font-size:13px;color:#1e40af;line-height:1.75"><b>長さはメーカーの規格品だけです。</b>選択肢に無い長さ（30m など）はありません。実測が20mを超えるなら40mを選んでください。<br><br><b>CV・CVTなどの幹線ケーブルは、ここではなく付帯工事に書いてください。</b><br>会社ごとの付帯項目なので、<b>⑥付帯工事の「配線・電線類」で総延長（m・多めに）</b>を入力します。<br>この欄は機器と機器の間のケーブル延長だけです。</div>
   </div>
 
   <!-- ⑤ 蓄電池・V2H・部材 -->
@@ -908,6 +930,13 @@
     return [auto.join(' '), base].filter(Boolean).join('\n');
   }
 
+  function toggleSb(){
+    var v=radio('sbExist'); var b=document.getElementById('sbRateBox');
+    if(!b) return;
+    b.classList.toggle('hidden', v!=='ある');
+    if(v!=='ある'){ document.querySelectorAll('input[name="sbRating"]').forEach(function(r){ r.checked=false; }); }
+  }
+
   function collect(){
     const FT=collectFutai();
     return {
@@ -917,12 +946,14 @@
       company: companyVal(),
       custName: val('custName'), custKana: val('custKana'), addr: val('addr'),
       keiyaku: keiyakuVal(), meter: val('meter'), panel: val('panel'),
+      sb: (function(){var e=radio('sbExist'); if(e!=='ある') return e; var r=radio('sbRating'); return 'ある'+(r?'（'+r+'）':'（定格未記入）');})(),
       mainBreaker: radio('mainBreaker'), mainPole: radio('mainPole'),
       existing: existingVal(),
       circuits: val('circuits'), emptyCircuits: val('emptyCircuits'),
       kansen: [val('kansenType'),val('kansenSize')].filter(Boolean).join('-'), earth: radio('earth'),
       wifiStatus: wifiStatusVal(), wifiId: val('wifiId'), wifiPass: val('wifiPass'),
-      cblPv: val('cblPv'), cblMain: val('cblMain'), cblBatt: val('cblBatt'), cblCt: val('cblCt'),
+      cblRemote: val('cblRemote'), cblMain: val('cblMain'), cblBatt: val('cblBatt'),
+      cblV2hPcs: val('cblV2hPcs'), cblV2hPod: val('cblV2hPod'),
       cblOther: (function(){try{var b=document.getElementById('cblOtherList');if(!b)return '';return [].slice.call(b.querySelectorAll('input,select,textarea')).map(function(e){return (e.value||'').trim();}).filter(Boolean).join(' / ');}catch(e){return '';}})(),
       battType: (document.getElementById('typeBatt').checked?'蓄電池':'')+(document.getElementById('typeV2h').checked?(document.getElementById('typeBatt').checked?'・':'')+'V2H':''),
       battery: battVal(), v2h: v2hVal(),
@@ -1218,5 +1249,5 @@
 </script>
 <!-- ============ 2026-08-08 追加 v6.2（ここまで） ============ -->
 </body>
-<!-- SANSEI 現地調査シート v7.1 (2026-08-26) 主幹ELB表記・蓄電池T5/T6分割／主幹容量・極数素子数・電気まわり必須4枚（撮れなかった場合は理由必須）・幹線サイズ拡張・totalDays送信修正 -->
+<!-- SANSEI 現地調査シート v7.3 (2026-08-29) 既設SBの有無・定格を追加／ケーブル欄をニチコン規格に総入れ替え（PCS-リモコン／PCS-分電盤／PCS-蓄電池／V2H-PCS／V2H-ポッド）／主幹ELB表記・蓄電池T5/T6分割／主幹容量・極数素子数・電気まわり必須4枚（撮れなかった場合は理由必須）・幹線サイズ拡張・totalDays送信修正 -->
 </html>
