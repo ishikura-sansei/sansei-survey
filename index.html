@@ -613,6 +613,7 @@
       {n:"単2→単3切替工事",u:"式",g:"kik"},{n:"点検口",u:"式",g:"kik"},
       {n:"ハイブリット蓄電池 系統組換え（PV既設）",u:"式",g:"kik"},{n:"機器代金（分電盤・アンテナ等）",u:"式",g:"kik"},
       {n:"アンテナ移設・撤去",u:"式",g:"tek"},{n:"温水ソーラー撤去費用",u:"式",g:"tek"},
+      {n:"既設太陽光撤去・処分費(20枚迄)",u:"式",g:"tek",only:1},{n:"既設蓄電池撤去(１台辺り)",u:"台",g:"tek",only:1},
       {n:"遠方交通費（50km以上片道）",u:"車両",g:"oth"},{n:"事前先行基礎工事（蓄電池・EQ）",u:"式",g:"oth"},
       {n:"風呂循環口交換",u:"箇所",g:"oth"},{n:"風呂循環口新設",u:"箇所",g:"oth"},
       {n:"リモコン追加・移設",u:"台",g:"oth"},{n:"ヒートポンプ2段置き架台設置",u:"台",g:"oth"},
@@ -637,16 +638,16 @@
     ]
   };
   FUTAI["ライズ"] = [
-    ...FUTAI["キョウエイ"].filter(x=>x.g==="jin"),
+    ...FUTAI["キョウエイ"].filter(x=>x.g==="jin"&&!x.only),
     {n:"電気配線延長",u:"m",g:"hai"},{n:"リモコン線延長",u:"m",g:"hai"},
     {n:"幹線張替工事（CV14まで）",u:"式",g:"hai"},{n:"幹線張替延長（CV14）",u:"m",g:"hai"},
     {n:"ケーブル埋設工事",u:"式",g:"hai"},{n:"ケーブル飛ばし",u:"式",g:"hai"},
     {n:"LANケーブル（10mまで）",u:"m",g:"hai"},{n:"配管延長（4m以上）",u:"m",g:"hai"},
     {n:"配管ダクト使用（太陽光・EQ）",u:"m",g:"hai"},{n:"エコキュート用ヒーターバンド",u:"m",g:"hai"},
     {n:"新築先行配線・配管",u:"回",g:"hai"},
-    ...FUTAI["キョウエイ"].filter(x=>x.g==="kik"),
-    ...FUTAI["キョウエイ"].filter(x=>x.g==="tek"),
-    ...FUTAI["キョウエイ"].filter(x=>x.g==="oth")
+    ...FUTAI["キョウエイ"].filter(x=>x.g==="kik"&&!x.only),
+    ...FUTAI["キョウエイ"].filter(x=>x.g==="tek"&&!x.only),
+    ...FUTAI["キョウエイ"].filter(x=>x.g==="oth"&&!x.only)
   ];
 
   function show(id,on){ const e=document.getElementById(id); if(e) e.classList.toggle('hidden',!on); }
